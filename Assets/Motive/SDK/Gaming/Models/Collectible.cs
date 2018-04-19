@@ -106,6 +106,14 @@ namespace Motive.Gaming.Models
             }
         }
 
+        public bool IsArchive
+        {
+            get
+            {
+                return HasAttribute("archive");
+            }
+        }
+
         public Collectible()
         {
         }
@@ -146,11 +154,43 @@ namespace Motive.Gaming.Models
             return StoryTags != null && StoryTags.Contains(tag);
         }
 
+        public bool HasAnyAttribute(IEnumerable<string> attributes)
+        {
+            if (attributes != null)
+            {
+                foreach (var attr in attributes)
+                {
+                    if (HasAttribute(attr))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
         public bool HasAttribute(string attribute)
         {
             if (Attributes != null)
             {
                 return Attributes.Contains(attribute);
+            }
+
+            return false;
+        }
+
+        public bool HasAttributesOr(IEnumerable<string> attributes)
+        {
+            if (Attributes != null)
+            {
+                foreach (var attr in attributes)
+                {
+                    if (Attributes.Contains(attr))
+                    {
+                        return true;
+                    }
+                }
             }
 
             return false;

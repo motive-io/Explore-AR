@@ -12,21 +12,13 @@ namespace Motive.Unity.UI
     /// </summary>
     public class ExecuteRecipeComponent : PanelComponent<Recipe>
     {
-        public Panel ExecuteRecipePanel;
-
-        void Start()
-        {
-            if (!ExecuteRecipePanel)
-            {
-                ExecuteRecipePanel = PanelManager.Instance.GetPanel<ExecuteRecipePanel>();
-            }
-        }
+        public PanelLink ExecuteRecipePanel;
 
         public override void DidShow()
         {
             if (ExecuteRecipePanel)
             {
-                PanelManager.Instance.Pop(ExecuteRecipePanel);
+                ExecuteRecipePanel.Back();
             }
 
             base.DidShow();
@@ -36,7 +28,7 @@ namespace Motive.Unity.UI
         {
             if (ExecuteRecipePanel)
             {
-                PanelManager.Instance.Push(ExecuteRecipePanel, recipe);
+                ExecuteRecipePanel.Push(recipe);
             }
         }
     }

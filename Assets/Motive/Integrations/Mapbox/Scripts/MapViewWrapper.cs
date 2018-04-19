@@ -141,8 +141,8 @@ namespace Motive.Unity.Maps
         {
             MapView.TileDriver.RegisterRenderer(this);
 
-            m_tileCountX = MapView.TileDriver.TileCountX + BoundaryTiles * 2;
-            m_tileCountY = MapView.TileDriver.TileCountY + BoundaryTiles * 2;
+            m_tileCountX = MapView.TileDriver.TileCountX; // +BoundaryTiles * 2;
+            m_tileCountY = MapView.TileDriver.TileCountY; // +BoundaryTiles * 2;
 
             m_tileInfo = new TileInfo[m_tileCountX, m_tileCountY];
 
@@ -163,8 +163,8 @@ namespace Motive.Unity.Maps
             float sx = PlaneSize.x / MapController.Instance.MapView.TileDriver.TileCountX;
             float sy = PlaneSize.y / MapController.Instance.MapView.TileDriver.TileCountY;
 
-            var vx = (x - ox) * sx - (PlaneSize.x - sx) / 2 - BoundaryTiles * sx;
-            var vy = -(y - oy) * sy + (PlaneSize.y - sy) / 2 + BoundaryTiles * sy;
+            var vx = (x - ox - BoundaryTiles) * sx - (PlaneSize.x - sx) / 2;
+            var vy = -(y - oy - BoundaryTiles) * sy + (PlaneSize.y - sy) / 2;
 
             //tile.transform.localPosition = new Vector3((x - ox) * sx - (PlaneSize.x - sx) / 2 - BoundaryTiles * sx, 0, -(y - oy) * sy + (PlaneSize.y - sy) / 2 + BoundaryTiles * sy);
             tile.transform.localPosition = vx * XAxis + vy * YAxis;

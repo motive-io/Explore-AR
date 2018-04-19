@@ -53,6 +53,7 @@ namespace Motive.Unity.Apps
             ARQuestAppUIManager.Instance.OnModeChanged.AddListener(ModeChanged);
 
             ConfigureMode();
+            QuestUpdated();
         }
 
         void ModeChanged()

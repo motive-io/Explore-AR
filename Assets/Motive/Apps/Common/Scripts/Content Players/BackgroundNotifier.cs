@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
 using Motive.Core.Notifications;
+using Motive.Unity.Apps;
 using Motive.Unity.Utilities;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,11 @@ namespace Motive.Unity.Playables
         protected override void Awake()
         {
             m_logger = new Logger(this);
+
+            AppManager.Instance.Initialized += (sender, args) =>
+            {
+                Initialize();
+            };
 
             base.Awake();
         }

@@ -33,6 +33,7 @@ namespace Motive.Unity.UI
 
         public bool RequireLocationServices = true;
         bool m_checkLocationServices;
+        bool m_locationServiceCheckComplete;
 
         //bool m_mediaReady;
         WebServicesDownloadState m_currState;
@@ -56,6 +57,7 @@ namespace Motive.Unity.UI
         public override void DidPush()
         {
             m_checkLocationServices = false;
+            m_locationServiceCheckComplete = false;
             m_downloadManager = WebServices.Instance.MediaDownloadManager;
 
             SetState(WebServices.Instance.DownloadState);
@@ -100,9 +102,9 @@ namespace Motive.Unity.UI
                 case WebServicesDownloadState.Downloading:
                     ObjectHelper.SetObjectActive(DownloadPane, true);
                     break;
-                case WebServicesDownloadState.Ready:
-                    ObjectHelper.SetObjectActive(ReadyPane, true);
-                    break;
+                //case WebServicesDownloadState.Ready:
+                //    ObjectHelper.SetObjectActive(ReadyPane, true);
+                //    break;
                 case WebServicesDownloadState.WaitWifi:
                     var mb = m_downloadManager.TotalBytes / 1000000;
                     StartDownloadDescription.text = string.Format("{0}MB to download. Click below to start download.", mb);
@@ -149,6 +151,8 @@ namespace Motive.Unity.UI
                 else if (ForegroundPositionService.Instance.HasLocationData)
                 {
                     m_checkLocationServices = false;
+                    m_locationServiceCheckComplete = true;
+
                     Back();
                 }
                 else
@@ -160,6 +164,7 @@ namespace Motive.Unity.UI
             else
             {
                 m_checkLocationServices = false;
+                m_locationServiceCheckComplete = true;
 
                 Back();
             }
@@ -181,6 +186,10 @@ namespace Motive.Unity.UI
                 m_checkLocationServices)
             {
                 CheckLocationServices();
+            }
+            else if (m_locationServiceCheckComplete)
+            {
+                ObjectHelper.SetObjectActive(ReadyPane, true);
             }
         }
 

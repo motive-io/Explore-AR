@@ -626,6 +626,8 @@ namespace Motive.UI.Framework
                 // This panel is already showing, don't go any further.
                 m_logger.Debug("PushPanel {0} stack={1} already on top", p.GetType().Name, stack.m_stackName);
 
+                p.OnClose = onClose;
+
                 p.DidPush(data);
 
                 return;
@@ -834,6 +836,7 @@ namespace Motive.UI.Framework
             {
                 stack.m_homePanel.OnClose = onClose;
                 SetPanelActive(stack.m_homePanel, true);
+                stack.m_homePanel.SetReady(true);
 
                 stack.m_homePanel.DidPush(data);
             }

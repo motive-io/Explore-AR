@@ -124,12 +124,12 @@ namespace Motive.UI.Framework
         {
             if (!PrePositioned)
             {
-                transform.localPosition = Vector2.zero;
-
                 var rect = transform as RectTransform;
 
                 if (rect)
                 {
+                    rect.anchorMin = Vector2.zero;
+                    rect.anchorMax = Vector2.one;
                     rect.anchoredPosition = Vector2.zero;
                 }
             }
@@ -150,12 +150,12 @@ namespace Motive.UI.Framework
 
             if (isReady && !this.PrePositioned)
             {
-                transform.localPosition = Vector2.zero;
-
                 var rect = transform as RectTransform;
 
                 if (rect)
                 {
+                    rect.anchorMin = Vector2.zero;
+                    rect.anchorMax = Vector2.one;
                     rect.anchoredPosition = Vector2.zero;
                 }
             }

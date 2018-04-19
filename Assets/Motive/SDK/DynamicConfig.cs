@@ -284,8 +284,8 @@ namespace Motive
         /// <returns></returns>
         public IEnumerable<string> GetSpaces(Action<bool> onComplete)
         {
-            var uriString = WebServices.Instance.MotiveUrl + "/api/account/ProjectSpaces";
-            var call = new ServiceCall(new Uri(uriString), HttpMethod.Post);
+            var uriString = WebServices.Instance.MotiveUrl + "/api/account/projectSpaces";
+            var call = new ServiceCall(new Uri(uriString));
 
             Action<AuthenticatorCallStatus> onCompleteWrapper = (status) =>
             {

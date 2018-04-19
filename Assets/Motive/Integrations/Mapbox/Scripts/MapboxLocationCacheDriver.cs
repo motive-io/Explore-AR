@@ -356,7 +356,7 @@ namespace Motive.Unity.Maps
                 }
             }
 
-            loc.LocationTypes = types.ToArray();
+            loc.LocationTypes = types.Distinct().ToArray();
             if (m_storyTagMap != null)
             {
                 loc.StoryTags = m_storyTagMap.GetTagsForTypes(loc.LocationTypes);

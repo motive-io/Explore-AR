@@ -9,6 +9,7 @@ using Motive.Core.Models;
 using Motive.Gaming.Models;
 using UnityEngine;
 using UnityEngine.UI;
+using Motive.Unity.Gaming;
 
 namespace Motive.Unity.UI
 {
@@ -39,24 +40,26 @@ namespace Motive.Unity.UI
 
             var mediaContent = content as MediaContent;
 
+            var data = new InventoryCollectible(collectible, 1);
+
             if (mediaContent != null && mediaContent.MediaItem != null)
             {
                 switch (mediaContent.MediaItem.MediaType)
                 {
                     case Motive.Core.Media.MediaType.Video:
-                        PanelManager.Instance.Push(VideoPanel, collectible, onClose);
+                        PanelManager.Instance.Push(VideoPanel, data, onClose);
                         return;
                     case Motive.Core.Media.MediaType.Audio:
-                        PanelManager.Instance.Push(AudioPanel, collectible, onClose);
+                        PanelManager.Instance.Push(AudioPanel, data, onClose);
                         return;
                     case Motive.Core.Media.MediaType.Image:
-                        PanelManager.Instance.Push(ImagePanel, collectible, onClose);
+                        PanelManager.Instance.Push(ImagePanel, data, onClose);
                         return;
                 }
             }
 
             // Otherwise
-            PanelManager.Instance.Push(ImagePanel, collectible, onClose);
+            PanelManager.Instance.Push(ImagePanel, data, onClose);
         }
 
         public void PushNextCollectibleOrClose()

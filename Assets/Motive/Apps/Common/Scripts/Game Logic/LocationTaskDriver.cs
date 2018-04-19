@@ -300,7 +300,7 @@ namespace Motive.Unity.Gaming
                 }
             }
 
-            if (LocationTaskAnnotationHandler.Instance)
+            if (LocationTaskAnnotationHandler.Instance && ShowMapAnnotation)
             {
                 LocationTaskAnnotationHandler.Instance.UpdateTaskAnnotations(this);
             }

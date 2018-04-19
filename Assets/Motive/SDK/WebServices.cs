@@ -367,7 +367,7 @@ namespace Motive
         public void AuthenticateQRToken(string token, Action<bool, QRTokenSpaceModel> OnResponse)
         {
             m_logger.Debug("deeplink Authenticating QR Token with server...");
-            var url = string.Format("{0}/api/ShareTokens/{1}/", MotiveUrl, token);
+            var url = string.Format("{0}/api/shareTokens/{1}/", MotiveUrl, token);
 
             var serviceCall = new ServiceCall(new Uri(url), HttpMethod.Get);
 

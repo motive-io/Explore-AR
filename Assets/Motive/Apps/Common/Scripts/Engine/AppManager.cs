@@ -123,10 +123,8 @@ namespace Motive.Unity.Apps
                 });
         }
 
-        public void Start()
+        public void Initialize()
         {
-            var loadingPanel = PanelManager.Instance.Push<LoadingPanel>();
-
             if (!IsInitialized)
             {
                 WebServices.Instance.DownloadError += (sender, args) =>
@@ -144,6 +142,11 @@ namespace Motive.Unity.Apps
                     Initialized(this, EventArgs.Empty);
                 }
             }
+        }
+
+        public void Start()
+        {
+            var loadingPanel = PanelManager.Instance.Push<LoadingPanel>();
 
             ReloadFromServer(loadingPanel);
 

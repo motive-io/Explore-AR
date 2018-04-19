@@ -402,8 +402,8 @@ namespace Motive.Unity.Gaming
                             CompleteObjective(o, false);
                         }
 
-                    // Update any assignments..
-                    Save();
+                        // Update any assignments..
+                        Save();
 
                         UpdateAssignments();
 

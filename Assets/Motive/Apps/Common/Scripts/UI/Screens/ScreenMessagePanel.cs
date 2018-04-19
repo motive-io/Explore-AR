@@ -12,6 +12,9 @@ using Motive.Unity.Utilities;
 
 namespace Motive.Unity.UI
 {
+    /// <summary>
+    /// Displays Screen Messages.
+    /// </summary>
     public class ScreenMessagePanel : Panel<ResourcePanelData<ScreenMessage>>
     {
         public override void Populate(ResourcePanelData<ScreenMessage> data)

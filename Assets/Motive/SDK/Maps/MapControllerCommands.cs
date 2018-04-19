@@ -13,5 +13,4 @@ namespace Motive.Unity.Maps
             MapController.Instance.CenterMap();
         }
     }
-
 }

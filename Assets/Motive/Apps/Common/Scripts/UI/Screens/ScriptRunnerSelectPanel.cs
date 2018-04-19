@@ -21,6 +21,9 @@ namespace Motive.Unity.UI
         public OptionsDialogPanel StartOrResetDialog;
         public OptionsDialogPanel StopCurrentDigalog;
 
+        public bool ShowInDevelopment;
+        public bool ShowDraft;
+
         ScriptDirectoryItem GetCurrentRunner()
         {
             var currEpisodes = ScriptRunnerManager.Instance.GetRunningItems();
@@ -100,12 +103,12 @@ namespace Motive.Unity.UI
             {
                 ScriptRunnerManager.Instance.Stop(dirItem, () =>
                     {
-                        ScriptRunnerManager.Instance.LaunchQuest(dirItem);
+                        ScriptRunnerManager.Instance.Launch(dirItem);
                     }, true);
             }
             else
             {
-                ScriptRunnerManager.Instance.LaunchQuest(dirItem);
+                ScriptRunnerManager.Instance.Launch(dirItem);
             }
 
             Back();
@@ -206,5 +209,4 @@ namespace Motive.Unity.UI
             }
         }
     }
-
 }

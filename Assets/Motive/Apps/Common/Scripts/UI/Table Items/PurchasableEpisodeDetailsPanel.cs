@@ -6,6 +6,8 @@ using System.Linq;
 using System.Text;
 using Motive.Core.Models;
 using Motive.UI.Framework;
+using Motive.Unity.Apps;
+using Motive.Unity.Utilities;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -103,7 +105,7 @@ class PurchasableEpisodeDetailsPanel : Panel<ScriptDirectoryItem>
             case EpisodeSelectState.Disabled:
 				ObjectHelper.SetObjectsActive (DisplayWhenDisabled, true);
 
-			    if (purchasable && EpisodePurchaseManager.Instance.IsInitialized())
+			    if (purchasable && EpisodePurchaseManager.Instance.IsInitialized)
                 {
                     var wasPurchased = false;
                     EpisodePurchaseManager.Instance.CheckProductReceipt(Data.ProductIdentifier, () =>
@@ -139,7 +141,7 @@ class PurchasableEpisodeDetailsPanel : Panel<ScriptDirectoryItem>
     {
         if (Data != null)
         {
-            EpisodeManager.Instance.LaunchEpisode(Data);
+            ScriptRunnerManager.Instance.Launch(Data);
 
             DetermineState();
             UpdateViewState();
@@ -150,7 +152,7 @@ class PurchasableEpisodeDetailsPanel : Panel<ScriptDirectoryItem>
     {
         if (Data != null)
         {
-            EpisodeManager.Instance.StopEpisode(Data);
+            ScriptRunnerManager.Instance.Stop(Data);
 
             DetermineState();
             UpdateViewState();
@@ -161,7 +163,7 @@ class PurchasableEpisodeDetailsPanel : Panel<ScriptDirectoryItem>
     {
         if (Data != null)
         {
-            EpisodeManager.Instance.ResetEpisode(Data);
+            ScriptRunnerManager.Instance.Reset(Data);
 
             DetermineState();
             UpdateViewState();
@@ -171,7 +173,7 @@ class PurchasableEpisodeDetailsPanel : Panel<ScriptDirectoryItem>
 
     public void DoPurchase()
     {
-		if (Data != null && EpisodePurchaseManager.Instance.IsInitialized())
+		if (Data != null && EpisodePurchaseManager.Instance.IsInitialized)
         {
             EpisodePurchaseManager.Instance.BuyProductID(Data.ProductIdentifier);
         }

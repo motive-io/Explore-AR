@@ -252,12 +252,12 @@ namespace Motive.Unity.AR
                         }
                     });
 
-                Debug.LogErrorFormat("What about now? {0} c={1} {2}",
+                Debug.LogErrorFormat("Status info after call: {0} c={1} {2}",
                     GoogleARCore.Session.Status, result.IsComplete, result.Result);
             }
             catch (Exception)
             {
-                Debug.LogErrorFormat("Couldn't find DLL but I don't give a shit");
+                Debug.LogErrorFormat("Couldn't find DLL");
             }
         }
 #endif
@@ -282,11 +282,14 @@ namespace Motive.Unity.AR
 #if UNITY_ANDROID && MOTIVE_ARCORE
                     if (ARCoreAdapter)
                     {
-                        checkSetDefault = false;
+                        //checkSetDefault = false;
 
-                        Debug.LogErrorFormat("About to launch coroutine");
+                        //Debug.LogErrorFormat("About to launch coroutine");
 
-                        CheckARCoreAvailable();
+                        //CheckARCoreAvailable();
+                        Debug.LogErrorFormat("here: " + ARCoreAdapter.GetType().ToString());
+
+                        //ARAdapter = Instantiate(ARCoreAdapter);
                     }
                     else
                     {
@@ -739,7 +742,7 @@ namespace Motive.Unity.AR
 
             UnityAssetLoader.LoadAsset<GameObject>(assetInstance.Asset as UnityAsset, (assetObj) =>
             {
-                // augmentedObj could have been desstroyed here
+                // augmentedObj could have been destroyed here
                 if (assetObj != null && augmentedObject)
                 {
                     GameObject instObj = null;

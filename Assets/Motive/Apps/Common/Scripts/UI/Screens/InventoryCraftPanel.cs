@@ -31,6 +31,16 @@ namespace Motive.Unity.UI
             base.Awake();
         }
 
+        public override IEnumerable<InventoryCollectible> FilterItems(IEnumerable<InventoryCollectible> input)
+        {
+            if (NeedActivatedRecipeToCraft)
+            {
+                return input.Where(i => ActivatedRecipeManager.Instance.HasRecipe(i.Collectible.Id));
+            }
+
+            return base.FilterItems(input);
+        }
+
         protected override void SelectItem(InventoryTableItem item)
         {
             IEnumerable<Recipe> recipes;

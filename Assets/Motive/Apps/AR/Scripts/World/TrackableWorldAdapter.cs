@@ -41,10 +41,13 @@ namespace Motive.Unity.AR
         protected Coordinates m_gpsAnchorCoords;
         protected bool m_needsSetAnchor;
 
-        public bool UsingTracking { get; protected set; } 
-        
+        public bool UsingTracking { get; protected set; }
+
         public override void Initialize()
         {
+            // Set to true by default, let subclasses enable/disable.
+            UsingTracking = true;
+
             m_needsSetAnchor = true;
 
             m_objStates = new Dictionary<LocationARWorldObject, TrackedWorldObjectState>();
@@ -68,8 +71,6 @@ namespace Motive.Unity.AR
         {
             m_needsSetAnchor = true;
 
-            Recalibrate();
-
             base.Activate();
         }
 
@@ -78,49 +79,52 @@ namespace Motive.Unity.AR
             base.Deactivate();
         }
 
-        protected float GetCompassRotation(Transform cameraTransform, Transform swivelTransform, double heading)
+        protected float GetCompassRotation(Transform cameraTransform, Transform worldTransform, double heading)
         {
             m_logger.Debug("Get rotation for cam=({0}) swivel=({1})",
-                cameraTransform.rotation.eulerAngles, swivelTransform.rotation.eulerAngles);
+                           cameraTransform.rotation.eulerAngles, worldTransform.rotation.eulerAngles);
 
             //// TODO: put this in a common space once I figure out wth it's doing
             /// 
             var globalCamFwd = cameraTransform.TransformPoint(Vector3.forward);
             var globalCamUp = cameraTransform.TransformPoint(Vector3.up);
 
-            var swivelCamFwd = swivelTransform.InverseTransformPoint(globalCamFwd);
-            var swivelCamUp = swivelTransform.InverseTransformPoint(globalCamUp);
+            var delta = cameraTransform.position - worldTransform.position;
+
+            var worldCamFwd = worldTransform.InverseTransformPoint(globalCamFwd - delta);
+            var worldCamUp = worldTransform.InverseTransformPoint(globalCamUp - delta);
 
             // Normalized forward projection in swivel space
-            var camFwdProject = new Vector3(swivelCamFwd.x, swivelCamFwd.z).normalized;
-            var camUpProject = new Vector3(swivelCamUp.x, swivelCamUp.z);
+            var camFwdProject = new Vector3(worldCamFwd.x, worldCamFwd.z).normalized;
+            var camUpProject = new Vector3(worldCamUp.x, worldCamUp.z);
 
             var cross = Vector3.Cross(camFwdProject, camUpProject);
 
-            var camHdg = Mathf.Atan2(swivelCamFwd.x, swivelCamFwd.z) * Mathf.Rad2Deg;
+            var camHdg = Mathf.Atan2(worldCamFwd.x, worldCamFwd.z) * Mathf.Rad2Deg;
 
             var camTilt = Mathf.Asin(cross.z) * Mathf.Rad2Deg;
 
             // Adjust heading based on tilt
             var hdgDiff = MathHelper.GetDegreesInRange(camHdg - heading);
 
-            m_logger.Debug("hdgDiff={0} tilt={1}", hdgDiff, camTilt);
+            m_logger.Debug("hdgDiff={0} cross={1} tilt={2}", hdgDiff, cross, camTilt);
 
-            var delta = hdgDiff - camTilt;
+            var hdgDela = hdgDiff - camTilt;
 
-            return (float)delta;
+            return (float)hdgDela;
             ///////
         }
 
-        protected void CalibrateCompass(Transform worldAnchor)
+        protected void CalibrateCompass(Transform worldAnchor, Vector3 pivot)
         {
             var heading = ForegroundPositionService.Instance.Compass.TrueHeading;
 
-            var rotation = GetCompassRotation(WorldCamera.transform, worldAnchor, heading);
-            
+            var rotation = GetCompassRotation(WorldCamera.transform, WorldCamera.transform.parent, heading);
+
             m_logger.Debug("BEFORE: heading={0} rotation={1} pivot={2}", heading, rotation, worldAnchor.rotation.eulerAngles);
 
-            worldAnchor.Rotate(new Vector3(0, rotation, 0));
+            worldAnchor.RotateAround(pivot, Vector3.up, rotation - worldAnchor.rotation.eulerAngles.y);
+            //worldAnchor.Rotate(new Vector3(0, rotation, 0));
             //WorldPivot.transform.RotateAround(Vector3.up, rotation);
             //WorldPivot.transform.localRotation = Quaternion.Euler(0, 
             //		rotation
@@ -245,7 +249,7 @@ namespace Motive.Unity.AR
             }
         }
 
-        public override void AddWorldObject(LocationARWorldObject worldObject)
+        public override void AddWorldObject(LocationARWorldObject worldObject, bool attach)
         {
             var state = new TrackedWorldObjectState();
 
@@ -262,7 +266,7 @@ namespace Motive.Unity.AR
             // Leave the object inactive until we parent it to the correct anchor.
             state.WorldObjectParent.SetActive(false);
 
-            base.AddWorldObject(worldObject);
+            base.AddWorldObject(worldObject, false);
         }
 
         public override void RemoveWorldObject(LocationARWorldObject worldObject)
@@ -274,6 +278,19 @@ namespace Motive.Unity.AR
 
         protected virtual void SetPosition(LocationARWorldAdapterBase.SceneWorldObjectState state, bool isCameraTracking, Vector3 worldDelta)
         {
+            if (!state.IsSpawned)
+            {
+                SpawnObject(state.WorldObject, GetCameraForObject(state.WorldObject), TrackingAnchor.transform);
+
+                state.IsSpawned = true;
+                state.IsTracking = isCameraTracking;
+            }
+
+            if (state.WorldObject.Options != null)
+            {
+                ApplyOptions(state.WorldObject.GameObject.transform, GetCameraForObject(state.WorldObject), state.WorldObject.Options);
+            }
+#if USE_GPS_WHEN_NOT_TRACKING
             if (isCameraTracking)
             {
                 if (!state.IsTracking)
@@ -303,6 +320,8 @@ namespace Motive.Unity.AR
             }
             else
             {
+                state.IsTracking = false;
+                /*
                 if (state.IsTracking)
                 {
                     // Transpose onto other world
@@ -320,18 +339,37 @@ namespace Motive.Unity.AR
                 }
                 else
                 {
+
+                    if (!state.IsSpawned)
+                    {
+                        SpawnObject(state.WorldObject, GetCameraForObject(state.WorldObject), DefaultAnchor.transform);
+
+                        state.IsSpawned = true;
+                    }
+
                     base.SetPosition(state, worldDelta);
                 }
             }
+#endif
         }
 
         protected int m_resetCount;
+
+        protected void MoveToCamera(Transform transform, bool resetHeight)
+        {
+            var y = resetHeight ? WorldCamera.transform.position.y : TrackingAnchor.transform.position.y;
+
+            // X, Z come from World Camera, Y comes from World Anchor
+            transform.position =
+                new Vector3(WorldCamera.transform.position.x, y, WorldCamera.transform.position.z);
+        }
 
         protected void SetAnchor()
         {
             m_resetCount++;
 
-            CalibrateCompass(WorldAnchor.transform);
+            //MoveToCamera(DefaultAnchor.transform, true);
+            CalibrateCompass(WorldAnchor.transform, Get2DPosition(WorldCamera.transform));
 
             m_gpsAnchorCoords = ForegroundPositionService.Instance.Position;
 
@@ -383,6 +421,11 @@ namespace Motive.Unity.AR
         {
             // Rely on implementers to call UpdateObjects(isCameraTracking)
             //base.Update();
+        }
+
+        void LateUpdate()
+        {
+            
         }
     }
 }

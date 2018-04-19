@@ -72,7 +72,7 @@ namespace Motive.Unity.AR
         protected override void DisableTracking()
         {
             CameraGyro.StartGyro();
-            CalibrateCompass(WorldAnchor.transform);
+            CalibrateCompass(WorldAnchor.transform, Get2DPosition(GetCamera().transform));
 
             MoveToCamera(WorldAnchor.transform, true);
         }

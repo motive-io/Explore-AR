@@ -89,7 +89,7 @@ namespace Motive.Unity.Globalization
                 }
                 else
                 {
-                    Debug.LogErrorFormat("Locale Language '{0}' not found!", currentLanguage);
+                    Debug.LogWarningFormat("Locale Language '{0}' not found!", currentLanguage);
                 }
             }
         }

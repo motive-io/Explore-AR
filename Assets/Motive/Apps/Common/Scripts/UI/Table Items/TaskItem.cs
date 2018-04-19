@@ -418,6 +418,7 @@ namespace Motive.Unity.UI
         {
             Driver = driver;
             Populate();
+            PopulateComponents(driver);
         }
 
         public virtual void Populate()
@@ -521,7 +522,5 @@ namespace Motive.Unity.UI
                 textObj.text = value;
             }
         }
-
     }
-
 }

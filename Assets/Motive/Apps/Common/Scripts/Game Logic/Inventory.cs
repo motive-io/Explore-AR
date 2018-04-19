@@ -107,10 +107,10 @@ namespace Motive.Unity.Gaming
         /// <param name="action"></param>
         /// <param name="allCatalogItems"></param>
         /// <returns></returns>
-        public IEnumerable<InventoryCollectible> GetItemsForAction(string action)
+        public IEnumerable<InventoryCollectible> GetItemsForAction(string action, bool includeAllItems = false)
         {
             var collectibles = CollectibleDirectory.Instance.GetCollectiblesEmitAction(action);
-            return GetItems(collectibles);
+            return GetItems(collectibles, includeAllItems);
         }
 
 
@@ -122,8 +122,15 @@ namespace Motive.Unity.Gaming
         /// <returns></returns>
         public IEnumerable<InventoryCollectible> GetItemsWithAttributes(IEnumerable<string> attrs, bool includeAllItems = false)
         {
-            var collectibles = CollectibleDirectory.Instance.GetCollectiblesWithAttribute(attrs);
-            return GetItems(collectibles, includeAllItems);
+            if (includeAllItems)
+            {
+                var collectibles = CollectibleDirectory.Instance.GetCollectiblesWithAttribute(attrs);
+                return GetItems(collectibles, includeAllItems);
+            }
+            else
+            {
+                return AllItems.Where(i => i.Collectible.HasAttributesOr(attrs));
+            }
         }
 
         /// <summary>
@@ -144,11 +151,11 @@ namespace Motive.Unity.Gaming
         /// <param name="action"></param>
         /// <param name="allCatalogItems">Player's items or all possible items?.</param>
         /// <returns></returns>
-        public IEnumerable<InventoryCollectible> GetItemsForActionOnEntity(IActiveEntity actee, string action)
+        public IEnumerable<InventoryCollectible> GetItemsForActionOnEntity(IActiveEntity actee, string action, bool includeAllCatalogItems = false)
         {
             var collectibles = CollectibleDirectory.Instance.GetItemsForActionOnEntity(actee, action);
 
-            return GetItems(collectibles);
+            return GetItems(collectibles, includeAllCatalogItems);
         }
 
         /// <summary>
@@ -168,8 +175,10 @@ namespace Motive.Unity.Gaming
                 new InventoryCollectible(
                 i,
                 GetCount(i.Id),
-                GetCollectTime(i.Id))).ToArray();
-
+                GetCollectTime(i.Id)))
+                                    .Where(i => includeAllCatalogItems || i.Count > 0)
+                                    .ToArray();
+            
             return items;
         }
 
@@ -279,13 +288,19 @@ namespace Motive.Unity.Gaming
 
                 item.Count -= toTake;
 
+                var collectible = CollectibleDirectory.Instance.GetItem(collectibleId);
 
+                // Archive items can't be removed entirely
+                if (collectible != null && collectible.IsArchive)
+                {
+                    item.Count = Math.Max(item.Count, 1);
+                }
+                
                 // If the count is zero this is no longer in our inventory.
                 if (item.Count == 0)
                 {
                     m_inventoryItems.Remove(collectibleId);
                 }
-
             }
 
             if (Updated != null)
@@ -363,6 +378,13 @@ namespace Motive.Unity.Gaming
                 item.Count = Math.Min(item.Count, item.Limit.Value);
             }
 
+            var collectible = CollectibleDirectory.Instance.GetItem(collectibleId);
+
+            if (collectible != null && collectible.IsSingleton && item.Count > 1)
+            {
+                item.Count = 1;
+            }
+            
             if (Updated != null)
             {
                 Updated(this, EventArgs.Empty);

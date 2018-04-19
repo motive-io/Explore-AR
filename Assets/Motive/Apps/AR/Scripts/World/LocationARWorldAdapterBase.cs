@@ -79,31 +79,11 @@ namespace Motive.Unity.AR
 
         public virtual void SetPosition(LocationARWorldObject obj)
         {
-            double actualDistance;
-
-            var dist = DistanceTo(obj, out actualDistance);
-
-            if (obj.Options.VisibleRange != null)
-            {
-                if (!obj.Options.VisibleRange.IsInRange(actualDistance))
-                {
-                    obj.GameObject.SetActive(false);
-                    return;
-                }
-            }
-
-            obj.GameObject.SetActive(true);
-
-            dist *= DistanceScale;
-
             var pos = GetPosition(obj, ForegroundPositionService.Instance.Position);
 
             obj.GameObject.transform.localPosition = pos;
 
-            if (obj.Options != null && obj.Options.AlwaysFaceViewer)
-            {
-                obj.GameObject.transform.LookAt(this.gameObject.transform);
-            }
+            ApplyOptions(obj.GameObject.transform, GetCamera(), obj.Options);
         }
 
         protected virtual Vector3 GetPosition(LocationARWorldObject obj, Coordinates relativeCoords = null)
@@ -118,7 +98,6 @@ namespace Motive.Unity.AR
 
             var angle = MathHelper.GetDegreesInRange(90 - bearing);
 
-            // TODO: this isn't quite right
             Vector3 pos =
                 new Vector3(
                     (float)(MathHelper.CosDeg(angle) * dist),
@@ -219,7 +198,7 @@ namespace Motive.Unity.AR
             }
         }
 
-        protected float GetWorldHeading(Transform worldAnchor, Transform objTransform)
+        protected float GetWorldHeading(Transform objTransform, Transform worldAnchor = null)
         {
             //      (x,z)
             // |----*
@@ -227,18 +206,21 @@ namespace Motive.Unity.AR
             // |  /
             // |a/ 
             // +---------
-            // tan(a) = x / y
+            // tan(a) = x / z
 
-            var globalFwd = objTransform.TransformPoint(Vector3.forward);
-            var globalUp = objTransform.TransformPoint(Vector3.up);
+            var camFwd = objTransform.TransformPoint(Vector3.forward);
+            //var globalUp = objTransform.TransformPoint(Vector3.up);
 
-            var camFwd = worldAnchor.InverseTransformPoint(globalFwd);
-            var camUp = worldAnchor.InverseTransformPoint(globalUp);
+            if (worldAnchor)
+            {
+                var delta = Get2DPosition(objTransform) - worldAnchor.position;
 
-            var camFwdProject = new Vector3(camFwd.x, camFwd.z).normalized;
-            var camUpProject = new Vector3(camUp.x, camUp.z);
-
-            var cross = Vector3.Cross(camFwdProject, camUpProject);
+                camFwd = worldAnchor.InverseTransformPoint(camFwd - delta);
+            }
+            else
+            {
+                camFwd = camFwd - objTransform.position;
+            }
 
             var camHdg = Mathf.Atan2(camFwd.x, camFwd.z) * Mathf.Rad2Deg;
 
@@ -262,19 +244,18 @@ namespace Motive.Unity.AR
 
         protected virtual void SetSpawnPosition(SceneARWorldObject worldObject, Camera worldCamera, Transform worldAnchor)
         {
-            float correctAngle = 0f;
             var gameObj = worldObject.GameObject;
 
-            Vector3 spawnPos = Vector3.zero;
+            gameObj.transform.localScale = Vector3.one;
+            gameObj.transform.localRotation = Quaternion.identity;
 
             if (worldObject.Position is RelativeWorldPosition)
             {
                 var relPos = worldObject.Position as RelativeWorldPosition;
 
-                var hdg = GetWorldHeading(worldAnchor, worldCamera.transform);
+                var hdg = GetWorldHeading(worldCamera.transform);
 
                 var angle = hdg + relPos.Angle;
-                correctAngle = (float)angle;
                 var rangle = angle * Mathf.Deg2Rad;
 
                 m_logger.Debug("Using relative position with angle={0} and cam hdg={1}",
@@ -284,7 +265,11 @@ namespace Motive.Unity.AR
                 var x = (float)(relPos.Distance * Math.Sin(rangle));
                 var z = (float)(relPos.Distance * Math.Cos(rangle));
 
-                spawnPos = new Vector3(x, y, z);
+                var spawnPos = worldCamera.transform.position + new Vector3(x, y, z);//Get2DPosition(worldAnchor);
+
+                gameObj.transform.rotation = Quaternion.AngleAxis((float)angle, Vector3.up);
+                //gameObj.transform.Rotate(Vector3.up, (float)angle);
+                gameObj.transform.position = spawnPos;
             }
             else if (worldObject.Position is FixedWorldPosition)
             {
@@ -294,15 +279,10 @@ namespace Motive.Unity.AR
                 var x = (float)fixPos.Position.X;
                 var z = (float)fixPos.Position.Z;
 
-                spawnPos = new Vector3(x, y, z);
+                var spawnPos = new Vector3(x, y, z);
+
+                gameObj.transform.localPosition = spawnPos;
             }
-
-            m_logger.Debug("Spawning {0} at {1}", worldObject.GameObject.name, spawnPos);
-
-            gameObj.transform.localScale = Vector3.one;
-            gameObj.transform.localRotation = Quaternion.identity;
-            gameObj.transform.Rotate(Vector3.up, correctAngle);
-            gameObj.transform.localPosition = spawnPos;
         }
 
         protected void SpawnObject(SceneARWorldObject worldObject, Camera worldCamera, Transform worldAnchor)

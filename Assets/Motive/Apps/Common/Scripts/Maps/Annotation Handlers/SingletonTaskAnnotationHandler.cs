@@ -121,6 +121,18 @@ namespace Motive.Unity.Maps
             return m_taskAnnotations[driver.ActivationContext.InstanceId];
         }
 
+        public virtual MapAnnotation<D> GetAnnotationForTask(D driver, Location location)
+        {
+            var anns = GetAnnotationsForTask(driver);
+
+            if (anns != null)
+            {
+                return anns.Where(a => a.Location == location).FirstOrDefault();
+            }
+
+            return null;
+        }
+
         public virtual void SelectTaskAnnotation(IPlayerTaskDriver taskDriver)
         {
             var annotations = m_taskAnnotations[taskDriver.ActivationContext.InstanceId];

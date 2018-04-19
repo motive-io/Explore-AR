@@ -13,7 +13,7 @@ namespace Motive.Core.Storage
 
         public override IStorageAgent GetAgent(params string[] path)
         {
-            return new EncryptedFileStorageAgent(EnsureFilePath(GetFileName(path)));
+            return new EncryptedFileStorageAgent(EnsureFilePath(m_rootFolder, path));
         }
 
         public override IStorageManager GetManager(params string[] path)

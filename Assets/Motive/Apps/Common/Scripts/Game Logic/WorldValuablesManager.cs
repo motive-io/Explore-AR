@@ -41,8 +41,6 @@ namespace Motive.Unity.Gaming
             {
                 driver.Initialize();
             }
-
-            StartCollecting();
         }
 
         public void RegisterCollectionDriver(string type, ILocationCollectionDriver driver, bool isDefault = false)
@@ -56,14 +54,14 @@ namespace Motive.Unity.Gaming
             m_drivers[type] = driver;
         }
 
-        void StartCollecting()
+        public void StartCollecting()
         {
             m_logger.Debug("StartCollecting");
 
             m_spawnItemDriver.Start();
         }
 
-        void StopCollecting()
+        public void StopCollecting()
         {
             m_logger.Debug("StopCollecting");
 
@@ -72,9 +70,14 @@ namespace Motive.Unity.Gaming
 
         void m_spawnItemDriver_ItemsRemoved(object sender, LocationSpawnItemDriverEventArgs<LocationValuablesCollection> e)
         {
-            foreach (var driver in GetDrivers(e.Results.SpawnItem))
+            var drivers = GetDrivers(e.Results.SpawnItem);
+
+            if (drivers != null)
             {
-                driver.Key.RemoveItem(e);
+                foreach (var driver in drivers)
+                {
+                    driver.Key.RemoveItem(e);
+                }
             }
         }
 
@@ -92,21 +95,31 @@ namespace Motive.Unity.Gaming
                 }
             }
 
-            return new KeyValuePair<ILocationCollectionDriver, ILocationCollectionMechanic>[]
+            if (m_defaultCollectionDriver != null)
             {
-            new KeyValuePair<ILocationCollectionDriver, ILocationCollectionMechanic>(m_defaultCollectionDriver, null)
-            };
+                return new KeyValuePair<ILocationCollectionDriver, ILocationCollectionMechanic>[]
+                {
+                new KeyValuePair<ILocationCollectionDriver, ILocationCollectionMechanic>(m_defaultCollectionDriver, null)
+                };
+            }
+
+            return null;
         }
 
         void m_spawnItemDriver_ItemsSpawned(object sender, LocationSpawnItemDriverEventArgs<LocationValuablesCollection> e)
         {
-            ThreadHelper.Instance.CallOnMainThread(() =>
+            var drivers = GetDrivers(e.Results.SpawnItem);
+
+            if (drivers != null)
             {
-                foreach (var kv in GetDrivers(e.Results.SpawnItem))
+                ThreadHelper.Instance.CallOnMainThread(() =>
                 {
-                    kv.Key.SpawnItem(e, kv.Value);
-                }
-            });
+                    foreach (var kv in drivers)
+                    {
+                        kv.Key.SpawnItem(e, kv.Value);
+                    }
+                });
+            }
         }
 
         public void Collect(string instanceId, Location location, LocationValuablesCollection lvc)

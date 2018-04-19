@@ -114,6 +114,10 @@ namespace Motive.Unity.UI
             ThreadHelper.Instance.CallExclusive(SyncPanels);
         }
 
+        /// <summary>
+        /// Clears previously set guide data.
+        /// </summary>
+        /// <param name="guideData"></param>
         public void ClearGuide(ARGuideData guideData)
         {
             if (GuidePanel && GuidePanel.Data == guideData)
@@ -129,6 +133,11 @@ namespace Motive.Unity.UI
             }
         }
 
+        /// <summary>
+        /// Sets an AR "guide" with title and arrows that direct the user to
+        /// the AR item.
+        /// </summary>
+        /// <param name="guideData"></param>
         public void SetGuide(ARGuideData guideData)
         {
             m_guideData = guideData;
@@ -136,6 +145,10 @@ namespace Motive.Unity.UI
             ThreadHelper.Instance.CallExclusive(SyncPanels);
         }
 
+        /// <summary>
+        /// Sets the task complete panel for the given driver.
+        /// </summary>
+        /// <param name="taskDriver"></param>
         public void SetTaskComplete(IPlayerTaskDriver taskDriver)
         {
             m_taskCompleteDriver = taskDriver;

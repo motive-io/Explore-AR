@@ -6,6 +6,10 @@ using System;
 
 namespace Motive.Unity.Gaming
 {
+    public interface IRewardManagerDelegate
+    {
+        void ProcessReward(ValuablesCollection valuables, Action onReward);
+    }
 
     public class RewardEventArgs : EventArgs
     {
@@ -22,7 +26,7 @@ namespace Motive.Unity.Gaming
     /// </summary>
     public class RewardManager : Singleton<RewardManager>
     {
-        public Panel RewardPanel { get; set; }
+        public IRewardManagerDelegate Delegate { get; set; }
         public event EventHandler<RewardEventArgs> RewardAdded;
 
         public void ActivatePlayerReward(PlayerReward reward)
@@ -45,21 +49,7 @@ namespace Motive.Unity.Gaming
                 RewardAdded(this, new RewardEventArgs(valuables));
             }
 
-            // If there's a reward panel, add the valuables to the inventory after
-            // the player confirms.
-            if (RewardPanel)
-            {
-                PanelManager.Instance.Push(RewardPanel, valuables, () =>
-                {
-                    TransactionManager.Instance.AddValuables(valuables);
-
-                    if (onReward != null)
-                    {
-                        onReward();
-                    }
-                });
-            }
-            else
+            Action doReward = () =>
             {
                 if (onReward != null)
                 {
@@ -67,6 +57,15 @@ namespace Motive.Unity.Gaming
                 }
 
                 TransactionManager.Instance.AddValuables(valuables);
+            };
+
+            if (Delegate != null)
+            {
+                Delegate.ProcessReward(valuables, doReward);
+            }
+            else
+            {
+                doReward();
             }
         }
     }

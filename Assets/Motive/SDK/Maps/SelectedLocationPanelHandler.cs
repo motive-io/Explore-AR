@@ -30,10 +30,29 @@ namespace Motive.Unity.Maps
         {
             if (data != null)
             {
+                Action _close = () =>
+                {
+                    // Only clear the annotation if this was the one assigned to this panel
+                    if (MapController.Instance.SelectedAnnotation == toShow.Data)
+                    {
+                        MapController.Instance.SelectAnnotation(null);
+                    }
+
+                    if (CurrentPanel == toShow)
+                    {
+                        CurrentPanel = null;
+                    }
+
+                    if (onClose != null)
+                    {
+                        onClose();
+                    }
+                };
+
                 if (toShow && toShow == CurrentPanel)
                 {
                     //toShow.Populate(mapAnnotation);
-                    PanelManager.Instance.Push(toShow, data);
+                    PanelManager.Instance.Push(toShow, data, _close);
                 }
                 else
                 {
@@ -46,19 +65,7 @@ namespace Motive.Unity.Maps
 
                     if (toShow != null)
                     {
-                        PanelManager.Instance.Push(toShow, data, () =>
-                        {
-                            // Only clear the annotation if this was the one assigned to this panel
-                            if (MapController.Instance.SelectedAnnotation == toShow.Data)
-                            {
-                                MapController.Instance.SelectAnnotation(null);
-                            }
-
-                            if (onClose != null)
-                            {
-                                onClose();
-                            }
-                        });
+                        PanelManager.Instance.Push(toShow, data, _close);
                     }
                 }
             }

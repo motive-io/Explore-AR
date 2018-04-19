@@ -1,7 +1,4 @@
 <?xml version="1.0"?>
-<!--
-Sample license text.
--->
 <doc>
     <assembly>
         <name>JsonFx.Json</name>
@@ -59,6 +56,11 @@ Sample license text.
             A common interface for data deserializers
             </summary>
         </member>
+        <member name="P:JsonFx.Serialization.Providers.IDataReader.ContentType">
+            <summary>
+            Gets the content type of the serialized data
+            </summary>
+        </member>
         <member name="M:JsonFx.Serialization.Providers.IDataReader.Deserialize(System.IO.TextReader,System.Type)">
             <summary>
             Serializes the data to the given output
@@ -66,19 +68,79 @@ Sample license text.
             <param name="input"></param>
             <param name="data"></param>
         </member>
-        <member name="P:JsonFx.Serialization.Providers.IDataReader.ContentType">
+        <member name="T:JsonFx.Serialization.Providers.IDataWriter">
             <summary>
-            Gets the content type of the serialized data
+            A common interface for data serializers
             </summary>
+        </member>
+        <member name="P:JsonFx.Serialization.Providers.IDataWriter.ContentEncoding">
+            <summary>
+            Gets the content encoding for the serialized data
+            </summary>
+        </member>
+        <member name="P:JsonFx.Serialization.Providers.IDataWriter.ContentType">
+            <summary>
+            Gets the content type for the serialized data
+            </summary>
+        </member>
+        <member name="P:JsonFx.Serialization.Providers.IDataWriter.FileExtension">
+            <summary>
+            Gets the file extension for the serialized data
+            </summary>
+        </member>
+        <member name="M:JsonFx.Serialization.Providers.IDataWriter.Serialize(System.IO.TextWriter,System.Object)">
+            <summary>
+            Serializes the data to the given output
+            </summary>
+            <param name="output"></param>
+            <param name="data"></param>
+        </member>
+        <member name="T:JsonFx.Serialization.TypeCoercionUtility">
+            <summary>
+            Utility for forcing conversion between types
+            </summary>
+        </member>
+        <member name="P:JsonFx.Serialization.TypeCoercionUtility.AllowNullValueTypes">
+            <summary>
+            Gets and sets if ValueTypes can accept values of null
+            </summary>
+            <remarks>
+            Only affects deserialization: if a ValueType is assigned the
+            value of null, it will receive the value default(TheType).
+            Setting this to false, throws an exception if null is
+            specified for a ValueType member.
+            </remarks>
+        </member>
+        <member name="M:JsonFx.Serialization.TypeCoercionUtility.ProcessTypeHint(System.Collections.IDictionary,System.String,System.Type@,System.Collections.Generic.Dictionary{System.String,System.Reflection.MemberInfo}@,JsonFx.Json.JsonReaderSettings)">
+            <summary>
+            If a Type Hint is present then this method attempts to
+            use it and move any previously parsed data over.
+            </summary>
+            <param name="result">the previous result</param>
+            <param name="typeInfo">the type info string to use</param>
+            <param name="objectType">reference to the objectType</param>
+            <param name="memberMap">reference to the memberMap</param>
+            <returns></returns>
+        </member>
+        <member name="M:JsonFx.Serialization.TypeCoercionUtility.GetMemberMap(System.Type,JsonFx.Json.JsonReaderSettings)">
+            Returns a member map if suitable for the object type.
+            Dictionary types will make this method return null
+        </member>
+        <member name="M:JsonFx.Serialization.TypeCoercionUtility.CreateMemberMap(System.Type,JsonFx.Json.JsonReaderSettings)">
+            Creates a member map for the type 
+        </member>
+        <member name="M:JsonFx.Serialization.TypeCoercionUtility.SetMemberValue(System.Object,System.Type,System.Reflection.MemberInfo,System.Object,JsonFx.Json.JsonReaderSettings)">
+            <summary>
+            Helper method to set value of either property or field
+            </summary>
+            <param name="result"></param>
+            <param name="memberType"></param>
+            <param name="memberInfo"></param>
+            <param name="value"></param>
         </member>
         <member name="T:JsonFx.EcmaScript.EcmaScriptIdentifier">
             <summary>
             Represents an ECMAScript identifier for serialization.
-            </summary>
-        </member>
-        <member name="T:JsonFx.Json.IJsonSerializable">
-            <summary>
-            Allows classes to control their own JSON serialization
             </summary>
         </member>
         <member name="M:JsonFx.EcmaScript.EcmaScriptIdentifier.#ctor">
@@ -89,6 +151,11 @@ Sample license text.
         <member name="M:JsonFx.EcmaScript.EcmaScriptIdentifier.#ctor(System.String)">
             <summary>
             Ctor
+            </summary>
+        </member>
+        <member name="P:JsonFx.EcmaScript.EcmaScriptIdentifier.Identifier">
+            <summary>
+            Gets the ECMAScript identifier represented by this instance.
             </summary>
         </member>
         <member name="M:JsonFx.EcmaScript.EcmaScriptIdentifier.EnsureValidIdentifier(System.String,System.Boolean)">
@@ -165,169 +232,9 @@ Sample license text.
             </summary>
             <returns></returns>
         </member>
-        <member name="P:JsonFx.EcmaScript.EcmaScriptIdentifier.Identifier">
-            <summary>
-            Gets the ECMAScript identifier represented by this instance.
-            </summary>
-        </member>
         <member name="T:JsonFx.EcmaScript.EcmaScriptWriter">
             <summary>
             Writes data as full ECMAScript objects, rather than the limited set of JSON objects.
-            </summary>
-        </member>
-        <member name="T:JsonFx.Json.JsonWriter">
-            <summary>
-            Writer for producing JSON data
-            </summary>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.IO.TextWriter)">
-            <summary>
-            Ctor
-            </summary>
-            <param name="output">TextWriter for writing</param>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.IO.TextWriter,JsonFx.Json.JsonWriterSettings)">
-            <summary>
-            Ctor
-            </summary>
-            <param name="output">TextWriter for writing</param>
-            <param name="settings">JsonWriterSettings</param>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.IO.Stream)">
-            <summary>
-            Ctor
-            </summary>
-            <param name="output">Stream for writing</param>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.IO.Stream,JsonFx.Json.JsonWriterSettings)">
-            <summary>
-            Ctor
-            </summary>
-            <param name="output">Stream for writing</param>
-            <param name="settings">JsonWriterSettings</param>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.String)">
-            <summary>
-            Ctor
-            </summary>
-            <param name="output">file name for writing</param>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.String,JsonFx.Json.JsonWriterSettings)">
-            <summary>
-            Ctor
-            </summary>
-            <param name="output">file name for writing</param>
-            <param name="settings">JsonWriterSettings</param>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.Text.StringBuilder)">
-            <summary>
-            Ctor
-            </summary>
-            <param name="output">StringBuilder for appending</param>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.Text.StringBuilder,JsonFx.Json.JsonWriterSettings)">
-            <summary>
-            Ctor
-            </summary>
-            <param name="output">StringBuilder for appending</param>
-            <param name="settings">JsonWriterSettings</param>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.Serialize(System.Object)">
-            <summary>
-            A helper method for serializing an object to JSON
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.IsIgnored(System.Type,System.Reflection.MemberInfo,System.Object)">
-            <summary>
-            Determines if the property or field should not be serialized.
-            </summary>
-            <param name="objType"></param>
-            <param name="member"></param>
-            <param name="value"></param>
-            <returns></returns>
-            <remarks>
-            Checks these in order, if any returns true then this is true:
-            - is flagged with the JsonIgnoreAttribute property
-            - has a JsonSpecifiedProperty which returns false
-            </remarks>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.IsDefaultValue(System.Reflection.MemberInfo,System.Object)">
-            <summary>
-            Determines if the member value matches the DefaultValue attribute
-            </summary>
-            <returns>if has a value equivalent to the DefaultValueAttribute</returns>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.GetFlagList(System.Type,System.Object)">
-            <summary>
-            Splits a bitwise-OR'd set of enums into a list.
-            </summary>
-            <param name="enumType">the enum type</param>
-            <param name="value">the combined value</param>
-            <returns>list of flag enums</returns>
-            <remarks>
-            from PseudoCode.EnumHelper
-            </remarks>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriter.InvalidIeee754(System.Decimal)">
-            <summary>
-            Determines if a numberic value cannot be represented as IEEE-754.
-            </summary>
-            <param name="value"></param>
-            <returns></returns>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.TypeHintName">
-            <summary>
-            Gets and sets the property name used for type hinting
-            </summary>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.PrettyPrint">
-            <summary>
-            Gets and sets if JSON will be formatted for human reading
-            </summary>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.Tab">
-            <summary>
-            Gets and sets the string to use for indentation
-            </summary>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.NewLine">
-            <summary>
-            Gets and sets the line terminator string
-            </summary>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.Depth">
-            <summary>
-            Gets the current nesting depth
-            </summary>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.MaxDepth">
-            <summary>
-            Gets and sets the maximum depth to be serialized
-            </summary>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.UseXmlSerializationAttributes">
-            <summary>
-            Gets and sets if should use XmlSerialization Attributes
-            </summary>
-            <remarks>
-            Respects XmlIgnoreAttribute, ...
-            </remarks>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.DateTimeSerializer">
-            <summary>
-            Gets and sets a proxy formatter to use for DateTime serialization
-            </summary>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.TextWriter">
-            <summary>
-            Gets the underlying TextWriter
-            </summary>
-        </member>
-        <member name="P:JsonFx.Json.JsonWriter.Settings">
-            <summary>
-            Gets and sets the JsonWriterSettings
             </summary>
         </member>
         <member name="M:JsonFx.EcmaScript.EcmaScriptWriter.#ctor(System.IO.TextWriter)">
@@ -411,31 +318,9 @@ Sample license text.
             http://www.ecma-international.org/publications/files/ECMA-ST/Ecma-262.pdf
             </remarks>
         </member>
-        <member name="T:JsonFx.Serialization.Providers.IDataWriter">
+        <member name="T:JsonFx.Json.IJsonSerializable">
             <summary>
-            A common interface for data serializers
-            </summary>
-        </member>
-        <member name="M:JsonFx.Serialization.Providers.IDataWriter.Serialize(System.IO.TextWriter,System.Object)">
-            <summary>
-            Serializes the data to the given output
-            </summary>
-            <param name="output"></param>
-            <param name="data"></param>
-        </member>
-        <member name="P:JsonFx.Serialization.Providers.IDataWriter.ContentEncoding">
-            <summary>
-            Gets the content encoding for the serialized data
-            </summary>
-        </member>
-        <member name="P:JsonFx.Serialization.Providers.IDataWriter.ContentType">
-            <summary>
-            Gets the content type for the serialized data
-            </summary>
-        </member>
-        <member name="P:JsonFx.Serialization.Providers.IDataWriter.FileExtension">
-            <summary>
-            Gets the file extension for the serialized data
+            Allows classes to control their own JSON serialization
             </summary>
         </member>
         <member name="T:JsonFx.Json.JsonDataReader">
@@ -448,6 +333,11 @@ Sample license text.
             Ctor
             </summary>
             <param name="settings">JsonWriterSettings</param>
+        </member>
+        <member name="P:JsonFx.Json.JsonDataReader.ContentType">
+            <summary>
+            Gets the content type
+            </summary>
         </member>
         <member name="M:JsonFx.Json.JsonDataReader.Deserialize(System.IO.TextReader,System.Type)">
             <summary>
@@ -463,11 +353,6 @@ Sample license text.
             <param name="allowNullValueTypes"></param>
             <returns></returns>
         </member>
-        <member name="P:JsonFx.Json.JsonDataReader.ContentType">
-            <summary>
-            Gets the content type
-            </summary>
-        </member>
         <member name="T:JsonFx.Json.JsonDataWriter">
             <summary>
             An <see cref="T:JsonFx.Serialization.Providers.IDataWriter"/> adapter for <see cref="T:JsonFx.Json.JsonWriter"/>
@@ -478,20 +363,6 @@ Sample license text.
             Ctor
             </summary>
             <param name="settings">JsonWriterSettings</param>
-        </member>
-        <member name="M:JsonFx.Json.JsonDataWriter.Serialize(System.IO.TextWriter,System.Object)">
-            <summary>
-            Serializes the data object to the output
-            </summary>
-            <param name="output"></param>
-            <param name="data"></param>
-        </member>
-        <member name="M:JsonFx.Json.JsonDataWriter.CreateSettings(System.Boolean)">
-            <summary>
-            Builds a common settings objects
-            </summary>
-            <param name="prettyPrint"></param>
-            <returns></returns>
         </member>
         <member name="P:JsonFx.Json.JsonDataWriter.ContentEncoding">
             <summary>
@@ -507,6 +378,20 @@ Sample license text.
             <summary>
             Gets the file extension
             </summary>
+        </member>
+        <member name="M:JsonFx.Json.JsonDataWriter.Serialize(System.IO.TextWriter,System.Object)">
+            <summary>
+            Serializes the data object to the output
+            </summary>
+            <param name="output"></param>
+            <param name="data"></param>
+        </member>
+        <member name="M:JsonFx.Json.JsonDataWriter.CreateSettings(System.Boolean)">
+            <summary>
+            Builds a common settings objects
+            </summary>
+            <param name="prettyPrint"></param>
+            <returns></returns>
         </member>
         <member name="T:JsonFx.Json.JsonIgnoreAttribute">
             <summary>
@@ -555,17 +440,17 @@ Sample license text.
             </summary>
             <param name="jsonName"></param>
         </member>
+        <member name="P:JsonFx.Json.JsonNameAttribute.Name">
+            <summary>
+            Gets and sets the name to be used in JSON
+            </summary>
+        </member>
         <member name="M:JsonFx.Json.JsonNameAttribute.GetJsonName(System.Object)">
             <summary>
             Gets the name specified for use in Json serialization.
             </summary>
             <param name="value"></param>
             <returns></returns>
-        </member>
-        <member name="P:JsonFx.Json.JsonNameAttribute.Name">
-            <summary>
-            Gets and sets the name to be used in JSON
-            </summary>
         </member>
         <member name="T:JsonFx.Json.JsonReader">
             <summary>
@@ -579,6 +464,9 @@ Sample license text.
         <member name="F:JsonFx.Json.JsonReader.jsArrays">
             Cache ArrayLists. Otherwise every new deseriaization of an array wil allocate
             a new ArrayList.
+        </member>
+        <member name="P:JsonFx.Json.JsonReader.EOF">
+            True if there is nothing more to deserialize 
         </member>
         <member name="M:JsonFx.Json.JsonReader.#ctor(System.IO.TextReader)">
             <summary>
@@ -631,6 +519,22 @@ Sample license text.
             </summary>
             <param name="input">StringBuilder containing source</param>
             <param name="settings">JsonReaderSettings</param>
+        </member>
+        <member name="P:JsonFx.Json.JsonReader.AllowNullValueTypes">
+            <summary>
+            Gets and sets if ValueTypes can accept values of null
+            </summary>
+            <remarks>
+            Only affects deserialization: if a ValueType is assigned the
+            value of null, it will receive the value default(TheType).
+            Setting this to false, throws an exception if null is
+            specified for a ValueType member.
+            </remarks>
+        </member>
+        <member name="P:JsonFx.Json.JsonReader.TypeHintName">
+            <summary>
+            Gets and sets the property name used for type hinting.
+            </summary>
         </member>
         <member name="M:JsonFx.Json.JsonReader.Deserialize">
             <summary>
@@ -756,36 +660,10 @@ Sample license text.
             <param name="value">value to convert</param>
             <returns></returns>
         </member>
-        <member name="P:JsonFx.Json.JsonReader.EOF">
-            True if there is nothing more to deserialize 
-        </member>
-        <member name="P:JsonFx.Json.JsonReader.AllowNullValueTypes">
-            <summary>
-            Gets and sets if ValueTypes can accept values of null
-            </summary>
-            <remarks>
-            Only affects deserialization: if a ValueType is assigned the
-            value of null, it will receive the value default(TheType).
-            Setting this to false, throws an exception if null is
-            specified for a ValueType member.
-            </remarks>
-        </member>
-        <member name="P:JsonFx.Json.JsonReader.TypeHintName">
-            <summary>
-            Gets and sets the property name used for type hinting.
-            </summary>
-        </member>
         <member name="T:JsonFx.Json.JsonReaderSettings">
             <summary>
             Controls the deserialization settings for JsonReader
             </summary>
-        </member>
-        <member name="M:JsonFx.Json.JsonReaderSettings.IsTypeHintName(System.String)">
-            <summary>
-            Determines if the specified name is the TypeHint property
-            </summary>
-            <param name="key"></param>
-            <returns></returns>
         </member>
         <member name="P:JsonFx.Json.JsonReaderSettings.HandleCyclicReferences">
             <summary>
@@ -830,6 +708,18 @@ Sample license text.
             Gets and sets the property name used for type hinting.
             </summary>
         </member>
+        <member name="M:JsonFx.Json.JsonReaderSettings.IsTypeHintName(System.String)">
+            <summary>
+            Determines if the specified name is the TypeHint property
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="P:JsonFx.Json.JsonDeserializationException.Index">
+            <summary>
+            Gets the character position in the stream where the error occurred.
+            </summary>
+        </member>
         <member name="M:JsonFx.Json.JsonDeserializationException.GetLineAndColumn(System.String,System.Int32@,System.Int32@)">
             <summary>
             Helper method which converts the index into Line and Column numbers
@@ -837,11 +727,6 @@ Sample license text.
             <param name="source"></param>
             <param name="line"></param>
             <param name="col"></param>
-        </member>
-        <member name="P:JsonFx.Json.JsonDeserializationException.Index">
-            <summary>
-            Gets the character position in the stream where the error occurred.
-            </summary>
         </member>
         <member name="T:JsonFx.Json.JsonSpecifiedPropertyAttribute">
             <summary>
@@ -854,6 +739,12 @@ Sample license text.
             </summary>
             <param name="propertyName">the name of the property which controls serialization for this member</param>
         </member>
+        <member name="P:JsonFx.Json.JsonSpecifiedPropertyAttribute.SpecifiedProperty">
+            <summary>
+            Gets and sets the name of the property which
+            specifies if member should be serialized
+            </summary>
+        </member>
         <member name="M:JsonFx.Json.JsonSpecifiedPropertyAttribute.GetJsonSpecifiedProperty(System.Reflection.MemberInfo)">
             <summary>
             Gets the name specified for use in Json serialization.
@@ -861,16 +752,165 @@ Sample license text.
             <param name="value"></param>
             <returns></returns>
         </member>
-        <member name="P:JsonFx.Json.JsonSpecifiedPropertyAttribute.SpecifiedProperty">
-            <summary>
-            Gets and sets the name of the property which
-            specifies if member should be serialized
-            </summary>
-        </member>
         <member name="T:JsonFx.Json.JsonToken">
             <summary>
             Parse Tokens
             </summary>
+        </member>
+        <member name="T:JsonFx.Json.JsonWriter">
+            <summary>
+            Writer for producing JSON data
+            </summary>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Ctor
+            </summary>
+            <param name="output">TextWriter for writing</param>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.IO.TextWriter,JsonFx.Json.JsonWriterSettings)">
+            <summary>
+            Ctor
+            </summary>
+            <param name="output">TextWriter for writing</param>
+            <param name="settings">JsonWriterSettings</param>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.IO.Stream)">
+            <summary>
+            Ctor
+            </summary>
+            <param name="output">Stream for writing</param>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.IO.Stream,JsonFx.Json.JsonWriterSettings)">
+            <summary>
+            Ctor
+            </summary>
+            <param name="output">Stream for writing</param>
+            <param name="settings">JsonWriterSettings</param>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.String)">
+            <summary>
+            Ctor
+            </summary>
+            <param name="output">file name for writing</param>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.String,JsonFx.Json.JsonWriterSettings)">
+            <summary>
+            Ctor
+            </summary>
+            <param name="output">file name for writing</param>
+            <param name="settings">JsonWriterSettings</param>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.Text.StringBuilder)">
+            <summary>
+            Ctor
+            </summary>
+            <param name="output">StringBuilder for appending</param>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.#ctor(System.Text.StringBuilder,JsonFx.Json.JsonWriterSettings)">
+            <summary>
+            Ctor
+            </summary>
+            <param name="output">StringBuilder for appending</param>
+            <param name="settings">JsonWriterSettings</param>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.TypeHintName">
+            <summary>
+            Gets and sets the property name used for type hinting
+            </summary>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.PrettyPrint">
+            <summary>
+            Gets and sets if JSON will be formatted for human reading
+            </summary>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.Tab">
+            <summary>
+            Gets and sets the string to use for indentation
+            </summary>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.NewLine">
+            <summary>
+            Gets and sets the line terminator string
+            </summary>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.Depth">
+            <summary>
+            Gets the current nesting depth
+            </summary>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.MaxDepth">
+            <summary>
+            Gets and sets the maximum depth to be serialized
+            </summary>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.UseXmlSerializationAttributes">
+            <summary>
+            Gets and sets if should use XmlSerialization Attributes
+            </summary>
+            <remarks>
+            Respects XmlIgnoreAttribute, ...
+            </remarks>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.DateTimeSerializer">
+            <summary>
+            Gets and sets a proxy formatter to use for DateTime serialization
+            </summary>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.TextWriter">
+            <summary>
+            Gets the underlying TextWriter
+            </summary>
+        </member>
+        <member name="P:JsonFx.Json.JsonWriter.Settings">
+            <summary>
+            Gets and sets the JsonWriterSettings
+            </summary>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.Serialize(System.Object)">
+            <summary>
+            A helper method for serializing an object to JSON
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.IsIgnored(System.Type,System.Reflection.MemberInfo,System.Object)">
+            <summary>
+            Determines if the property or field should not be serialized.
+            </summary>
+            <param name="objType"></param>
+            <param name="member"></param>
+            <param name="value"></param>
+            <returns></returns>
+            <remarks>
+            Checks these in order, if any returns true then this is true:
+            - is flagged with the JsonIgnoreAttribute property
+            - has a JsonSpecifiedProperty which returns false
+            </remarks>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.IsDefaultValue(System.Reflection.MemberInfo,System.Object)">
+            <summary>
+            Determines if the member value matches the DefaultValue attribute
+            </summary>
+            <returns>if has a value equivalent to the DefaultValueAttribute</returns>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.GetFlagList(System.Type,System.Object)">
+            <summary>
+            Splits a bitwise-OR'd set of enums into a list.
+            </summary>
+            <param name="enumType">the enum type</param>
+            <param name="value">the combined value</param>
+            <returns>list of flag enums</returns>
+            <remarks>
+            from PseudoCode.EnumHelper
+            </remarks>
+        </member>
+        <member name="M:JsonFx.Json.JsonWriter.InvalidIeee754(System.Decimal)">
+            <summary>
+            Determines if a numberic value cannot be represented as IEEE-754.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
         </member>
         <member name="T:JsonFx.Json.WriteDelegate`1">
             <summary>
@@ -884,14 +924,6 @@ Sample license text.
             <summary>
             Controls the serialization settings for JsonWriter
             </summary>
-        </member>
-        <member name="M:JsonFx.Json.JsonWriterSettings.GetConverter(System.Type)">
-            Returns the converter for the specified type 
-        </member>
-        <member name="M:JsonFx.Json.JsonWriterSettings.AddTypeConverter(JsonFx.Json.JsonConverter)">
-            Adds a converter to use to serialize otherwise non-serializable types.
-            Good if you do not have the source and it throws error when trying to serialize it.
-            For example the Unity3D Vector3 can be serialized using a special converter
         </member>
         <member name="P:JsonFx.Json.JsonWriterSettings.HandleCyclicReferences">
             <summary>
@@ -969,51 +1001,16 @@ Sample license text.
             E.g about why some members are not serialized.
             The number of debugging messages are in no way exhaustive
         </member>
+        <member name="M:JsonFx.Json.JsonWriterSettings.GetConverter(System.Type)">
+            Returns the converter for the specified type 
+        </member>
+        <member name="M:JsonFx.Json.JsonWriterSettings.AddTypeConverter(JsonFx.Json.JsonConverter)">
+            Adds a converter to use to serialize otherwise non-serializable types.
+            Good if you do not have the source and it throws error when trying to serialize it.
+            For example the Unity3D Vector3 can be serialized using a special converter
+        </member>
         <member name="M:JsonFx.Json.JsonConverter.CanConvert(System.Type)">
             Test if this converter can convert the specified type 
-        </member>
-        <member name="T:JsonFx.Serialization.TypeCoercionUtility">
-            <summary>
-            Utility for forcing conversion between types
-            </summary>
-        </member>
-        <member name="M:JsonFx.Serialization.TypeCoercionUtility.ProcessTypeHint(System.Collections.IDictionary,System.String,System.Type@,System.Collections.Generic.Dictionary{System.String,System.Reflection.MemberInfo}@,JsonFx.Json.JsonReaderSettings)">
-            <summary>
-            If a Type Hint is present then this method attempts to
-            use it and move any previously parsed data over.
-            </summary>
-            <param name="result">the previous result</param>
-            <param name="typeInfo">the type info string to use</param>
-            <param name="objectType">reference to the objectType</param>
-            <param name="memberMap">reference to the memberMap</param>
-            <returns></returns>
-        </member>
-        <member name="M:JsonFx.Serialization.TypeCoercionUtility.GetMemberMap(System.Type,JsonFx.Json.JsonReaderSettings)">
-            Returns a member map if suitable for the object type.
-            Dictionary types will make this method return null
-        </member>
-        <member name="M:JsonFx.Serialization.TypeCoercionUtility.CreateMemberMap(System.Type,JsonFx.Json.JsonReaderSettings)">
-            Creates a member map for the type 
-        </member>
-        <member name="M:JsonFx.Serialization.TypeCoercionUtility.SetMemberValue(System.Object,System.Type,System.Reflection.MemberInfo,System.Object,JsonFx.Json.JsonReaderSettings)">
-            <summary>
-            Helper method to set value of either property or field
-            </summary>
-            <param name="result"></param>
-            <param name="memberType"></param>
-            <param name="memberInfo"></param>
-            <param name="value"></param>
-        </member>
-        <member name="P:JsonFx.Serialization.TypeCoercionUtility.AllowNullValueTypes">
-            <summary>
-            Gets and sets if ValueTypes can accept values of null
-            </summary>
-            <remarks>
-            Only affects deserialization: if a ValueType is assigned the
-            value of null, it will receive the value default(TheType).
-            Setting this to false, throws an exception if null is
-            specified for a ValueType member.
-            </remarks>
         </member>
         <member name="T:JsonFx.Json.JsonMemberAttribute">
             Explicitly declare this member to be serialized.

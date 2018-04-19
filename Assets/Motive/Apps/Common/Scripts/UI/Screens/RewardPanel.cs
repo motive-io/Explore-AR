@@ -43,8 +43,6 @@ namespace Motive.Unity.UI
             {
                 CurrenciesTable = Currencies.GetComponentInChildren<Table>();
             }
-
-            RewardManager.Instance.RewardPanel = this;
         }
 
         void Instance_RewardAdded(object sender, RewardEventArgs e)

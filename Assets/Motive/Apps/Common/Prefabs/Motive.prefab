@@ -227,7 +227,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1534035297110146}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1839925951, guid: b7ee2404f1f37774daf71d5ed694d565, type: 3}
+  m_Script: {fileID: 11500000, guid: ccb821c03b708664f90b1d1316293550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114370663859947850
@@ -256,12 +256,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MotiveUrl: https://api.motive.io
-  AppId: motive_samples.ghost_hunter.app
-  ApiKey: ebRECbKTGiXTXD0bYqa4D8TdNb0UcA8R
+  AppId: 
+  ApiKey: 
   UserDomain: 
   UseDebugReachability: 0
   DebugReachability: 0
-  UseDevCatalogs: 1
+  ConfigName: 
+  UseDevCatalogs: 0
   RequireNetworkConnection: 1
   CellDownloadThreshold: 25
 --- !u!114 &114556536917987012
@@ -275,15 +276,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8de10c45a333bc84d859fe5738d380c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerLocation: 0
+  PlayerLocation: {fileID: 11400000, guid: 3d5c1457dbfdeb14594ee99d1bf49443, type: 2}
   KeyboardMovesPlayer: 1
   MoveRelativeToHeading: 1
   PlayerSpeed: 100
   StartHeading: 0
   UseAnchorPosition: 0
   MapController: {fileID: 0}
-  OverrideLocation: {fileID: 0}
-  m_currOverride: {fileID: 0}
 --- !u!114 &114649414089671370
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -292,10 +291,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1955093204467368}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 1258425317, guid: b7ee2404f1f37774daf71d5ed694d565, type: 3}
+  m_Script: {fileID: 11500000, guid: 97d6deaaa0d3f0f42bb1cb422a24f64a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Level: 4
+  DebugLevel: 4
+  ReleaseLevel: 2
   IncludeTimestamps: 0
   IncludeThreadId: 0
   EnableAllLoggers: 1
@@ -323,6 +323,16 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+  OnPauseAudio:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnResumeAudio:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
   UseEncryption: 0
   EncryptionKey: 
   EncryptionIV: 
@@ -330,5 +340,9 @@ MonoBehaviour:
   EnableBackgroundLocation: 1
   EnableBackgroundAudio: 1
   EnableNotifications: 0
+  EnableBackgroundNotifications: 0
   EnableBeacons: 0
+  ScreenSleepBehavior: 0
   CompassType: 3
+  UseDeadReckoning: 1
+  SmoothLocationUpdates: 1

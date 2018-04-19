@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Motive.Unity.UI
 {
     /// <summary>
-    /// Used to display inventory items with attached screen messages.
+    /// Displays inventory items with attached screen messages.
     /// </summary>
     public class InventoryScreenMessagePanel : InventoryCollectiblePanel
     {

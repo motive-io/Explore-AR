@@ -1,11 +1,15 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
 using Motive.AR.LocationServices;
 using Motive.AR.Models;
+using Motive.Core.Diagnostics;
 using Motive.Core.Scripting;
 using Motive.Core.Utilities;
 using Motive.Unity.UI;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+
+using Logger = Motive.Core.Diagnostics.Logger;
 
 namespace Motive.Unity.Gaming
 {
@@ -16,7 +20,9 @@ namespace Motive.Unity.Gaming
     {
         LocationTriggerPool m_triggerPool;
         Dictionary<string, ResourceActivationContext> m_activationContexts;
-        DictionaryDictionary<string, string, LocationSpawnItemResults<LocationValuablesCollection>> m_computedResults;
+        //DictionaryDictionary<string, string, LocationSpawnItemResults<LocationValuablesCollection>> m_computedResults;
+        PerfCounters m_perf;
+        Logger m_logger;
 
         public bool IsRunning { get; private set; }
 
@@ -24,9 +30,11 @@ namespace Motive.Unity.Gaming
         {
             // Defaults? These ultimately get ignored since we'll
             // only add triggers for items with ranges specified.
+            m_perf = new PerfCounters();
+            m_logger = new Logger(this);
             m_triggerPool = new LocationTriggerPool(0, 75);
             m_activationContexts = new Dictionary<string, ResourceActivationContext>();
-            m_computedResults = new DictionaryDictionary<string, string, LocationSpawnItemResults<LocationValuablesCollection>>();
+            //m_computedResults = new DictionaryDictionary<string, string, LocationSpawnItemResults<LocationValuablesCollection>>();
 
             LocationValuablesCollectionManager.Instance.ValuablesAdded += Instance_ValuablesAdded;
             LocationValuablesCollectionManager.Instance.LocationsAdded += Instance_LocationsAdded;
@@ -126,7 +134,7 @@ namespace Motive.Unity.Gaming
 
                 m_activationContexts.Remove(lvc.ActivationContext.InstanceId);
 
-                m_computedResults.RemoveAll(lvc.ActivationContext.InstanceId);
+                //m_computedResults.RemoveAll(lvc.ActivationContext.InstanceId);
 
                 RemoveSpawnItem(lvc.ActivationContext.InstanceId, lvc.SpawnItem, true);
             }
@@ -150,6 +158,10 @@ namespace Motive.Unity.Gaming
 
         void ProcessValuables(IEnumerable<LocationValuablesCollectionItemContainer> locationValuables)
         {
+            m_perf = new PerfCounters();
+
+            m_perf.Start("v");
+
             // Group items by the sets of locations they reference.
             // The goal here is to reduce the number of locations we visit, ideally as close to 1
             // visit per location as possible.
@@ -207,6 +219,10 @@ namespace Motive.Unity.Gaming
             Action<IEnumerable<Location>, IEnumerable<LocationValuablesCollectionItemContainer>> processLocations =
                 (locs, lvcsIn) =>
             {
+                m_perf.Start("l");
+
+                m_perf.Start("u");
+
                 HashSet<LocationValuablesCollectionItemContainer> lvcs = new HashSet<LocationValuablesCollectionItemContainer>();
 
                 if (lvcsIn != null)
@@ -214,12 +230,14 @@ namespace Motive.Unity.Gaming
                     lvcs.UnionWith(lvcsIn);
                 }
 
+                m_perf.Stop("u");
+
+                m_perf.Start("locs");
+
                 if (locs != null)
                 {
                     foreach (var location in locs)
                     {
-                        ComputedLocationSpawnItems computed = GetOrCreateLocationComputedItems(location);
-
                         if (!processedLocations.ContainsKey(location.Id))
                         {
                             processedLocations.Add(location.Id, location);
@@ -250,17 +268,21 @@ namespace Motive.Unity.Gaming
                                 }
                             }
 
-                        // Can be smarter here: if LVCs haven't changed, only locations, then
-                        // any location that's been checked can be skipped
-                        foreach (var lvc in lvcs)
-                            {
-                            // Have we processed this lvc/location combo recently??
-                            // Note: this current persists until the resource is deactivated.
-                            LocationSpawnItemResults<LocationValuablesCollection> results = null;
+                            m_perf.Start("c");
 
-                                lock (m_computedResults)
+                            // Can be smarter here: if LVCs haven't changed, only locations, then
+                            // any location that's been checked can be skipped
+                            foreach (var lvc in lvcs)
+                            {
+                                // Have we processed this lvc/location combo recently??
+                                // Note: this currently persists until the resource is deactivated.
+                                LocationSpawnItemResults<LocationValuablesCollection> results = null;
+
+                                lock (m_locationComputedItems)
                                 {
-                                    if (m_computedResults.Contains(lvc.ActivationContext.InstanceId, location.Id))
+                                    results = GetResults(lvc.ActivationContext.InstanceId, location);
+
+                                    if (results != null)
                                     {
                                         continue;
                                     }
@@ -268,29 +290,36 @@ namespace Motive.Unity.Gaming
                                     results =
                                         new LocationSpawnItemResults<LocationValuablesCollection>(lvc.ActivationContext.InstanceId, location, lvc.SpawnItem);
 
-                                    m_computedResults.Add(lvc.ActivationContext.InstanceId, location.Id, results);
-                                }
+                                    var prob = lvc.SpawnItem.Probability.GetValueOrDefault(1);
+                                    var rnd = Tools.RandomDouble(0, 1);
 
-                                var prob = lvc.SpawnItem.Probability.GetValueOrDefault(1);
-                                var rnd = Tools.RandomDouble(0, 1);
-
-                                if (rnd < prob)
-                                {
-                                // Tada!
-                                results.DidSpawn = true;
+                                    if (rnd < prob)
+                                    {
+                                        // Tada!
+                                        results.DidSpawn = true;
+                                    }
 
                                     AddComputedResult(location, lvc.InstanceId, results);
+                                }
 
+                                if (results.DidSpawn)
+                                {
                                     OnItemsSpawned(lvc.InstanceId, results);
                                 }
                             }
+
+                            m_perf.Stop("c");
                         }
                         else
                         {
-                        // TODO: locations re-used
-                    }
+                            // TODO: locations re-used
+                        }
                     }
                 }
+
+                m_perf.Stop("locs");
+
+                m_perf.Stop("l");
             };
 
             foreach (var set in fixedSets.Keys)
@@ -316,6 +345,10 @@ namespace Motive.Unity.Gaming
             {
                 //AddSpawnItems(e.LocationValuables, null/*e.ActivationContext.GetStorageAgent()*/);
             }
+
+            m_perf.Stop("v");
+
+            m_logger.Debug("ProcessValuables perf={0}", m_perf.ToShortString());
         }
 
         void UpdateLocations(IEnumerable<Location> locations)

@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MyNamespace
+namespace Motive.Unity.Maps
 {
     /// <summary>
     /// Controls for 3D map avatars.

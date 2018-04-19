@@ -107,6 +107,12 @@ namespace Motive.Unity.UI
             ObjectHelper.SetObjectsActive(ShowWhenOutOfRange, !isInRange);
         }
 
+        public override void ClearData()
+        {
+            // By default, display the "in range" elements.
+            SetInRange(true);
+        }
+
         public void SetFence(Location location, double minRange, double maxRange, Action onInRange = null, Action onOutOfRange = null)
         {
             if (m_fence != null)

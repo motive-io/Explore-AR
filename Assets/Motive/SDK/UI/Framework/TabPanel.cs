@@ -15,10 +15,8 @@ namespace Motive.UI.Framework
 
         TabControllerButton[] m_buttons;
 
-        protected override void Awake()
+        void Start()
         {
-            base.Awake();
-
             m_buttons = GetComponentsInChildren<TabControllerButton>().ToArray();
             TabControllerButton selectedButton = m_buttons.FirstOrDefault();
 

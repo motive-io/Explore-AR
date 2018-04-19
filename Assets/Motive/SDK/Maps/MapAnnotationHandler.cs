@@ -32,7 +32,7 @@ namespace Motive.Unity.Maps
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class MapAnnotationHandler<T> :
-        MonoBehaviour,
+        MapAnnotationHandlerBase,
         IMapAnnotationDelegate
         where T : MapAnnotation
     {
@@ -47,7 +47,7 @@ namespace Motive.Unity.Maps
 
 		public virtual void Initialize() {}
 
-        public virtual void HideAnnotations()
+        public override void HideAnnotations()
         {
             AnnotationsAreShowing = false;
 
@@ -65,7 +65,7 @@ namespace Motive.Unity.Maps
             }
         }
 
-        public virtual void ShowAnnotations()
+        public override void ShowAnnotations()
         {
             AnnotationsAreShowing = true;
 
@@ -236,7 +236,14 @@ namespace Motive.Unity.Maps
         {
         }
     }
-    
+
+    public abstract class MapAnnotationHandlerBase : MonoBehaviour
+    {
+        public abstract void HideAnnotations();
+
+        public abstract void ShowAnnotations();
+    }
+
     public class SingletonMapAnnotationHandler<T> :
         MapAnnotationHandler
         where T : SingletonMapAnnotationHandler<T>

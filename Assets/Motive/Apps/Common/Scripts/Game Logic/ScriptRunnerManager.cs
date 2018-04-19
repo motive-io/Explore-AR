@@ -116,8 +116,7 @@ namespace Motive.Unity.Apps
                     {
                         if (quest.ScriptReference != null)
                         {
-                        //ScriptManager.Instance.LaunchScript(episode.ScriptReference.ObjectId, episode.Id, null);
-                        LaunchQuest(quest);
+                            Launch(quest);
                         }
                     }
                 };
@@ -126,12 +125,22 @@ namespace Motive.Unity.Apps
         }
 
         /// <summary>
-        /// Launches a new quest. If "OneAtATime" is set, this will cancel any
+        /// Launches a new script directory item. If "OneAtATime" is set, this will cancel any
         /// running quests.
         /// </summary>
         /// <param name="episode"></param>
-        public virtual void LaunchQuest(ScriptDirectoryItem episode)
+        public virtual void Launch(ScriptDirectoryItem episode)
         {
+#if MOTIVE_IAP
+            var purchaseState = EpisodePurchaseManager.Instance.GetEpisodeState(episode);
+
+            if (purchaseState != EpisodeSelectState.AvailableToLaunch && 
+                purchaseState != EpisodeSelectState.Running)
+            {
+                return;
+            }
+#endif
+
             // when an episode is launched, stop all other episodes
             if (!AllowMultiple)
             {

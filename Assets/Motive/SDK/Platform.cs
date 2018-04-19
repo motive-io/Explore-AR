@@ -43,6 +43,7 @@ using Motive.Android.Java;
 using Motive.Android.Application;
 using Motive.Android.Beacons;
 using Motive.Android.Notfications;
+using Motive.Unity.Storage;
 #endif
 
 namespace Motive

@@ -82,11 +82,19 @@ namespace Motive.Unity.AR
             m_worldObjects.Remove(worldObject);
         }
 
-        public virtual void AddWorldObject(T worldObject)
+        public virtual void AddWorldObject(T worldObject, bool attach)
         {
             m_worldObjects.Add(worldObject);
 
-            AttachWorldObject(worldObject, WorldAnchor.transform);
+            if (attach)
+            {
+                AttachWorldObject(worldObject, WorldAnchor.transform);
+            }
+        }
+
+        public virtual void AddWorldObject(T worldObject)
+        {
+            AddWorldObject(worldObject, true);
         }
 
         public virtual Camera GetCamera()

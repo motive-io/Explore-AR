@@ -226,10 +226,13 @@ namespace Motive.Unity.Gaming
                     m_removedValuables.Add(context.InstanceId, new LocationValuablesCollectionItemContainer(context, lvc));
                     m_addedValuables.Remove(context.InstanceId);
 
-                    foreach (var loc in removedLocations)
+                    if (removedLocations != null)
                     {
-                        m_removedLocations[loc.Id] = loc;
-                        m_addedLocations.Remove(loc.Id);
+                        foreach (var loc in removedLocations)
+                        {
+                            m_removedLocations[loc.Id] = loc;
+                            m_addedLocations.Remove(loc.Id);
+                        }
                     }
                 }
             }
@@ -386,5 +389,4 @@ namespace Motive.Unity.Gaming
             }
         }
     }
-
 }

@@ -1,0 +1,584 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Motive.AR</name>
+    </assembly>
+    <members>
+        <member name="P:Motive.AR.Kinetics.AccelerometerStepTracker.GforceReadingHoldTime">
+            <summary>
+            How long to hold a G-force reading before decaying
+            </summary>
+        </member>
+        <member name="P:Motive.AR.Kinetics.AccelerometerStepTracker.GforceReadingDecayRate">
+            <summary>
+            Decay rate (half life) of a G-force reading
+            </summary>
+        </member>
+        <member name="P:Motive.AR.Kinetics.AccelerometerStepTracker.MinStepTime">
+            <summary>
+            The minimum time between steps, used to weed out noise
+            </summary>
+        </member>
+        <member name="P:Motive.AR.Kinetics.AccelerometerStepTracker.MinStepGForceDelta">
+            <summary>
+            Minimum delta in the G-force to count as a step
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationFencePool">
+            <summary>
+            Manages a pool of location fences. This is much more efficient than monitoring
+            multiple fences individually.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFencePool.Stop">
+            <summary>
+            Stop monitoring locations.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.CoordinateGridStore`1">
+            <summary>
+            Highly optimized storage for GPS-indexed items.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.CoordinateGridStore`1.#ctor(System.Int32)">
+            <summary>
+            Initializes a new CoordinateGridStore with the specified grid resolution 
+            (in meters).
+            </summary>
+            <param name="resolution">Resolution.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.CoordinateGridStore`1.GetItems(Motive.AR.LocationServices.Coordinates)">
+            <summary>
+            Gets all items in the bucket for the given coordinates.
+            </summary>
+            <returns>The items.</returns>
+            <param name="coordinates">Coordinates.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.CoordinateGridStore`1.GetItemCount(Motive.AR.LocationServices.Coordinates)">
+            <summary>
+            Gets the number of items in the bucket for the coordinates.
+            </summary>
+            <returns>The item count.</returns>
+            <param name="coordinates">Coordinates.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.CoordinateGridStore`1.Add(Motive.AR.LocationServices.Coordinates,`0)">
+            <summary>
+            Adds an item with the specified coordinates.
+            </summary>
+            <returns>The add.</returns>
+            <param name="coords">Coordinates.</param>
+            <param name="item">Item.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.CoordinateGridStore`1.Remove(Motive.AR.LocationServices.Coordinates,`0)">
+            <summary>
+            Remove the specified item.
+            </summary>
+            <returns>The remove.</returns>
+            <param name="coords">Coordinates.</param>
+            <param name="item">Item.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.CoordinateGridStore`1.GetItemsInRange(Motive.AR.LocationServices.Coordinates,System.Double)">
+            <summary>
+            Gets all items within the specified range of the coordinates.
+            </summary>
+            <returns>The items in range.</returns>
+            <param name="coords">Coordinates.</param>
+            <param name="range">Range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.CoordinateGridStore`1.Clear">
+            <summary>
+            Clears the entire store.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationGridStore">
+            <summary>
+            <see cref="T:Motive.AR.LocationServices.CoordinateGridStore"/> Coordinate grid store for Locations.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationMatchFilterProcessorRegistry">
+            <summary>
+            Registry for additional filters to add to the Location Match Condition.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationTrackerCompass">
+            <summary>
+            This compass uses the user's movement to extrapolate a compass direction.
+            This is useful if the app is in a state where the device compass is
+            not likely to be reliable (e.g. when the app is running in the background.)
+            While this compass is not nearly as responsive as the device compass,
+            it will give reasonable accurate results if the user is moving without 
+            regular, sudden changes of direction.
+            </summary>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationTrackerCompass.UpdateDistance">
+            <summary>
+            The distance the device should travel between updates.
+            </summary>
+            <value>The update distance.</value>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationTrackerCompass.MagneticHeading">
+            <summary>
+            Returns the same value as TrueHeading, doesn't currently compensate
+            for magnetic heading offset.
+            </summary>
+            <value>The magnetic heading.</value>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationTrackerCompass.TrueHeading">
+            <summary>
+            The computed heading of the device.
+            </summary>
+            <value>The true heading.</value>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrackerCompass.#ctor(Motive.AR.LocationServices.LocationTracker)">
+            <summary>
+            Creates a new LocationTrackerCompass that will use the given LocationTracker.
+            </summary>
+            <param name="tracker">Tracker.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrackerCompass.Start">
+            <summary>
+            Starts tracking.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrackerCompass.Stop">
+            <summary>
+            Stops tracking.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationTriggerPool">
+            <summary>
+            This class the same functionality as <see cref="T:Motive.AR.LocationServices.LocationTrigger"/>,
+            but allows for multiple callers.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationTypeMapper">
+            <summary>
+            Use this class to create a mapping between external location category
+            tags and Motive types.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.Coordinates">
+            <summary>
+            Stores lat,lng.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.DeadReckoningProcessor">
+            <summary>
+            Location reading processor that monitors footsteps and updates
+            the player's location based on the current heading.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Motive.AR.LocationServices.FoursquareLocationSearch.ProcessResult(System.String,Motive.AR.LocationServices.Coordinates,System.String[],System.Int32,System.Int32)" -->
+        <member name="T:Motive.AR.LocationServices.ILocationManager">
+            <summary>
+            Location managers are in charge of querying and returning the current
+            location information of the user.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.Location">
+            <summary>
+            Represents a fixed location with coordinates, a name,
+            and optionally a set of location types and story tags. 
+            </summary>
+        </member>
+        <member name="P:Motive.AR.LocationServices.Location.LocationTypes">
+            <summary>
+            A set of location types that describe the location
+            (e.g. cafe, restaurant)
+            </summary>
+            <value>The location types.</value>
+        </member>
+        <member name="P:Motive.AR.LocationServices.Location.StoryTags">
+            <summary>
+            A set of story tags for this location that allow you to provide
+            more broad categories for locations (e.g., secret hideout, food source, etc.)
+            </summary>
+            <value>The story tags.</value>
+        </member>
+        <member name="P:Motive.AR.LocationServices.Location.AllTypesTags">
+            <summary>
+            Returns an array of all story tags and location types.
+            </summary>
+            <value>All types tags.</value>
+        </member>
+        <member name="M:Motive.AR.LocationServices.Location.HasTypesOr(System.String[])">
+            <summary>
+            Returns true if the location has any of the specified types.
+            </summary>
+            <returns><c>true</c> if the location has any of the specified types.</returns>
+            <param name="types">Location types.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.Location.HasStoryTagsOr(System.String[])">
+            <summary>
+            Returns true if the location has any of the specified types.
+            </summary>
+            <returns><c>true</c> if the location has any of the specified types.</returns>
+            <param name="tags">Tags.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.Location.HasTypesOrTag(System.String[])">
+            <summary>
+            Returns true if the location has any of the specified types or tags.
+            </summary>
+            <returns><c>true</c> if the location has any of the specified types or tags.</returns>
+            <param name="tags">Tags.</param>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationFence">
+            <summary>
+            A location fence allows you to monitor one or more locations and get 
+            notified any time the user moves in or out of range of the location.
+            </summary>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationFence.MinRange">
+            <summary>
+            Default min range if not specified by the caller.
+            </summary>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationFence.MaxRange">
+            <summary>
+            Default max range if not specified by the caller.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFence.#ctor(System.Double)">
+            <summary>
+            Creates a Location fence with the specified default range.
+            </summary>
+            <param name="range">Default range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFence.#ctor(System.Double,System.Double)">
+            <summary>
+            Creates a Location fence with the specified default range.
+            </summary>
+            <param name="minRange">Minimum range.</param>
+            <param name="maxRange">Max range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFence.Watch(System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}},System.Action)">
+            <summary>
+            Watch the given set of locations.
+            </summary>
+            <returns>The watch.</returns>
+            <param name="locations">Locations to watch.</param>
+            <param name="inRange">Callback when one or more of the locations are in range. The callback argument is the set of locations found.</param>
+            <param name="outOfRange">Callback when no locations are in range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFence.Watch(Motive.AR.LocationServices.Location,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}},System.Action)">
+            <summary>
+            Watch the specified location and get notified when in or out of range.
+            </summary>
+            <returns>The watch.</returns>
+            <param name="location">Location.</param>
+            <param name="inRange">In range.</param>
+            <param name="outOfRange">Out of range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFence.Watch(System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},System.Double,System.Double,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}},System.Action)">
+            <summary>
+            Watch the specified locations, and get notified when they're within 
+            the minRange, maxRange.
+            </summary>
+            <returns>The watch.</returns>
+            <param name="locations">Locations.</param>
+            <param name="minRange">Minimum range.</param>
+            <param name="maxRange">Max range.</param>
+            <param name="inRange">In range callback.</param>
+            <param name="outOfRange">Out of range callback.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFence.Watch(Motive.AR.LocationServices.Location,System.Double,System.Double,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}},System.Action)">
+            <summary>
+            Watch the specified location, and get notified when it's within 
+            the minRange, maxRange.
+            </summary>
+            <returns>The watch.</returns>
+            <param name="location">Location.</param>
+            <param name="minRange">Minimum range.</param>
+            <param name="maxRange">Max range.</param>
+            <param name="inRange">In range.</param>
+            <param name="outOfRange">Out of range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFence.StopWatching">
+            <summary>
+            Stop watching all locations. Cannot be resumed.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFence.Resume">
+            <summary>
+            Resume watching all locations.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationFence.Suspend">
+            <summary>
+            Suspend watching locations. Can be resumed.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationReading">
+            <summary>
+            Location information returned by implementations of <see cref="T:Motive.AR.LocationServices.ILocationManager"/>.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationTriggerCheck">
+            <summary>
+            Specifies the type of check to perform.
+            </summary>
+        </member>
+        <member name="F:Motive.AR.LocationServices.LocationTriggerCheck.NoneInRange">
+            <summary>
+            Fire when none of the locations are in rnge.
+            </summary>
+        </member>
+        <member name="F:Motive.AR.LocationServices.LocationTriggerCheck.SomeInRange">
+            <summary>
+            Fire when some of the locations are in range.
+            </summary>
+        </member>
+        <member name="F:Motive.AR.LocationServices.LocationTriggerCheck.AllInRange">
+            <summary>
+            Fire when all of the locations are in range.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:Motive.AR.LocationServices.LocationTrigger" -->
+        <member name="P:Motive.AR.LocationServices.LocationTrigger.MinRange">
+            <summary>
+            Default minimum range.
+            </summary>
+            <value>The minimum range.</value>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationTrigger.MaxRange">
+            <summary>
+            Default maximum range.
+            </summary>
+            <value>The max range.</value>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.#ctor(System.Int32)">
+            <summary>
+            Creates a new LocationTrigger with the specified max range. Min range
+            is 0 in this case.
+            </summary>
+            <param name="range">Range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.#ctor(System.Double,System.Double)">
+            <summary>
+            Creates a new LocationTrigger with the specified range.
+            </summary>
+            <param name="minRange">Minimum range.</param>
+            <param name="maxRange">Max range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.CheckLocations(System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},Motive.AR.LocationServices.LocationTriggerCheck,System.Action{System.Boolean})">
+            <summary>
+            Check the given locations and call "onResult" when the specified
+            check type is met.
+            </summary>
+            <param name="locations">Locations.</param>
+            <param name="checkType">Check type.</param>
+            <param name="onResult">On result.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.CheckLocation(Motive.AR.LocationServices.Coordinates,Motive.AR.LocationServices.Location,Motive.AR.LocationServices.LocationTriggerCheck)">
+            <summary>
+            Check the given location and return true if the given check type
+            is met relative to the specified coordinates.
+            </summary>
+            <returns><c>true</c>, if location meets the check type, <c>false</c> otherwise.</returns>
+            <param name="coordinates">Coordinates to check the locations against.</param>
+            <param name="location">Location.</param>
+            <param name="checkType">Check type.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.CheckLocations(Motive.AR.LocationServices.Coordinates,System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},Motive.AR.LocationServices.LocationTriggerCheck)">
+            <summary>
+            Check the given locations and return true if the given check type
+            is met relative to the specified coordinates.
+            </summary>
+            <returns><c>true</c>, if locations meet the check type, <c>false</c> otherwise.</returns>
+            <param name="coordinates">Coordinates.</param>
+            <param name="locations">Locations.</param>
+            <param name="checkType">Check type.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.CheckLocations(Motive.AR.LocationServices.Coordinates,System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},Motive.AR.LocationServices.LocationTriggerCheck,System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}@,System.Double@)">
+            <summary>
+            Check the given location and return true if the given check type
+            is met relative to the specified coordinates.
+            </summary>
+            <returns><c>true</c>, if locations was checked, <c>false</c> otherwise.</returns>
+            <param name="coords">Coords.</param>
+            <param name="locations">Locations.</param>
+            <param name="checkType">Check type.</param>
+            <param name="inRangeLocations">In range locations.</param>
+            <param name="closestRange">Closest range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Wait(System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},Motive.AR.LocationServices.LocationTriggerCheck,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}})">
+            <summary>
+            Wait for the set of locations to meet the given check type.
+            </summary>
+            <returns>The wait.</returns>
+            <param name="locations">Locations.</param>
+            <param name="checkType">Check type.</param>
+            <param name="onInRange">On in range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Wait(System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}})">
+            <summary>
+            Wait for 1 or more of the locations to be in range. (I.e. uses
+            SomeInRange by default.)
+            </summary>
+            <returns>The wait.</returns>
+            <param name="locations">Locations.</param>
+            <param name="onInRange">On in range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Wait(Motive.AR.LocationServices.Location,Motive.AR.LocationServices.LocationTriggerCheck,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}})">
+            <summary>
+            Wait for the given locations to be in range based on the 
+            specified check type.
+            </summary>
+            <returns>The wait.</returns>
+            <param name="location">Location.</param>
+            <param name="checkType">Check type.</param>
+            <param name="onInRange">On in range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Wait(Motive.AR.LocationServices.Location,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}})">
+            <summary>
+            Wait for the location to be in range based on a check type of
+            SomeInRange.
+            </summary>
+            <returns>The wait.</returns>
+            <param name="location">Location.</param>
+            <param name="onInRange">On in range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.StopWaiting">
+            <summary>
+            Stop waiting.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Wait(System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},Motive.AR.LocationServices.LocationTriggerCheck,System.Double,System.Double,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}})">
+            <summary>
+            Wait for the specified locations to be in range based on the check
+            type.
+            </summary>
+            <returns>The wait.</returns>
+            <param name="locations">Locations.</param>
+            <param name="checkType">Check type.</param>
+            <param name="minRange">Minimum range.</param>
+            <param name="maxRange">Max range.</param>
+            <param name="onInRange">On in range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Wait(Motive.AR.LocationServices.Location,Motive.AR.LocationServices.LocationTriggerCheck,System.Double,System.Double,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}})">
+            <summary>
+            Wait for the location to be in range based on the check type.
+            </summary>
+            <returns>The wait.</returns>
+            <param name="location">Location.</param>
+            <param name="checkType">Check type.</param>
+            <param name="minRange">Minimum range.</param>
+            <param name="maxRange">Max range.</param>
+            <param name="onInRange">On in range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Wait(System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},System.Double,System.Double,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}},System.Boolean)">
+            <summary>
+            Wait for the locations to be in range based on the check type.
+            </summary>
+            <returns>The wait.</returns>
+            <param name="locations">Locations.</param>
+            <param name="minRange">Minimum range.</param>
+            <param name="maxRange">Max range.</param>
+            <param name="onInRange">On in range.</param>
+            <param name="allInRange">If set to <c>true</c> all in range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Wait(Motive.AR.LocationServices.Location,System.Double,System.Double,System.Action{System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location}})">
+            <summary>
+            Wait for the location to be in range based on the check type.
+            </summary>
+            <returns>The wait.</returns>
+            <param name="location">Location.</param>
+            <param name="minRange">Minimum range.</param>
+            <param name="maxRange">Max range.</param>
+            <param name="onInRange">On in range.</param>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Suspend">
+            <summary>
+            Suspend tracking. Can be resumed.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTrigger.Resume">
+            <summary>
+            Resume tracking.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationTracker">
+            <summary>
+            Use location trackers to get updates when the device position changes.
+            </summary>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationTracker.LastReading">
+            <summary>
+            The last reading from the underlying ILocationManager.
+            </summary>
+            <value>The last reading.</value>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationTracker.IsTracking">
+            <summary>
+            True if the tracker is currently running.
+            </summary>
+            <value><c>true</c> if the tracker is running; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationTracker.UpdateDistance">
+            <summary>
+            Specifies the minimum distance the device must move to receive an update.
+            Set this value to the minimum resolution required by the caller.
+            </summary>
+            <value>The update distance.</value>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationTracker.UpdateInterval">
+            <summary>
+            Specifies a minimum length of time between updates. Set this value to 
+            reduce overhead if immediate updates aren't required (even 1s can make
+            a big difference.)
+            </summary>
+            <value>The update interval.</value>
+        </member>
+        <member name="P:Motive.AR.LocationServices.LocationTracker.Accuracy">
+            <summary>
+            Specify the minimum resolution to request from the underlying location
+            service. The system will request the minimum of all values requested
+            by any active Location Trackers.
+            </summary>
+            <value>The accuracy.</value>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTracker.Start">
+            <summary>
+            Start tracking.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTracker.Stop">
+            <summary>
+            Stop tracking.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.LocationServices.LocationTracker.GetReading(System.Action{Motive.AR.LocationServices.LocationReading})">
+            <summary>
+            Request an immediate reading.
+            </summary>
+            <param name="action">Callback with the reading information
+            as soon as it's available. My return immediately.</param>
+        </member>
+        <member name="P:Motive.AR.LocationServices.UserLocationService.LastReading">
+            <summary>
+            Returns the last reading from the location manager.
+            Note that this reading may be out of date. If a fresh reading is
+            required, use the "GetReading" call.
+            </summary>
+        </member>
+        <member name="T:Motive.AR.LocationServices.LocationCache">
+            <summary>
+            A cache of all of the locations near the user. Populating this cache is up to the
+            app. By default, Location Match Conditions use the locations in the cache
+            as their location source. 
+            </summary>
+        </member>
+        <member name="P:Motive.AR.Media.LocativeAudioEngine.AudioActivationBoundary">
+            <summary>
+            Additional boundary around locative audio that determines
+            when the audio clips are actually loaded into memory
+            </summary>
+        </member>
+        <member name="M:Motive.AR.Models.LocationMatchCondition.Filter(System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},Motive.AR.LocationServices.Coordinates)">
+            <summary>
+            Filter the specified input. Does not apply the "count" parameter.
+            </summary>
+            <param name="input">Input.</param>
+        </member>
+    </members>
+</doc>

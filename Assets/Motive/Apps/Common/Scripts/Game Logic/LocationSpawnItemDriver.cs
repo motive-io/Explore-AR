@@ -84,7 +84,7 @@ public class LocationSpawnItemDriver<T> where T : ILocationSpawnItemOptions
         public DateTime SpawnTime { get; set; }
     }
 
-    Dictionary<string, ComputedLocationSpawnItems> m_locationComputedItems;
+    protected Dictionary<string, ComputedLocationSpawnItems> m_locationComputedItems;
     Dictionary<string, T> m_spawnItems;
     SetDictionary<string, Location> m_itemLocations;
 
@@ -101,7 +101,7 @@ public class LocationSpawnItemDriver<T> where T : ILocationSpawnItemOptions
         //m_usedLocations = new Dictionary<string, Location>();
     }
 
-    protected LocationSpawnItemResults<T> GetResults(string instanceId, Location location)
+    public LocationSpawnItemResults<T> GetResults(string instanceId, Location location)
     {
         ComputedLocationSpawnItems computed = null;
 
@@ -118,6 +118,15 @@ public class LocationSpawnItemDriver<T> where T : ILocationSpawnItemOptions
         return null;
     }
 
+    protected ComputedLocationSpawnItems GetComputedItems(Location location)
+    {
+        ComputedLocationSpawnItems computed = null;
+
+        m_locationComputedItems.TryGetValue(location.Id, out computed);
+
+        return computed;
+    }
+
     protected ComputedLocationSpawnItems GetOrCreateLocationComputedItems(Location location)
     {
         ComputedLocationSpawnItems computed = null;
@@ -131,6 +140,16 @@ public class LocationSpawnItemDriver<T> where T : ILocationSpawnItemOptions
         return computed;
     }
 
+    protected void RemoveComputedResult(Location location, string instanceId)
+    {
+        var computed = GetComputedItems(location);
+
+        if (computed != null)
+        {
+            computed.Results.Remove(instanceId);
+        }
+    }
+    
     protected void AddComputedResult(Location location, string instanceId, LocationSpawnItemResults<T> results)
     {
         var computed = GetOrCreateLocationComputedItems(location);

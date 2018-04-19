@@ -9,11 +9,11 @@ namespace Motive.Unity.UI
 {
     public class ScriptRunnerSelectItemEventArgs : EventArgs
     {
-        public ScriptDirectoryItem Episode { get; private set; }
+        public ScriptDirectoryItem ScriptDirectoryItem { get; private set; }
 
         public ScriptRunnerSelectItemEventArgs(ScriptDirectoryItem _script)
         {
-            Episode = _script;
+            ScriptDirectoryItem = _script;
         }
     }
 

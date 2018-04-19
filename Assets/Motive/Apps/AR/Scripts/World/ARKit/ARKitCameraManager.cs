@@ -35,9 +35,8 @@ namespace Motive.Unity.AR
 
         // Update is called once per frame
 
-        void Update()
+        public void SetPose()
         {
-
             if (EnableCameraTracking)
             {
                 if (m_camera != null)

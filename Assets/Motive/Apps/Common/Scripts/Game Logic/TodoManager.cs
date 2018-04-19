@@ -47,7 +47,10 @@ namespace Motive.Unity.Apps
 
         public void Initialize()
         {
-            AttractionManager.Instance.OnUpdated.AddListener(HandleUpdated);
+            if (AttractionManager.Instance)
+            {
+                AttractionManager.Instance.OnUpdated.AddListener(HandleUpdated);
+            }
             TaskManager.Instance.Updated += Handle_Updated;
             ARWorld.Instance.OnUpdated.AddListener(HandleUpdated);
             AppManager.Instance.ScriptsStarted += Handle_Updated;

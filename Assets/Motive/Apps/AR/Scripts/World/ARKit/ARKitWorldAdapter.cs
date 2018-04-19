@@ -7,6 +7,7 @@ using Motive.AR.LocationServices;
 using Motive.Core.Utilities;
 using Motive.AR.Models;
 using System;
+using Motive.Unity.Utilities;
 
 #if MOTIVE_ARKIT
 using UnityEngine.XR.iOS;
@@ -21,6 +22,9 @@ namespace Motive.Unity.AR
 		public Text TrackingState;
 		public Text RotationState;
 		public Text UsingARKitText;
+
+        public GameObject[] ShowWhenTracking;
+        public GameObject[] ShowWhenNotTracking;
 
 #if MOTIVE_ARKIT
 
@@ -61,9 +65,19 @@ namespace Motive.Unity.AR
 
             bool isArkitTracking = IsTracking(camera);
 
+            if (isArkitTracking)
+            {
+                CameraManager.SetPose();
+            }
+
             //m_logger.Debug("Frame updated trackingState={0} gps anchor={1}",
             //    camera.trackingState, (m_gpsAnchorCoords == null) ? "null" : m_gpsAnchorCoords.ToString());
-            
+
+            //Recalibrate();
+
+            ObjectHelper.SetObjectsActive(ShowWhenTracking, isArkitTracking);
+            ObjectHelper.SetObjectsActive(ShowWhenNotTracking, !isArkitTracking);
+
             UpdateObjects(isArkitTracking);
 		}
 
@@ -73,7 +87,7 @@ namespace Motive.Unity.AR
 			
 			CameraManager.Resume();
 
-			WorldCamera.enabled = true;
+            WorldCamera.enabled = true;
 		}
 
 		public override void Deactivate ()
@@ -83,15 +97,6 @@ namespace Motive.Unity.AR
 			WorldCamera.enabled = false;
 
 			base.Deactivate ();
-		}
-        
-		void MoveToCamera(Transform transform, bool resetHeight)
-		{
-			var y = resetHeight ? WorldCamera.transform.position.y : TrackingAnchor.transform.position.y;
-
-			// X, Z come from World Camera, Y comes from World Anchor
-			transform.position = 
-				new Vector3(WorldCamera.transform.position.x, y, WorldCamera.transform.position.z);
 		}
 
 		protected override void EnableTracking()
@@ -105,7 +110,7 @@ namespace Motive.Unity.AR
 		{
 			CameraManager.EnableCameraTracking = false;
 			CameraGyro.StartGyro();
-            CalibrateCompass(WorldAnchor.transform);
+            CalibrateCompass(WorldAnchor.transform, Get2DPosition(WorldCamera.transform));
 
 			MoveToCamera(WorldAnchor.transform, true);
 		}
@@ -123,6 +128,10 @@ namespace Motive.Unity.AR
 			{
 				UsingARKitText.text = UsingTracking ? "ARKit Active" : "ARKit Inactive";
 			}
+
+#if UNITY_EDITOR
+            UpdateObjects(true);
+#endif            
 		}
 #endif
     }

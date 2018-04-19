@@ -12,8 +12,19 @@ namespace Motive.Unity.Playables
 {
     public enum AudioContentRoute
     {
+        /// <summary>
+        /// Plays an ambient sound. No queuing (multiple sounds
+        /// can be played at once).
+        /// </summary>
         Ambient,
+        /// <summary>
+        /// Plays audio in sequence.
+        /// </summary>
         Narrator,
+        /// <summary>
+        /// Plays one audio track at a time, cross-fading between
+        /// tracks as they're activated/deactivated.
+        /// </summary>
         Soundtrack
     }
 
@@ -26,7 +37,6 @@ namespace Motive.Unity.Playables
 
         class PlayerContext
         {
-
             public LocalizedAudioContent AudioContent { get; private set; }
 
             public IAudioPlayer Player { get; private set; }
@@ -50,6 +60,7 @@ namespace Motive.Unity.Playables
 
             public PlayerContext(string instanceId, IAudioPlayer player, LocalizedAudioContent audioContent)
             {
+                this.InstanceId = instanceId;
                 this.Player = player;
                 this.AudioContent = audioContent;
             }
@@ -264,7 +275,10 @@ namespace Motive.Unity.Playables
                 {
                     StopPlaying(ctxt.InstanceId);
 
-                    onComplete();
+                    if (onComplete != null)
+                    {
+                        onComplete();
+                    }
                 });
 
         }

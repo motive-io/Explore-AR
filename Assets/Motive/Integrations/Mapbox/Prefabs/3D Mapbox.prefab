@@ -184,8 +184,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 4991542487283396}
+  m_Children: []
   m_Father: {fileID: 4272086541302004}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -197,7 +196,7 @@ Transform:
   m_GameObject: {fileID: 1435105378107992}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0.001}
-  m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4239355346043228}
   m_Father: {fileID: 4188319282063184}
@@ -252,7 +251,8 @@ Transform:
   m_LocalRotation: {x: -0.00000011520233, y: 0.70710677, z: -0.7071069, w: -0.000000115202305}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4991542487283396}
   m_Father: {fileID: 4188319282063184}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 89.980194, y: -180, z: 0}
@@ -266,7 +266,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 4239355346043228}
+  m_Father: {fileID: 4980911892936708}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4997667819383572
@@ -376,9 +376,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 0
-  serializedVersion: 2
+  serializedVersion: 3
   m_Convex: 0
-  m_InflateMesh: 0
+  m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!64 &64441913401446466
@@ -390,9 +390,9 @@ MeshCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  serializedVersion: 2
+  serializedVersion: 3
   m_Convex: 0
-  m_InflateMesh: 0
+  m_CookingOptions: 14
   m_SkinWidth: 0.01
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!114 &114110901089184698
@@ -410,7 +410,7 @@ MonoBehaviour:
   MapVisualizer: {fileID: 11400000, guid: 0ff2b331e59cf314aaa9dbb7b41789fd, type: 2}
   PlaneSize: {x: 10, y: 10}
   BoundaryTiles: 0
-  RootTransform: {fileID: 4991542487283396}
+  RootTransform: {fileID: 4239355346043228}
   XAxis: {x: 1, y: 0, z: 0}
   YAxis: {x: 0, y: 0, z: 1}
   HAxis: {x: -0, y: 1, z: 0}

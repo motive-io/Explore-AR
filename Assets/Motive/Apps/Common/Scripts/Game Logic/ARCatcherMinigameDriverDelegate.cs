@@ -15,6 +15,8 @@ namespace Motive.Unity.Gaming
         public UnityEvent OnAction;
         public bool ShowActionButton;
 
+        ARGuideData m_guideData;
+
         public void ShowTask(LocationTaskDriver driver, ARWorldObject worldObject)
         {
         }
@@ -27,12 +29,14 @@ namespace Motive.Unity.Gaming
 
                 if (focus)
                 {
-                    ARViewManager.Instance.SetGuide(new ARGuideData
+                    m_guideData = new ARGuideData
                     {
                         Instructions = task.Title,
                         Range = task.ActionRange,
                         WorldObject = worldObject
-                    });
+                    };
+
+                    ARViewManager.Instance.SetGuide(m_guideData);
 
                     var text = driver.IsTakeTask ?
                         Localize.GetLocalizedString("ARAnnotation.TapToTake", "Tap to Collect") :
@@ -42,6 +46,11 @@ namespace Motive.Unity.Gaming
                 }
                 else
                 {
+                    if (m_guideData != null)
+                    {
+                        ARViewManager.Instance.ClearGuide(m_guideData);
+
+                    }
                     ARAnnotationViewController.Instance.RemoveTapAnnotation(worldObject);
                 }
             }
@@ -49,9 +58,10 @@ namespace Motive.Unity.Gaming
 
         public void HideTask(LocationTaskDriver driver, ARWorldObject worldObject)
         {
-            // TODO: This can obliterate another caller that set the guide and annotation. Best case
-            // would be a stack to only show the most recent of any guide/stack.
-            ARViewManager.Instance.SetGuide(null);
+            if (m_guideData != null)
+            {
+                ARViewManager.Instance.ClearGuide(m_guideData);
+            }
 
             ARAnnotationViewController.Instance.RemoveTapAnnotation(worldObject);
         }

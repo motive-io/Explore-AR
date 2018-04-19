@@ -68,6 +68,7 @@ namespace Motive.Unity.Scripting
             JsonTypeRegistry.Instance.RegisterType("motive.gaming.walletCurrency", typeof(WalletCurrency));
             JsonTypeRegistry.Instance.RegisterType("motive.gaming.walletCurrencyLimit", typeof(WalletCurrencyLimit));
             JsonTypeRegistry.Instance.RegisterType("motive.gaming.savePoint", typeof(SavePoint));
+            JsonTypeRegistry.Instance.RegisterType("motive.gaming.interfaceAction", typeof(InterfaceAction));
 
             JsonTypeRegistry.Instance.RegisterType("motive.gaming.recipe", typeof(Recipe));
             JsonTypeRegistry.Instance.RegisterType("motive.gaming.recipeActivator", typeof(RecipeActivator));
@@ -128,6 +129,7 @@ namespace Motive.Unity.Scripting
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.gaming.savePoint", new SavePointProcessor());
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.gaming.recipeActivator", new RecipeActivatorProcessor());
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.gaming.recipeDeactivator", new RecipeDeactivatorProcessor());
+            ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.gaming.interfaceAction", new InterfaceActionProcessor());
 
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.locationTask", new LocationTaskProcessor());
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.locationMarker", new LocationMarkerProcessor());

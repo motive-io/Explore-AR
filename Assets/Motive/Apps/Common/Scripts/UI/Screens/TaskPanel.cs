@@ -44,8 +44,7 @@ namespace Motive.Unity.UI
                 {
                     OnItemAction(item);
                 });
-
-            // TODO!
+            
             item.Populate(driver);
             ConfigureTaskItem(item, driver);
 
