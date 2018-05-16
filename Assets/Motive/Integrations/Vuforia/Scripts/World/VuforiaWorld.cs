@@ -21,6 +21,8 @@ using Motive.Core.Media;
 using System.Collections;
 using Motive;
 using Motive.Unity.AR;
+using Motive.Unity.World;
+using Motive.Unity.Models;
 
 #if MOTIVE_VUFORIA
 using Vuforia;
@@ -122,6 +124,8 @@ namespace Motive.AR.Vuforia
 
         protected override void Awake()
         {
+            base.Awake();
+
             g_instance = this;
 
             m_trackingVuMarkers = new SetDictionary<VuMarkIdentifier, VuforiaTrackableEventHandler>();
@@ -140,6 +144,16 @@ namespace Motive.AR.Vuforia
             if (Activated == null) Activated = new UnityEvent();
             if (Deactivated == null) Deactivated = new UnityEvent();
 
+            // Disable the ARCamera so that the AR controller doesn't start Vuforia on us
+            ARCamera.enabled = false;
+            
+            // Need to review: the code below errors out when trying to destroy
+            // the trackables.
+            // AppManager.Instance.Reloading += App_Reloading;
+        }
+
+        public override void Initialize()
+        {
             if (ActivateOnWake)
             {
                 Activate();
@@ -152,19 +166,21 @@ namespace Motive.AR.Vuforia
 
                     CameraDevice.Instance.SetFocusMode(CameraDevice.FocusMode.FOCUS_MODE_CONTINUOUSAUTO);
 
-                    ARCamera.enabled = false;
+                    SetCameraActive(true);
                 }));
             }
             else
             {
-                ARCamera.enabled = false;
+                SetCameraActive(false);
             }
 
-            // Need to review: the code below errors out when trying to destroy
-            // the trackables.
-            // AppManager.Instance.Reloading += App_Reloading;
+            base.Initialize();
+        }
 
-            base.Awake();
+        private void SetCameraActive(bool isActive)
+        {
+            ARCamera.enabled = isActive;
+            WorldCamera.enabled = isActive;
         }
 
         private void App_Reloading(object sender, EventArgs e)
@@ -224,15 +240,34 @@ namespace Motive.AR.Vuforia
             }
         }
 
+        bool m_isInitializing;
+
         IEnumerator InitVuforia(Action onReady)
         {
-            m_onStart = onReady;
+            m_logger.Debug("InitVuforia");
+
+            //m_onStart = onReady;
 
             //VuforiaARController.Instance.RegisterVuforiaInitializedCallback();
 
-            VuforiaRuntime.Instance.InitVuforia();
+            if (!m_isInitializing)
+            {
+                m_isInitializing = true;
 
-            if (!VuforiaRuntime.Instance.HasInitialized)
+                // Enable the behaviour here because it needs to be enabled in order
+                // to complete the initialization.
+                ARCamera.enabled = true;
+
+                VuforiaRuntime.Instance.InitVuforia();
+
+                m_isInitializing = false;
+            }
+
+#if UNITY_2018_OR_LATER
+            while (VuforiaRuntime.Instance.InitializationState != VuforiaRuntime.InitState.INITIALIZED)
+#else
+            while (!VuforiaRuntime.Instance.HasInitialized)
+#endif
             {
                 yield return 0;
             }
@@ -242,7 +277,7 @@ namespace Motive.AR.Vuforia
 
         IEnumerator StartCamera(Action onReady)
         {
-            ARCamera.enabled = true;
+            SetCameraActive(true);
 
             //yield return 0;
 
@@ -283,8 +318,9 @@ namespace Motive.AR.Vuforia
 
         public override void Activate()
         {
+            m_logger.Debug("Activate IsInitialized={0}", IsInitialized);
+
             base.Activate();
-            //ARCamera.enabled = true;
 
             if (InitializingPane)
             {
@@ -325,7 +361,13 @@ namespace Motive.AR.Vuforia
 
             if (!IsInitialized)
             {
-                StartCoroutine(InitVuforia(start));
+                // If camera is always on, skip the "start" call and
+                // jump right to onReady. (AlwaysOn will handle the 
+                // initialization).
+                Action onInit = (CameraBehavior == CameraRunningBehavior.AlwaysOn) ?
+                    onReady : start;
+                
+                StartCoroutine(InitVuforia(onInit));
             }
             else if (CameraBehavior == CameraRunningBehavior.OnlyWhileActive)
             {
@@ -333,7 +375,7 @@ namespace Motive.AR.Vuforia
             }
             else
             {
-                ARCamera.enabled = true;
+                SetCameraActive(true);
 
                 onReady();
             }
@@ -407,10 +449,8 @@ namespace Motive.AR.Vuforia
                 if (CameraBehavior == CameraRunningBehavior.OnlyWhileActive)
                 {
                     CameraDevice.Instance.Stop();
-                }
-                else
-                {
-                    //ARCamera.enabled = false;
+
+                    SetCameraActive(false);
                 }
             }
         }

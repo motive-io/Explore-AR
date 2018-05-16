@@ -144,6 +144,11 @@ namespace Motive.Unity.Playables
             m_locativeAudioProcessor = new LocativeAudioContentProcessor();
         }
 
+        private void Start()
+        {
+            PlayableContentHandler.Instance.Delegate = this;
+        }
+
         public override void Reset()
         {
             m_screenQueue.Reset();
@@ -306,7 +311,7 @@ namespace Motive.Unity.Playables
             }
         }
 
-        protected virtual bool IsVideoContent(IContent content)
+        protected virtual bool IsVideoContent(IScriptObject content)
         {
             var media = content as MediaContent;
 
@@ -320,7 +325,7 @@ namespace Motive.Unity.Playables
             return false;
         }
 
-        protected virtual bool IsImageContent(IContent content)
+        protected virtual bool IsImageContent(IScriptObject content)
         {
             var media = content as MediaContent;
 
@@ -334,7 +339,7 @@ namespace Motive.Unity.Playables
             return false;
         }
 
-        protected virtual bool IsAudioContent(IContent content)
+        protected virtual bool IsAudioContent(IScriptObject content)
         {
             var media = content as MediaContent;
 

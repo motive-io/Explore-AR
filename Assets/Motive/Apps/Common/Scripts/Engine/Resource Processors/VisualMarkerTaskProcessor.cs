@@ -1,8 +1,7 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
-using UnityEngine;
-using System.Collections;
 using Motive.AR.Models;
 using Motive.Core.Scripting;
+using Motive.Unity.Gaming;
 
 namespace Motive.Unity.Scripting
 {

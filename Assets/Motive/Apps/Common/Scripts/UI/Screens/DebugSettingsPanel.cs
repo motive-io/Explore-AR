@@ -38,16 +38,9 @@ namespace Motive.Unity.UI
             }
             else
             {
-                OptionsDialogPanel.Show("Reset all data?", new string[] { "OK", "Cancel" },
-                    (opt) =>
-                    {
-                        if (opt == "OK")
-                        {
-                            Back();
+                Back();
 
-                            AppManager.Instance.Reset();
-                        }
-                    });
+                AppManager.Instance.Reset();
             }
         }
 

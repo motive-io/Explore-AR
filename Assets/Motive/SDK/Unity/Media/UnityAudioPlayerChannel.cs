@@ -37,8 +37,6 @@ namespace Motive.Unity.Media
         
         protected virtual void Awake()
         {
-			g_instance = this;
-
 			m_playingPlayers = new HashSet<UnityAudioPlayer>();
 			m_actions = new List<Action>();
 			m_logger = new Logger(this);
@@ -675,13 +673,6 @@ namespace Motive.Unity.Media
 					playState.OnStop();
 				}
 			}
-		}
-
-		private static UnityAudioPlayerChannel g_instance;
-
-		public static UnityAudioPlayerChannel Instance
-		{
-			get { return g_instance; }
 		}
 	}
 }

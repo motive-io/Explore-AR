@@ -18,7 +18,15 @@ namespace Motive.Unity.Scripting
                 LocativeAudioAnnotationHandler.Instance.AddLocativeAudio(context.InstanceId, resource);
             }
 
-            LocativeAudioDriver.Instance.Activate(context.InstanceId, resource);
+            LocativeAudioDriver.Instance.Activate(context.InstanceId, resource,
+                () =>
+                {
+                    context.Open();
+                },
+                (success) =>
+                {
+                    context.Close();
+                });
         }
 
         public override void DeactivateResource(ResourceActivationContext context, LocativeAudioContent resource)

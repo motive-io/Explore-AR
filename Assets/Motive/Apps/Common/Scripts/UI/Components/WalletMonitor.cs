@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
 using Motive.Unity.Apps;
 using Motive.Unity.Gaming;
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,6 +15,7 @@ namespace Motive.Unity.UI
     {
         public string Currency;
         public Text Text;
+        public int DecimalPlaces;
 
         bool m_updated;
 
@@ -42,8 +44,14 @@ namespace Motive.Unity.UI
 
         void UpdateText()
         {
-            var val = Wallet.Instance.GetCount(Currency);
-            Text.text = val.ToString();
+            double val = Wallet.Instance.GetCount(Currency);
+
+            if (DecimalPlaces > 0)
+            {
+                val = val / (Math.Pow(10, DecimalPlaces));
+            }
+
+            Text.text = val.ToString("N" + DecimalPlaces);
         }
     }
 

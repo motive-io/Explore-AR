@@ -72,29 +72,38 @@ namespace Motive.Unity.Apps
                 {
                     Action onComplete = () =>
                     {
+                        Action runScripts = () =>
+                        {
+                            try
+                            {
+                                ScriptManager.Instance.RunScripts();
+
+                                if (ScriptsStarted != null)
+                                {
+                                    ScriptsStarted(this, EventArgs.Empty);
+                                }
+                            }
+                            catch (Exception x)
+                            {
+                                if (LaunchFailed != null)
+                                {
+                                    LaunchFailed(this, new UnhandledExceptionEventArgs(x, false));
+                                }
+                            }
+                        };
+
                         if (loadingPanel)
                         {
                             loadingPanel.OnClose = () =>
                             {
-                                try
-                                {
-                                    ScriptManager.Instance.RunScripts();
-
-                                    if (ScriptsStarted != null)
-                                    {
-                                        ScriptsStarted(this, EventArgs.Empty);
-                                    }
-                                }
-                                catch (Exception x)
-                                {
-                                    if (LaunchFailed != null)
-                                    {
-                                        LaunchFailed(this, new UnhandledExceptionEventArgs(x, false));
-                                    }
-                                }
+                                runScripts();
                             };
 
                             loadingPanel.MediaReady();
+                        }
+                        else
+                        {
+                            runScripts();
                         }
 
                     };
@@ -146,7 +155,12 @@ namespace Motive.Unity.Apps
 
         public void Start()
         {
-            var loadingPanel = PanelManager.Instance.Push<LoadingPanel>();
+            LoadingPanel loadingPanel = null;
+
+            if (PanelManager.Instance)
+            {
+                loadingPanel = PanelManager.Instance.Push<LoadingPanel>();
+            }
 
             ReloadFromServer(loadingPanel);
 
@@ -179,7 +193,12 @@ namespace Motive.Unity.Apps
                 Resetting(this, EventArgs.Empty);
             }
 
-            var loadingPanel = PanelManager.Instance.Push<LoadingPanel>();
+            LoadingPanel loadingPanel = null;
+
+            if (PanelManager.Instance)
+            {
+                loadingPanel = PanelManager.Instance.Push<LoadingPanel>();
+            }
 
             ScriptManager.Instance.Reset(() =>
             {

@@ -49,7 +49,9 @@ namespace Motive.Gaming.Models
         }
 
         public ScriptTimer Timer { get; set; }
-        public IContent Content { get; set; }
+
+        public IScriptObject Content { get; set; }
+
         public string Route { get; set; }
         public string Priority { get; set; }
 

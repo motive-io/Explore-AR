@@ -52,7 +52,12 @@ namespace Motive.Unity.Apps
                 AttractionManager.Instance.OnUpdated.AddListener(HandleUpdated);
             }
             TaskManager.Instance.Updated += Handle_Updated;
-            ARWorld.Instance.OnUpdated.AddListener(HandleUpdated);
+
+            if (ARWorld.Instance)
+            {
+                ARWorld.Instance.OnUpdated.AddListener(HandleUpdated);
+            }
+
             AppManager.Instance.ScriptsStarted += Handle_Updated;
         }
 

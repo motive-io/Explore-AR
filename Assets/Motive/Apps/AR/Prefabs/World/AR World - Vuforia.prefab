@@ -108,7 +108,7 @@ GameObject:
   - component: {fileID: 4958193725413488}
   - component: {fileID: 20080003563163816}
   - component: {fileID: 81161848806538042}
-  - component: {fileID: 114153840859804388}
+  - component: {fileID: 114568174373726802}
   - component: {fileID: 114543105235665928}
   - component: {fileID: 114636472313989272}
   m_Layer: 0
@@ -579,7 +579,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1957101893242636
 GameObject:
   m_ObjectHideFlags: 1
@@ -780,13 +780,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1660669828282024}
-  m_LocalRotation: {x: 0.1452197, y: -0, z: -0, w: 0.98939943}
+  m_LocalRotation: {x: 0.656059, y: 0, z: 0, w: 0.75470966}
   m_LocalPosition: {x: 0, y: 35, z: -26}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4958193725413488}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 16.7, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 82, y: 0, z: 0}
 --- !u!4 &4186376801899382
 Transform:
   m_ObjectHideFlags: 1
@@ -1927,19 +1927,6 @@ MonoBehaviour:
   m_deviceSwivel: {fileID: 0}
   m_compassSwivel: {fileID: 0}
   m_world: {fileID: 0}
---- !u!114 &114153840859804388
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1213676041563600}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1826476478, guid: 1e108ae5f2133934f948edded555f03e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mWorldCenterMode: 3
-  mWorldCenter: {fileID: 0}
 --- !u!114 &114196195402549556
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1955,7 +1942,7 @@ MonoBehaviour:
   WorldAnchor: {fileID: 1567906830389428}
   Canvas: {fileID: 0}
   ActivateWhenActive: []
-  ARCamera: {fileID: 114153840859804388}
+  ARCamera: {fileID: 114568174373726802}
   InitializingPane: {fileID: 0}
   Activated:
     m_PersistentCalls:
@@ -1968,7 +1955,7 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   ActivateOnWake: 0
-  AlwaysOn: 1
+  CameraBehavior: 0
   MarkerImageObject: {fileID: 114634943668783570, guid: 1a310be2079f05b4089d8ab59c91d6db,
     type: 2}
   MarkerVideoObject: {fileID: 114283420015760294, guid: a11bdb53f4c8648439347304e611f698,
@@ -1997,7 +1984,10 @@ MonoBehaviour:
     type: 2}
   Augmented3dObject: {fileID: 114000011910162824, guid: 799170f23f9935d46937de69d213b1f4,
     type: 2}
-  AugmentedVideoObject: {fileID: 0}
+  AugmentedVideoObject: {fileID: 114283420015760294, guid: 8061e5974f1bdd943b4fedcad985f8af,
+    type: 2}
+  AugmentedAudioObject: {fileID: 114999962957227616, guid: 7717bd8df70460b48b053b56a5932ba2,
+    type: 2}
   DefaultAdapter: {fileID: 0}
   ARCoreAdapter: {fileID: 0}
   ARKitAdapter: {fileID: 0}
@@ -2103,6 +2093,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c47f92041efbb4b429a4eafca855ebe3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114568174373726802
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1213676041563600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1826476478, guid: 1e108ae5f2133934f948edded555f03e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mWorldCenterMode: 2
+  mWorldCenter: {fileID: 0}
 --- !u!114 &114636472313989272
 MonoBehaviour:
   m_ObjectHideFlags: 1

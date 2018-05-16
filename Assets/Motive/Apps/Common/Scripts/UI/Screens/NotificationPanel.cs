@@ -98,7 +98,7 @@ namespace Motive.Unity.UI
             {
                 var localUrl = WebServices.Instance.MediaDownloadManager.GetPathForItem(Data.Resource.Sound.Url);
 
-                UnityAudioPlayerChannel.Instance.Play(new Uri(localUrl));
+                Platform.Instance.ForegroundAudioChannel.Play(new Uri(localUrl));
             }
 
             if (AutoDismiss)

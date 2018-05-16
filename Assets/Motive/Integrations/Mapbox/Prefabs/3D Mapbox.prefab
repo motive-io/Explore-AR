@@ -80,7 +80,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1435105378107992
 GameObject:
   m_ObjectHideFlags: 1
@@ -408,8 +408,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MapView: {fileID: 114269470454013360}
   MapVisualizer: {fileID: 11400000, guid: 0ff2b331e59cf314aaa9dbb7b41789fd, type: 2}
-  PlaneSize: {x: 10, y: 10}
-  BoundaryTiles: 0
+  TileSize: {x: 2.5, y: 2.5}
   RootTransform: {fileID: 4239355346043228}
   XAxis: {x: 1, y: 0, z: 0}
   YAxis: {x: 0, y: 0, z: 1}
@@ -445,8 +444,8 @@ MonoBehaviour:
   EnableRenderThrottling: 1
   RenderThrottleThreshold: 0.005
   MaxSkippedThrottleFrames: 3
-  TileCountX: 4
-  TileCountY: 4
+  TileCountX: 8
+  TileCountY: 8
 --- !u!114 &114314073689225108
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -483,8 +482,8 @@ MonoBehaviour:
   PanSpeed: 0.1
   DefaultAnnotationElevation: {x: 0, y: 0.1, z: 0}
   SelectedAnnotationElevation: {x: 0, y: 0.1, z: 0}
-  MapX: {x: 10, y: 0, z: 0}
-  MapY: {x: 0, y: 0, z: 10}
+  MapX: {x: 20, y: 0, z: 0}
+  MapY: {x: 0, y: 0, z: 20}
   MinZoom: 2
   MaxZoom: 20
 --- !u!114 &114812019589321786

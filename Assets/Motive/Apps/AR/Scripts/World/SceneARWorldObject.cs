@@ -12,6 +12,7 @@ namespace Motive.Unity.AR
     /// </summary>
     public class SceneARWorldObject : ARWorldObject
     {
+        public ARWorldObject AnchorObject { get; set; }
         public IScriptObject Position { get; set; }
     }
 }

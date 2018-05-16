@@ -15,10 +15,11 @@ namespace Motive.UI.Framework
     {
         public string PanelName;
 
+        [SerializeField]
+        Panel m_panel;
+
         public UnityEvent OnPush;
         public UnityEvent OnPop;
-
-        Panel m_panel;
 
         public Panel GetPanel()
         {

@@ -1,5 +1,3 @@
-using UnityEngine;
-using System.Collections;
 using Motive.Core.Scripting;
 
 namespace Motive.Gaming.Models

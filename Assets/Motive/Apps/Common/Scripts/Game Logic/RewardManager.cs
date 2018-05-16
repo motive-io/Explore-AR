@@ -68,6 +68,25 @@ namespace Motive.Unity.Gaming
                 doReward();
             }
         }
+        
+        /// <summary>
+        /// Show the rewards screen without actually awarding the valuables.
+        /// </summary>
+        /// <param name="valuables"></param>
+        public void ShowRewards(ValuablesCollection valuables, Action onClose = null)
+        {
+            if (Delegate != null)
+            {
+                Delegate.ProcessReward(valuables, onClose);
+            }
+            else
+            {
+                if (onClose != null)
+                {
+                    onClose();
+                }
+            }
+        }
     }
 
 }

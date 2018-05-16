@@ -38,6 +38,8 @@ namespace Motive.Unity.UI
 
         public OptionsDialogPanel StopTourConfirm;
 
+        public Mode InitialMode = Mode.Map;
+
         public enum Mode
         {
             Map,
@@ -66,13 +68,26 @@ namespace Motive.Unity.UI
                 };
             };
 
+            if (!MainCamera)
+            {
+                MainCamera = Camera.main;
+            }
+
             base.Awake();
         }
 
         protected override void Start()
         {
-            DeactivateMode(Mode.AR);
-            ActivateMode(Mode.Map);
+            if (InitialMode == Mode.Map)
+            {
+                DeactivateMode(Mode.AR);
+                ActivateMode(Mode.Map);
+            }
+            else
+            {
+                DeactivateMode(Mode.Map);
+                ActivateMode(Mode.AR);
+            }
 
             base.Start();
         }

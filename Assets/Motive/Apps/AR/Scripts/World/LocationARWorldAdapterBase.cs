@@ -253,23 +253,47 @@ namespace Motive.Unity.AR
             {
                 var relPos = worldObject.Position as RelativeWorldPosition;
 
-                var hdg = GetWorldHeading(worldCamera.transform);
+                if (worldObject.AnchorObject != null)
+                {
+                    var y = (float)relPos.Elevation;
+                    var x = (float)(relPos.Distance * Math.Sin(relPos.Angle));
+                    var z = (float)(relPos.Distance * Math.Cos(relPos.Angle));
 
-                var angle = hdg + relPos.Angle;
-                var rangle = angle * Mathf.Deg2Rad;
+                    var offset = new Vector3(x, y, z);
 
-                m_logger.Debug("Using relative position with angle={0} and cam hdg={1}",
-                               relPos.Angle, hdg);
+                    var objPos = worldObject.AnchorObject.GameObject.transform.position + offset;
 
-                var y = (float)relPos.Elevation;
-                var x = (float)(relPos.Distance * Math.Sin(rangle));
-                var z = (float)(relPos.Distance * Math.Cos(rangle));
+                    var cam = ARWorld.Instance.GetWorldObjectCamera(worldObject.AnchorObject);
 
-                var spawnPos = worldCamera.transform.position + new Vector3(x, y, z);//Get2DPosition(worldAnchor);
+                    var camRel = objPos - cam.transform.position;
 
-                gameObj.transform.rotation = Quaternion.AngleAxis((float)angle, Vector3.up);
-                //gameObj.transform.Rotate(Vector3.up, (float)angle);
-                gameObj.transform.position = spawnPos;
+                    objPos = worldCamera.transform.position + camRel;
+
+                    //var anchorCamHdg = GetWorldHeading(cam.transform); 
+
+                    gameObj.transform.rotation = worldObject.GameObject.transform.rotation;
+                    gameObj.transform.position = objPos;
+                }
+                else
+                {
+                    var hdg = GetWorldHeading(worldCamera.transform);
+
+                    var angle = hdg + relPos.Angle;
+                    var rangle = angle * Mathf.Deg2Rad;
+
+                    m_logger.Debug("Using relative position with angle={0} and cam hdg={1}",
+                                   relPos.Angle, hdg);
+
+                    var y = (float)relPos.Elevation;
+                    var x = (float)(relPos.Distance * Math.Sin(rangle));
+                    var z = (float)(relPos.Distance * Math.Cos(rangle));
+
+                    var spawnPos = worldCamera.transform.position + new Vector3(x, y, z);
+
+                    gameObj.transform.rotation = Quaternion.AngleAxis((float)angle, Vector3.up);
+
+                    gameObj.transform.position = spawnPos;
+                }
             }
             else if (worldObject.Position is FixedWorldPosition)
             {

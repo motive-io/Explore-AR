@@ -25,8 +25,7 @@ namespace Motive.Unity.Maps
 #if MOTIVE_MAPBOX
         public AbstractMapVisualizer MapVisualizer;
 #endif
-        public Vector2 PlaneSize = new Vector2(10f, 10f);
-        public int BoundaryTiles = 1;
+        public Vector2 TileSize = new Vector2(2.5f, 2.5f);
         public Transform RootTransform;
 
         public Vector3 XAxis = Vector3.right;
@@ -71,7 +70,7 @@ namespace Motive.Unity.Maps
 
                 var referenceTileRect = Conversions.TileBounds(tileId);
 
-                return (PlaneSize.x / MapView.TileDriver.TileCountX) / (float)referenceTileRect.Size.x;
+                return (TileSize.x) / (float)referenceTileRect.Size.x;
             }
         }
 
@@ -160,11 +159,14 @@ namespace Motive.Unity.Maps
         void PlaceTile(UnityTile tile, int ox, int oy, int x, int y)
         {
             // Sits on a plane which is 10x10
-            float sx = PlaneSize.x / MapController.Instance.MapView.TileDriver.TileCountX;
-            float sy = PlaneSize.y / MapController.Instance.MapView.TileDriver.TileCountY;
+            float sx = TileSize.x;
+            float sy = TileSize.y;
 
-            var vx = (x - ox - BoundaryTiles) * sx - (PlaneSize.x - sx) / 2;
-            var vy = -(y - oy - BoundaryTiles) * sy + (PlaneSize.y - sy) / 2;
+            float px = sx * MapView.TileDriver.TileCountX;
+            float py = sy * MapView.TileDriver.TileCountY;
+
+            var vx = (x - ox) * sx - (px - sx) / 2;
+            var vy = -(y - oy) * sy + (py - sy) / 2;
 
             //tile.transform.localPosition = new Vector3((x - ox) * sx - (PlaneSize.x - sx) / 2 - BoundaryTiles * sx, 0, -(y - oy) * sy + (PlaneSize.y - sy) / 2 + BoundaryTiles * sy);
             tile.transform.localPosition = vx * XAxis + vy * YAxis;
@@ -317,8 +319,8 @@ namespace Motive.Unity.Maps
             var ox = midx - mid.X;// +.5;
             var oy = midy - mid.Y;// +.5;
 
-            float sx = PlaneSize.x / countX;
-            float sy = PlaneSize.y / countY;
+            float sx = TileSize.x;
+            float sy = TileSize.y;
 
             var vx = (float)ox * sx * RootTransform.localScale.x;
             var vy = (float)-oy * sy * RootTransform.localScale.z;

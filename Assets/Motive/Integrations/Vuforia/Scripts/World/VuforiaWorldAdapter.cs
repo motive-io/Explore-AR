@@ -47,7 +47,7 @@ namespace Motive.AR.Vuforia
 
             if (m_positionalDeviceTracker != null)
             {
-                m_anchor = m_positionalDeviceTracker.CreateMidAirAnchor("mid air", WorldAnchor.transform);
+                //var anchor = m_positionalDeviceTracker.CreateMidAirAnchor("mid air", WorldAnchor.transform);
             }
 
             DeviceTrackerARController.Instance.RegisterDevicePoseStatusChangedCallback((status) =>

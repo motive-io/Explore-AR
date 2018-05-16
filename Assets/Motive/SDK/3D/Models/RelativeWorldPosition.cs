@@ -1,4 +1,5 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
+using Motive.Core.Models;
 using Motive.Core.Scripting;
 
 namespace Motive._3D.Models
@@ -8,6 +9,7 @@ namespace Motive._3D.Models
     /// </summary>
     public class RelativeWorldPosition : ScriptObject
     {
+        public ObjectReference AnchorObjectReference { get; set; }
         public double Angle { get; set; }
         public double Distance { get; set; }
         public double Elevation { get; set; }

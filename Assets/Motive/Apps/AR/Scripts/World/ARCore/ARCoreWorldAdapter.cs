@@ -6,6 +6,7 @@ using UnityEngine.UI;
 using Motive.AR.LocationServices;
 using Motive.Core.Utilities;
 using Motive.AR.Models;
+using System;
 
 #if MOTIVE_ARCORE
 using GoogleARCore;
@@ -42,9 +43,16 @@ namespace Motive.Unity.AR
 
         public override void Activate()
         {
-            base.Activate();
+            try
+            {
+                base.Activate();
 
-            WorldCamera.enabled = true;
+                WorldCamera.enabled = true;
+            }
+            catch (Exception x)
+            {
+                Debug.LogException(x);
+            }
         }
 
         public override void Deactivate()
@@ -53,16 +61,7 @@ namespace Motive.Unity.AR
 
             base.Deactivate();
         }
-
-        void MoveToCamera(Transform transform, bool resetHeight)
-        {
-            var y = resetHeight ? WorldCamera.transform.position.y : TrackingAnchor.transform.position.y;
-
-            // X, Z come from World Camera, Y comes from World Anchor
-            transform.position =
-                new Vector3(WorldCamera.transform.position.x, y, WorldCamera.transform.position.z);
-        }
-
+        
         protected override void EnableTracking()
         {
             CameraGyro.StopGyro();

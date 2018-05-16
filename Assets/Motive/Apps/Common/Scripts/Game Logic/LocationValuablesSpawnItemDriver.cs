@@ -53,7 +53,7 @@ namespace Motive.Unity.Gaming
         {
             if (showReward)
             {
-                RewardPanel.Show(spawnItems.ValuablesCollection);
+                RewardManager.Instance.ShowRewards(spawnItems.ValuablesCollection);
             }
 
             TransactionManager.Instance.AddValuables(spawnItems.ValuablesCollection);

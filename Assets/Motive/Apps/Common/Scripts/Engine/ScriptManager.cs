@@ -175,12 +175,20 @@ namespace Motive.Unity.Scripting
 
             var callerMgr = GetStorageManager();
 
+            Action startSoundtrack = () =>
+            {
+                if (AudioContentPlayer.Instance != null)
+                {
+                    AudioContentPlayer.Instance.StartSoundtrack();
+                }
+            };
+
             if (toRun.Count > 0)
             {
                 // Start the soundtrack after all scripts have been launched
                 // to make sure only the currently active soundtrack song gets
                 // launched.
-                BatchProcessor iter = new BatchProcessor(toRun.Count, AudioContentPlayer.Instance.StartSoundtrack);
+                BatchProcessor iter = new BatchProcessor(toRun.Count, startSoundtrack);
 
                 foreach (var script in toRun)
                 {
@@ -189,7 +197,7 @@ namespace Motive.Unity.Scripting
             }
             else
             {
-                AudioContentPlayer.Instance.StartSoundtrack();
+                startSoundtrack();
             }
 
             if (ScriptsUpdated != null)

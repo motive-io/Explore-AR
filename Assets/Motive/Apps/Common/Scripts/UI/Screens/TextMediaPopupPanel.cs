@@ -31,7 +31,7 @@ namespace Motive.Unity.UI
             {
                 var localUrl = WebServices.Instance.MediaDownloadManager.GetPathForItem(data.MediaItem.Url);
 
-                m_player = UnityAudioPlayerChannel.Instance.CreatePlayer(new Uri(localUrl));
+                m_player = Platform.Instance.ForegroundAudioChannel.CreatePlayer(new Uri(localUrl));
 
                 m_player.Play();
 

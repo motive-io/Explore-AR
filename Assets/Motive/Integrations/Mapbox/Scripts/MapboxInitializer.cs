@@ -12,9 +12,9 @@ namespace Motive.Unity.Maps
 {
     public class MapboxInitializer : Initializer
     {
-#if MOTIVE_MAPBOX
         protected override void Initialize()
         {
+#if MOTIVE_MAPBOX
             if (!string.IsNullOrEmpty(MapboxAccess.Instance.Configuration.AccessToken) &&
                 MapboxLocationCacheDriver.Instance != null)
             {
@@ -27,7 +27,7 @@ namespace Motive.Unity.Maps
                     source.AccessToken = MapboxAccess.Instance.Configuration.AccessToken;
                 }
             }
-        }
 #endif
+        }
     }
 }

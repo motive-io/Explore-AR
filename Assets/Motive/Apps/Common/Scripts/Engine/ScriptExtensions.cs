@@ -9,6 +9,7 @@ using Motive.Core.Json;
 using Motive.Core.Models;
 using Motive.Core.Scripting;
 using Motive.Gaming.Models;
+using Motive.Google;
 using Motive.UI;
 using Motive.UI.Models;
 using Motive.Unity.Models;
@@ -42,6 +43,7 @@ namespace Motive.Unity.Scripting
             JsonTypeRegistry.Instance.RegisterType("motive.ui.interfaceUpdate", typeof(InterfaceUpdate));
             JsonTypeRegistry.Instance.RegisterType("motive.ui.interfaceDirector", typeof(InterfaceDirector));
             JsonTypeRegistry.Instance.RegisterType("motive.ui.objectInspector", typeof(ObjectInspector));
+            JsonTypeRegistry.Instance.RegisterType("motive.ui.uiModeSwitchCommand", typeof(UIModeSwitchCommand));
 
             JsonTypeRegistry.Instance.RegisterType("motive.3d.worldObjectEffectPlayer", typeof(WorldObjectEffectPlayer));
             JsonTypeRegistry.Instance.RegisterType("motive.3d.relativeWorldPosition", typeof(RelativeWorldPosition));
@@ -99,6 +101,7 @@ namespace Motive.Unity.Scripting
             JsonTypeRegistry.Instance.RegisterType("motive.ar.arCatcherMinigame", typeof(ARCatcherMinigame));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.mapZoomCommand", typeof(MapZoomCommand));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.storyTagLocationTypes", typeof(StoryTagLocationType));
+            JsonTypeRegistry.Instance.RegisterType("motive.ar.mapZoomCommand", typeof(MapZoomCommand));
 
             JsonTypeRegistry.Instance.RegisterType("motive.ar.arLocationCollectionMechanic", typeof(ARLocationCollectionMechanic));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.mapLocationCollectionMechanic", typeof(MapLocationCollectionMechanic));
@@ -108,11 +111,15 @@ namespace Motive.Unity.Scripting
             JsonTypeRegistry.Instance.RegisterType("motive.attractions.locationAttractionInteractible", typeof(LocationAttractionInteractible));
             JsonTypeRegistry.Instance.RegisterType("motive.attractions.locationAttractionContent", typeof(LocationAttractionContent));
 
+            JsonTypeRegistry.Instance.RegisterType("motive.google.polyAsset", typeof(PolyAsset));
+
             // The Script Resource Processors take the resources from the script processor and
             // direct them to the game components that know what to do with them.
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.core.scriptLauncher", new ScriptLauncherProcessor());
 
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ui.objectInspector", new ObjectInspectorProcessor());
+            ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ui.interfaceUpdate", new InterfaceUpdateProcessor());
+            ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ui.interfaceDirector", new InterfaceDirectorProcessor());
 
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.gaming.assignment", new AssignmentProcessor());
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.gaming.objectiveActivator", new ObjectiveActivatorProcessor());

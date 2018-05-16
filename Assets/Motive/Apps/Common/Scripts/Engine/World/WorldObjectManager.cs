@@ -1,16 +1,13 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
-using UnityEngine;
-using System.Collections;
-using System.Collections.Generic;
-using Motive.Core.Models;
-using System;
-using Motive.Core.Utilities;
-using Motive.Core.Scripting;
 using Motive._3D.Models;
-using Motive.Unity.UI;
-using Motive.Unity;
+using Motive.Core.Models;
+using Motive.Core.Scripting;
+using Motive.Core.Utilities;
 using Motive.Unity.Models;
+using Motive.Unity.UI;
 using Motive.Unity.Utilities;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace Motive.Unity.World
 {
@@ -157,11 +154,11 @@ namespace Motive.Unity.World
             {
                 if (asset.AssetBundle != null)
                 {
-                    UnityAssetLoader.LoadAsset<GameObject>(asset, obj =>
+                    AssetLoader.LoadAsset<GameObject>(asset, obj =>
                     {
                         if (obj)
                         {
-                            AddSpawnedAsset(context, resource, asset, GameObject.Instantiate(obj));
+                            AddSpawnedAsset(context, resource, asset, obj);
                         }
                     });
                 }

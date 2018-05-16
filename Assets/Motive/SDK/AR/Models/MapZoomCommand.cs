@@ -2,10 +2,6 @@
 using Motive.AR.LocationServices;
 using Motive.Core.Scripting;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Motive.UI;
 
 namespace Motive.AR.Models
 {
@@ -13,5 +9,6 @@ namespace Motive.AR.Models
     {
         public Location CenterLocation { get; set; }
         public Motive.Core.Models.Vector Span { get; set; }
+        public TimeSpan? Duration { get; set; }
     }
 }

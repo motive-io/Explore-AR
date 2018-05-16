@@ -39,7 +39,7 @@ namespace Motive.Unity.UI
             {
                 var localUrl = WebServices.Instance.MediaDownloadManager.GetPathForItem(obj.Url);
 
-                m_player = UnityAudioPlayerChannel.Instance.CreatePlayer(new Uri(localUrl));
+                m_player = Platform.Instance.ForegroundAudioChannel.CreatePlayer(new Uri(localUrl));
 
                 if (Autoplay)
                 {
@@ -54,10 +54,16 @@ namespace Motive.Unity.UI
             {
                 m_player.Play((success) =>
                 {
-                    AudioContentPlayer.Instance.Resume();
+                    if (AudioContentPlayer.Instance)
+                    {
+                        AudioContentPlayer.Instance.Resume();
+                    }
                 });
 
-                AudioContentPlayer.Instance.Pause();
+                if (AudioContentPlayer.Instance)
+                {
+                    AudioContentPlayer.Instance.Pause();
+                }
             }
         }
 
@@ -70,7 +76,10 @@ namespace Motive.Unity.UI
         {
             StopPlayer();
 
-            AudioContentPlayer.Instance.Resume();
+            if (AudioContentPlayer.Instance)
+            {
+                AudioContentPlayer.Instance.Resume();
+            }
 
             base.DidHide();
         }

@@ -14,7 +14,7 @@ namespace Motive._3D.Models
     /// </summary>
     public class AssetInstance : ScriptObject, IMediaItemProvider
     {
-        public BaseAsset Asset { get; set; }
+        public IScriptObject Asset { get; set; }
         public Layout Layout { get; set; }
 
         public void GetMediaItems(IList<Core.Media.MediaItem> items)

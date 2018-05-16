@@ -54,7 +54,10 @@ namespace Motive.Unity.UI
                     SoundView.Play(m_player);
                 }
 
-                AudioContentPlayer.Instance.Pause();
+                if (AudioContentPlayer.Instance)
+                {
+                    AudioContentPlayer.Instance.Pause();
+                }
             }
         }
 
@@ -93,7 +96,10 @@ namespace Motive.Unity.UI
 
         public void Play()
         {
-            AudioContentPlayer.Instance.Pause();
+            if (AudioContentPlayer.Instance)
+            {
+                AudioContentPlayer.Instance.Pause();
+            }
 
             m_player.Play();
         }
@@ -184,7 +190,10 @@ namespace Motive.Unity.UI
         {
             Stop();
 
-            AudioContentPlayer.Instance.Resume();
+            if (AudioContentPlayer.Instance)
+            {
+                AudioContentPlayer.Instance.Resume();
+            }
         }
     }
 

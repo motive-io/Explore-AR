@@ -80,7 +80,10 @@ namespace Motive.Unity.UI
         {
             if (media != null)
             {
-                AudioContentPlayer.Instance.Pause();
+                if (AudioContentPlayer.Instance)
+                {
+                    AudioContentPlayer.Instance.Pause();
+                }
 
                 Play(media.Url, onComplete);
             }
@@ -166,7 +169,10 @@ namespace Motive.Unity.UI
         {
             Stop();
 
-            AudioContentPlayer.Instance.Resume();
+            if (AudioContentPlayer.Instance)
+            {
+                AudioContentPlayer.Instance.Resume();
+            }
         }
     }
 

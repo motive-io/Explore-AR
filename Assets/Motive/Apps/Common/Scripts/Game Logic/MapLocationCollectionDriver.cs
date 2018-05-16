@@ -14,7 +14,6 @@ namespace Motive.Unity.Gaming
     /// </summary>
     public class MapLocationCollectionDriver : SimpleMapAnnotationHandler, ILocationCollectionDriver
     {
-        public CustomImageAnnotation AnnotationObject;
         public LocationValuablesCollectionPanel ValuablesCollectionPanel;
 
         public bool AutoCollectInRange;
@@ -105,16 +104,26 @@ namespace Motive.Unity.Gaming
 
         public AnnotationGameObject CreateAnnotationObject(LocationValuablesCollection lvc)
         {
-            var obj = Instantiate(AnnotationObject);
-
-            var collectible = ValuablesCollection.GetFirstCollectible(lvc.ValuablesCollection);
-
-            if (collectible != null)
+            if (AnnotationPrefab)
             {
-                obj.LoadImage(collectible.ImageUrl);
+                var obj = Instantiate(AnnotationPrefab);
+
+                var customImageAnn = obj as CustomImageAnnotation;
+
+                if (customImageAnn)
+                {
+                    var collectible = ValuablesCollection.GetFirstCollectible(lvc.ValuablesCollection);
+
+                    if (collectible != null)
+                    {
+                        customImageAnn.LoadImage(collectible.ImageUrl);
+                    }
+                }
+
+                return obj;
             }
 
-            return obj;
+            return null;
         }
 
         public void StartCollecting()
@@ -189,7 +198,7 @@ namespace Motive.Unity.Gaming
                         ValuablesCollectionPanel.ValuablesCollection = e.Results.SpawnItem.ValuablesCollection;
                         ValuablesCollectionPanel.OnAction = () =>
                         {
-                            RewardPanel.Show(e.Results.SpawnItem.ValuablesCollection);
+                            RewardManager.Instance.ShowRewards(e.Results.SpawnItem.ValuablesCollection);
 
                             PlayCollectSound(mapMechanic);
 
@@ -198,8 +207,8 @@ namespace Motive.Unity.Gaming
 
                         SelectedLocationPanelHandler.Instance.ShowSelectedLocationPanel(ValuablesCollectionPanel, _ann);
 
-                    //if (collectWithPanel)
-                    {
+                        //if (collectWithPanel)
+                        {
                             ValuablesCollectionPanel.ShowMapCollect(actionRange);
                         }
                     }

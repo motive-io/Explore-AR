@@ -1,4 +1,5 @@
 // Copyright (c) 2018 RocketChicken Interactive Inc.
+using Motive._3D.Models;
 using Motive.AR.LocationServices;
 using Motive.AR.Models;
 using Motive.Core.Models;
@@ -136,7 +137,15 @@ namespace Motive.Unity.AR
             public bool? IsInRange { get; set; }
         }
 
+        class WaitAnchorWrapper
+        {
+            public string AnchorInstanceId;
+            public string CallerId;
+            public Action<ARWorldObject> OnFound;
+        }
+
         public bool IsActive { get; private set; }
+        public bool IsInitialized { get; private set; }
 
         public UnityEvent OnUpdated;
 
@@ -144,6 +153,7 @@ namespace Motive.Unity.AR
         private SetDictionary<ARWorldObject, ARFence> m_worldObjectFences;
         private Dictionary<ARWorldObject, ARWorldObjectWrapper> m_worldObjDict;
         private SetDictionary<string, ARWorldObjectWrapper> m_resourceWorldObjDictionary;
+        private SetDictionary<string, WaitAnchorWrapper> m_waitingAnchorObjects;
         private Dictionary<string, GameObject> m_objectGroups;
         private Dictionary<Type, IARWorldAdapter> m_worldAdapters;
 
@@ -158,12 +168,12 @@ namespace Motive.Unity.AR
         public LocationARWorldAdapterBase ARKitAdapter;
 
         public ARWorldAdapterBase<VisualMarkerWorldObject> VisualMarkerAdapter;
-        
+
         // radius to interact with nodes
         public float DistanceScale = 1f;
         public float DefaultFixedDistance = 5f;
 
-		public bool ActiveOnWake;
+        public bool ActiveOnWake;
 
         public ARWorldObject SelectedObject { get; private set; }
 
@@ -173,11 +183,11 @@ namespace Motive.Unity.AR
         protected Logger m_logger;
 
         public Camera MainCamera
-        { 
-            get 
+        {
+            get
             {
                 return ARAdapter ? ARAdapter.WorldCamera : null;
-            } 
+            }
         }
 
         public LocationARWorldAdapterBase ARAdapter;
@@ -186,11 +196,17 @@ namespace Motive.Unity.AR
         {
             IsActive = true;
 
-            ARAdapter.Activate();
-            
-            if (VisualMarkerAdapter != null)
+            if (IsInitialized)
             {
-                VisualMarkerAdapter.Activate();
+                if (ARAdapter)
+                {
+                    ARAdapter.Activate();
+                }
+
+                if (VisualMarkerAdapter != null)
+                {
+                    VisualMarkerAdapter.Activate();
+                }
             }
 
             foreach (var wrapper in m_worldObjDict.Values.ToArray())
@@ -203,13 +219,16 @@ namespace Motive.Unity.AR
         }
 
         public void Deactivate()
-		{
+        {
             IsActive = false;
 
-            ARAdapter.Deactivate();
+            if (ARAdapter)
+            {
+                ARAdapter.Deactivate();
+            }
 
             //m_doUpdate = false;
-            
+
             if (VisualMarkerAdapter != null)
             {
                 VisualMarkerAdapter.Deactivate();
@@ -224,12 +243,31 @@ namespace Motive.Unity.AR
             }
         }
 
+        void SetARAdapter(LocationARWorldAdapterBase adapter, bool activate)
+        {
+            ARAdapter.transform.SetParent(this.gameObject.transform);
+            ARAdapter.transform.localPosition = Vector3.zero;
+
+            m_worldAdapters[typeof(LocationARWorldObject)] = ARAdapter;
+            m_worldAdapters[typeof(SceneARWorldObject)] = ARAdapter;
+
+            if (activate)
+            {
+                ARAdapter.Activate();
+            }
+            else
+            {
+                ARAdapter.Deactivate();
+            }
+        }
+
+
 #if MOTIVE_ARCORE
         void CheckARCoreAvailable()
         {
             try
             {
-                Debug.LogErrorFormat("Checking ARCore availability... {0}", GoogleARCore.Session.Status);
+                m_logger.Debug("Checking ARCore availability... {0}", GoogleARCore.Session.Status);
 
                 var result = GoogleARCore.Session.CheckApkAvailability()
                     .ThenAction((status) =>
@@ -247,17 +285,23 @@ namespace Motive.Unity.AR
 
                         if (ARAdapter != null)
                         {
-                            ARAdapter.transform.SetParent(this.gameObject.transform);
-                            ARAdapter.transform.localPosition = Vector3.zero;
+                            SetARAdapter(ARAdapter, IsActive);
                         }
                     });
 
-                Debug.LogErrorFormat("Status info after call: {0} c={1} {2}",
+                m_logger.Debug("Status info after call: {0} c={1} {2}",
                     GoogleARCore.Session.Status, result.IsComplete, result.Result);
             }
             catch (Exception)
             {
-                Debug.LogErrorFormat("Couldn't find DLL");
+                m_logger.Debug("Couldn't find ARCore DLL, using default");
+
+                if (DefaultAdapter)
+                {
+                    ARAdapter = Instantiate(DefaultAdapter);
+
+                    SetARAdapter(DefaultAdapter, IsActive);
+                }
             }
         }
 #endif
@@ -265,6 +309,13 @@ namespace Motive.Unity.AR
         protected override void Awake()
         {
             base.Awake();
+
+            m_worldObjDict = new Dictionary<ARWorldObject, ARWorldObjectWrapper>();
+            m_worldAdapters = new Dictionary<Type, IARWorldAdapter>();
+            m_resourceWorldObjDictionary = new SetDictionary<string, ARWorldObjectWrapper>();
+            m_objectGroups = new Dictionary<string, GameObject>();
+            m_worldObjectFences = new SetDictionary<ARWorldObject, ARFence>();
+            m_waitingAnchorObjects = new SetDictionary<string, WaitAnchorWrapper>();
 
             m_logger = new Logger(this);
             
@@ -282,14 +333,9 @@ namespace Motive.Unity.AR
 #if UNITY_ANDROID && MOTIVE_ARCORE
                     if (ARCoreAdapter)
                     {
-                        //checkSetDefault = false;
+                        checkSetDefault = false;
 
-                        //Debug.LogErrorFormat("About to launch coroutine");
-
-                        //CheckARCoreAvailable();
-                        Debug.LogErrorFormat("here: " + ARCoreAdapter.GetType().ToString());
-
-                        //ARAdapter = Instantiate(ARCoreAdapter);
+                        CheckARCoreAvailable();
                     }
                     else
                     {
@@ -314,20 +360,13 @@ namespace Motive.Unity.AR
                 }
             }
 
+            IsActive = ActiveOnWake;
+
             if (ARAdapter != null)
             {
-                ARAdapter.transform.SetParent(this.gameObject.transform);
-                ARAdapter.transform.localPosition = Vector3.zero;
+                SetARAdapter(ARAdapter, ActiveOnWake);
             }
 
-            m_worldObjDict = new Dictionary<ARWorldObject, ARWorldObjectWrapper>();
-            m_worldAdapters = new Dictionary<Type, IARWorldAdapter>();
-            m_resourceWorldObjDictionary = new SetDictionary<string, ARWorldObjectWrapper>();
-            m_objectGroups = new Dictionary<string, GameObject>();
-            m_worldObjectFences = new SetDictionary<ARWorldObject, ARFence>();
-
-            m_worldAdapters[typeof(LocationARWorldObject)] = ARAdapter;
-            m_worldAdapters[typeof(SceneARWorldObject)] = ARAdapter;
             //AddObjectGroup("default");
 
             //GetComponentInChildren<Renderer>().material.mainTexture = CameraManager.Instance._camera.LivePreview.texture;
@@ -342,18 +381,43 @@ namespace Motive.Unity.AR
             {
                 m_worldAdapters[typeof(VisualMarkerWorldObject)] = VisualMarkerAdapter;
             }
+
+            VisualMarkerAdapter.Initialize();
 #endif
 
 			ARAdapter.Initialize();
 
-			if (ActiveOnWake)
+            // Caller may have activated ARWorld before we were initialized
+            if (ActiveOnWake || IsActive)
 			{
-				ARAdapter.Activate();
-			}
+                IsActive = true;
+
+                if (ARAdapter)
+                {
+                    ARAdapter.Activate();
+                }
+
+                if (VisualMarkerAdapter)
+                {
+                    VisualMarkerAdapter.Activate();
+                }
+            }
 			else
 			{
-				ARAdapter.Deactivate();
-			}
+                IsActive = false;
+
+                if (ARAdapter)
+                {
+                    ARAdapter.Deactivate();
+                }
+
+                if (VisualMarkerAdapter)
+                {
+                    VisualMarkerAdapter.Deactivate();
+                }
+            }
+
+            IsInitialized = true;
 
 			base.Start ();
 		}
@@ -740,25 +804,32 @@ namespace Motive.Unity.AR
 
             var wrapper = CreateWorldObjectWrapper(worldObj);
 
-            UnityAssetLoader.LoadAsset<GameObject>(assetInstance.Asset as UnityAsset, (assetObj) =>
+            if (assetInstance != null)
             {
-                // augmentedObj could have been destroyed here
-                if (assetObj != null && augmentedObject)
+                AssetLoader.LoadAsset<GameObject>(assetInstance.Asset, (assetObj) =>
                 {
-                    GameObject instObj = null;
-
-                    var inst = ObjectHelper.InstantiateAsset(assetObj, assetInstance, out instObj, augmentedObject.transform);
-
-                    worldObj.TargetObject = instObj;
-
-                    wrapper.AddObject();
-
-                    if (onCreate != null)
+                    // augmentedObj could have been destroyed here
+                    if (assetObj != null && augmentedObject)
                     {
-                        onCreate(wrapper, inst);
+                        var inst = ObjectHelper.ConfigureAsset(assetObj, assetInstance, augmentedObject.transform);
+
+                        worldObj.TargetObject = assetObj;
+
+                        wrapper.AddObject();
+
+                        if (onCreate != null)
+                        {
+                            onCreate(wrapper, inst);
+                        }
                     }
-                }
-            });
+                });
+            }
+            else
+            {
+                wrapper.AddObject();
+
+                onCreate(wrapper, worldObj.GameObject);
+            }
 
             return wrapper;
         }
@@ -775,10 +846,11 @@ namespace Motive.Unity.AR
             return CreateARAsset(worldObj, assetInstance, onCreate);
         }
 
-        private ARWorldObjectWrapper<SceneARWorldObject> CreateSceneARAsset(IScriptObject position, Motive._3D.Models.AssetInstance assetInstance, ILocationAugmentedOptions options, Action<ARWorldObjectWrapper<SceneARWorldObject>, GameObject> onCreate = null)
+        private ARWorldObjectWrapper<SceneARWorldObject> CreateSceneARAsset(ARWorldObject anchorObject, IScriptObject position, Motive._3D.Models.AssetInstance assetInstance, ILocationAugmentedOptions options, Action<ARWorldObjectWrapper<SceneARWorldObject>, GameObject> onCreate = null)
         {
             var worldObj = new SceneARWorldObject
             {
+                AnchorObject = anchorObject,
                 Position = position,
                 Options = options
             };
@@ -798,10 +870,11 @@ namespace Motive.Unity.AR
         }
 
 
-        private ARWorldObjectWrapper<SceneARWorldObject> CreateSceneMedia(IScriptObject position, MediaElement mediaElement, IARMediaPlaybackProperties properties, ILocationAugmentedOptions options, Action onClose = null)
+        private ARWorldObjectWrapper<SceneARWorldObject> CreateSceneMedia(ARWorldObject anchorObject, IScriptObject position, MediaElement mediaElement, IARMediaPlaybackProperties properties, ILocationAugmentedOptions options, Action onClose = null)
         {
             var worldObj = new SceneARWorldObject
             {
+                AnchorObject = anchorObject,
                 Position = position,
                 Options = options
             };
@@ -870,7 +943,10 @@ namespace Motive.Unity.AR
             {
                 context.FireEvent("select");
 
-                ObjectInspectorManager.Instance.Select(context);
+                if (ObjectInspectorManager.Instance)
+                {
+                    ObjectInspectorManager.Instance.Select(context);
+                }
             };
 
             worldObj.GazeEntered += (sender, args) =>
@@ -892,28 +968,55 @@ namespace Motive.Unity.AR
                 context.FireEvent("focus");
                 context.SetState("in_focus");
 
-                ObjectInspectorManager.Instance.ObjectAction(context, "focus");
+                if (ObjectInspectorManager.Instance)
+                {
+                    ObjectInspectorManager.Instance.ObjectAction(context, "focus");
+                }
             };
 
             worldObj.FocusLost += (sender, args) =>
             {
                 context.ClearState("in_focus");
-                ObjectInspectorManager.Instance.EndObjectAction(context, "focus");
+
+                if (ObjectInspectorManager.Instance)
+                {
+                    ObjectInspectorManager.Instance.EndObjectAction(context, "focus");
+                }
             };
 
             worldObj.EnteredView += (sender, args) =>
             {
                 context.SetState("visible");
-                ObjectInspectorManager.Instance.SetObjectAvailable(context, true);
+
+                if (ObjectInspectorManager.Instance)
+                {
+                    ObjectInspectorManager.Instance.SetObjectAvailable(context, true);
+                }
             };
 
             worldObj.ExitedView += (sender, args) =>
             {
                 context.ClearState("visible");
-                ObjectInspectorManager.Instance.SetObjectAvailable(context, false);
+
+                if (ObjectInspectorManager.Instance)
+                {
+                    ObjectInspectorManager.Instance.SetObjectAvailable(context, false);
+                }
             };
 
             m_resourceWorldObjDictionary.Add(context.InstanceId, objWrapper);
+
+            if (m_waitingAnchorObjects.ContainsKey(context.InstanceId))
+            {
+                var wrappers = m_waitingAnchorObjects[context.InstanceId].ToArray();
+
+                m_waitingAnchorObjects.RemoveAll(context.InstanceId);
+
+                foreach (var wrapper in wrappers)
+                {
+                    wrapper.OnFound(worldObj);
+                }
+            }
 
             OnUpdated.Invoke();
         }
@@ -985,14 +1088,57 @@ namespace Motive.Unity.AR
             RemoveResourceObjects(instanceId);
         }
 
-        public void AddAugmented3dAsset(ResourceActivationContext context, Augmented3DAsset resource)
-        {            
-            var worldObj = CreateSceneARAsset(resource.Position, resource.AssetInstance, resource, (_wo, obj) => 
-            {
-                WorldObjectManager.Instance.AddWorldObject(context, obj, _wo.WorldObject.GetAnimationTarget(),_wo.WorldObject.GameObject);
-            });
+        void GetAnchor(string callerId, string anchorInstanceId, Action<ARWorldObject> onFound)
+        {
+            var objs = GetWorldObjects(anchorInstanceId);
 
-            SetUpARWorldObject(worldObj, context);
+            if (objs != null)
+            {
+                var anchorObj = objs.FirstOrDefault();
+
+                onFound(anchorObj);
+
+                return;
+            }
+            else
+            {
+                // Wait for this object
+                m_waitingAnchorObjects.Add(anchorInstanceId, new WaitAnchorWrapper
+                {
+                    AnchorInstanceId = anchorInstanceId,
+                    CallerId = callerId,
+                    OnFound = onFound
+                });
+            }
+        }
+
+        public void AddAugmented3dAsset(ResourceActivationContext context, Augmented3DAsset resource)
+        {
+            var relPos = resource.Position as RelativeWorldPosition;
+
+            Action<ARWorldObject> createObj = (anchorObj) =>
+            {
+                var worldObj = CreateSceneARAsset(anchorObj, resource.Position, resource.AssetInstance, resource, (_wo, obj) =>
+                {
+                    WorldObjectManager.Instance.AddWorldObject(context, obj, _wo.WorldObject.GetAnimationTarget(), _wo.WorldObject.GameObject);
+                });
+
+                SetUpARWorldObject(worldObj, context);
+            };
+            
+            if (relPos != null && relPos.AnchorObjectReference != null)
+            {
+                var anchorId = context.GetInstanceId(relPos.AnchorObjectReference.ObjectId);
+
+                GetAnchor(context.InstanceId, anchorId, (anchorObj) =>
+                {
+                    createObj(anchorObj);
+                });
+            }
+            else
+            {
+                createObj(null);
+            }
         }
 
         public void RemoveAugmented3dAsset(string instanceId)
@@ -1002,17 +1148,36 @@ namespace Motive.Unity.AR
 
         public void AddAugmentedMedia(ResourceActivationContext context, AugmentedMedia resource)
         {
-            var worldObj = CreateSceneMedia(resource.Position, resource.MediaElement, resource, resource, () =>
+            var relPos = resource.Position as RelativeWorldPosition;
+
+            Action<ARWorldObject> createObj = (anchorObj) =>
             {
-                context.Close();
-            });
+                var worldObj = CreateSceneMedia(anchorObj, resource.Position, resource.MediaElement, resource, resource, () =>
+                {
+                    context.Close();
+                });
 
-            var obj = worldObj.WorldObject.GameObject;
+                var obj = worldObj.WorldObject.GameObject;
 
-            var mediaObj = obj.GetComponent<AugmentedMediaObject>();
+                var mediaObj = obj.GetComponent<AugmentedMediaObject>();
 
-            WorldObjectManager.Instance.AddWorldObject(context, mediaObj.RenderObject, mediaObj.RenderObject, obj);
-            SetUpARWorldObject(worldObj, context);
+                WorldObjectManager.Instance.AddWorldObject(context, mediaObj.RenderObject, mediaObj.RenderObject, obj);
+                SetUpARWorldObject(worldObj, context);
+            };
+
+            if (relPos != null && relPos.AnchorObjectReference != null)
+            {
+                var anchorId = context.GetInstanceId(relPos.AnchorObjectReference.ObjectId);
+
+                GetAnchor(context.InstanceId, anchorId, (anchorObj) =>
+                {
+                    createObj(anchorObj);
+                });
+            }
+            else
+            {
+                createObj(null);
+            }
         }
 
         public void AddLocationAugmentedMedia(ResourceActivationContext context, LocationAugmentedMedia resource)
@@ -1056,6 +1221,15 @@ namespace Motive.Unity.AR
                 {
                     DiscardObjectWrapper(wo);
                 }
+            }
+
+            var toRemove = m_waitingAnchorObjects.
+                SelectMany(kv => kv.Value.Where(w => w.CallerId == instanceId)).
+                ToArray();
+
+            foreach (var wrapper in toRemove)
+            {
+                m_waitingAnchorObjects.Remove(wrapper.AnchorInstanceId, wrapper);
             }
 
             WorldObjectManager.Instance.RemoveWorldObjects(instanceId);

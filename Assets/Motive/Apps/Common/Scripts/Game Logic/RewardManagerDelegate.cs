@@ -6,10 +6,13 @@ using UnityEngine;
 
 namespace Motive.Unity.Gaming
 {
+    /// <summary>
+    /// Delegate that displays a Rewards Panel when a Reward is given to the player.
+    /// </summary>
     public class RewardManagerDelegate : SingletonComponent<RewardManagerDelegate>,
         IRewardManagerDelegate
     {
-        public Panel RewardPanel;
+        public PanelLink RewardPanel;
         public bool ApplyRewardOnPanelClose = true;
 
         protected override void Awake()
@@ -27,11 +30,11 @@ namespace Motive.Unity.Gaming
             {
                 if (ApplyRewardOnPanelClose)
                 {
-                    PanelManager.Instance.Push(RewardPanel, valuables, onReward);
+                    RewardPanel.Push(valuables, onReward);
                 }
                 else
                 {
-                    PanelManager.Instance.Push(RewardPanel, valuables, null);
+                    RewardPanel.Push(valuables);
 
                     if (onReward != null)
                     {

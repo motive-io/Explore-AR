@@ -69,7 +69,8 @@ namespace Motive
         AuthenticationFailure,
         ServiceCallFailure,
         ParseError,
-        NoNetworkConnection
+        NoNetworkConnection,
+        APIQuotaExceeded
     }
     
     public class WebServicesStateEventArgs : EventArgs
@@ -196,6 +197,9 @@ namespace Motive
                     break;
                 case ServiceCallLoadStatus.ParseFail:
                     SetDownloadError(WebServicesDownloadErrorCode.ParseError);
+                    break;
+                case ServiceCallLoadStatus.APIQuotaExceeded:
+                    SetDownloadError(WebServicesDownloadErrorCode.APIQuotaExceeded);
                     break;
                 case ServiceCallLoadStatus.AuthenticationFailure:
                     SetDownloadError(WebServicesDownloadErrorCode.AuthenticationFailure);

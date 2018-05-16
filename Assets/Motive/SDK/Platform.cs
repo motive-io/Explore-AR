@@ -107,9 +107,25 @@ namespace Motive
         public string EncryptionKey;
         public string EncryptionIV;
 
+        /// <summary>
+        /// Folder for cache items.
+        /// </summary>
         public string CachePath { get; private set; }
+
+        /// <summary>
+        /// Folder for user data.
+        /// </summary>
 		public string UserDataPath { get; private set; }
+
+        /// <summary>
+        /// Folder for app data.
+        /// </summary>
 		public string AppDataPath { get; private set; }
+
+        /// <summary>
+        /// Streaming assets folder. Cached on startup so background threads can
+        /// read it.
+        /// </summary>
         public string StreamingAssetsPath { get; private set; }
 
         /// <summary>
@@ -186,17 +202,48 @@ namespace Motive
 			}
 		}
 
+        /// <summary>
+        /// Provides access to the device's accelerometer.
+        /// </summary>
         public IAccelerometer Accelerometer { get; private set; }
-        public Pedometer Pedometer { get; set; }
+
+        /// <summary>
+        /// Provides "step" events.
+        /// </summary>
+        public Pedometer Pedometer { get; private set; }
+
+        /// <summary>
+        /// Provides access to GPS data.
+        /// </summary>
         public ILocationManager LocationManager { get; private set; }
 
+        /// <summary>
+        /// A compass with reduced jitter.
+        /// </summary>
         public ICompass NoiseReducedCompass { get; private set; }
+
+        /// <summary>
+        /// Provides direct readings from the device's compass.
+        /// </summary>
         public ICompass SystemCompass { get; private set; }
+
+        /// <summary>
+        /// A compass that uses the user's tracked location to derive a heading.
+        /// </summary>
         public ICompass LocationTrackerCompass { get; private set; }
         
 		public IBeaconManager BeaconManager { get; private set; }
 		public ILocalNotificationManager LocalNotificationManager { get; private set; }
+
+        /// <summary>
+        /// Audio channel that uses the default from CreateAudioChannel.
+        /// </summary>
         public IAudioPlayerChannel AudioChannel { get; private set; }
+
+        /// <summary>
+        /// Audio channel that only plays in the foreground (intended for UI-bound sounds).
+        /// </summary>
+        public IAudioPlayerChannel ForegroundAudioChannel { get; private set; }
 
 		public ICompass Compass;
 
@@ -411,6 +458,7 @@ namespace Motive
 			}
 
             AudioChannel = CreateAudioPlayerChannel();
+            ForegroundAudioChannel = gameObject.AddComponent<UnityAudioPlayerChannel>();
 
             Pedometer.Stepped += (sender, args) =>
             {
@@ -549,8 +597,12 @@ namespace Motive
 			if (IsInBackground)
 			{
 				UserLocationService.Instance.Disable();
-                AudioContentPlayer.Instance.Pause();
-			}
+
+                if (AudioContentPlayer.Instance)
+                {
+                    AudioContentPlayer.Instance.Pause();
+                }
+            }
         }
 
         /// <summary>
@@ -627,7 +679,11 @@ namespace Motive
         {
             AudioChannel.Pause();
             LocativeAudioDriver.Instance.Stop();
-            AudioContentPlayer.Instance.Pause(immediate:true);
+
+            if (AudioContentPlayer.Instance)
+            {
+                AudioContentPlayer.Instance.Pause(immediate: true);
+            }
 
             OnPauseAudio.Invoke();
         }
@@ -635,7 +691,12 @@ namespace Motive
         protected virtual void ResumeAudio()
         {
             AudioChannel.Resume();
-            AudioContentPlayer.Instance.Resume(immediate:true);
+
+            if (AudioContentPlayer.Instance)
+            {
+                AudioContentPlayer.Instance.Resume(immediate: true);
+            }
+
             LocativeAudioDriver.Instance.Start();
 
             OnResumeAudio.Invoke();

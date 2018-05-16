@@ -36,16 +36,13 @@ namespace Motive.Unity.Utilities
             }
         }
 
-        public static GameObject InstantiateAsset(
-            GameObject prefab,
+        public static GameObject ConfigureAsset(
+            GameObject gameObj,
             AssetInstance assetInstance,
-            out GameObject assetObj,
             Transform parent = null,
             bool applyLayout = true,
             bool addCollider = true)
         {
-            var gameObj = GameObject.Instantiate(prefab);
-
             var layoutObj = new GameObject("Layout");
 
             layoutObj.transform.localPosition = Vector3.zero;
@@ -74,9 +71,22 @@ namespace Motive.Unity.Utilities
                 layoutObj.transform.SetParent(parent.transform, false);
             }
 
+            return layoutObj;
+        }
+
+        public static GameObject InstantiateAsset(
+            GameObject prefab,
+            AssetInstance assetInstance,
+            out GameObject assetObj,
+            Transform parent = null,
+            bool applyLayout = true,
+            bool addCollider = true)
+        {
+            var gameObj = GameObject.Instantiate(prefab);
+
             assetObj = gameObj;
 
-            return layoutObj;
+            return ConfigureAsset(gameObj, assetInstance, parent, applyLayout, addCollider);
         }
 
         internal static void SetObjectActive(Component c, bool active)

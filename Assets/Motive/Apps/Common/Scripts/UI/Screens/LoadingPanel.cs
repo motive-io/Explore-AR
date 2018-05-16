@@ -133,6 +133,9 @@ namespace Motive.Unity.UI
                     case WebServicesDownloadErrorCode.AuthenticationFailure:
                         RetryText.text = Localize.GetLocalizedString("Loading.AuthenticationFailure", "Failed to authenticate with the Motive server. Please try again.");
                         break;
+                    case WebServicesDownloadErrorCode.APIQuotaExceeded:
+                        RetryText.text = Localize.GetLocalizedString("Loading.APIQuotaExceeded", "Your API quota has been exceeded. Please try again.");
+                        break;
                 }
             }
 

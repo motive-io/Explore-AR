@@ -87,7 +87,7 @@ namespace Motive.Unity.Gaming
 
                         worldObj.Clicked += (sender, args) =>
                         {
-                            RewardPanel.Show(e.Results.SpawnItem.ValuablesCollection);
+                            RewardManager.Instance.ShowRewards(e.Results.SpawnItem.ValuablesCollection);
 
                             WorldValuablesManager.Instance.Collect(e);
                         };

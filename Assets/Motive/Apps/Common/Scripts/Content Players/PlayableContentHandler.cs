@@ -1,15 +1,14 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
 using Motive.Core.Scripting;
 using Motive.Core.Timing;
+using Motive.Core.Utilities;
 using Motive.Gaming.Models;
 using Motive.Unity.Scripting;
-using Motive.Unity.Utilities;
 using System;
 using System.Collections.Generic;
 using Logger = Motive.Core.Diagnostics.Logger;
 namespace Motive.Unity.Playables
 {
-
     static class PlayableContentRoute
     {
         public const string Messages = "messages";
@@ -38,24 +37,17 @@ namespace Motive.Unity.Playables
     /// <summary>
     /// This class handles playable timers and batches.
     /// </summary>
-    public class PlayableContentHandler : SingletonComponent<PlayableContentHandler>
+    public class PlayableContentHandler : Singleton<PlayableContentHandler>
     {
         public PlayableContentHandlerDelegate Delegate;
 
         Logger m_logger;
         Dictionary<string, BatchContext> m_containers;
 
-        protected override void Awake()
+        public PlayableContentHandler()
         {
             m_logger = new Logger(this);
             m_containers = new Dictionary<string, BatchContext>();
-
-            base.Awake();
-        }
-
-        protected override void Start()
-        {
-            base.Start();
 
             ScriptManager.Instance.ScriptsReset += ScriptManager_ScriptsReset;
         }
@@ -63,7 +55,11 @@ namespace Motive.Unity.Playables
         void ScriptManager_ScriptsReset(object sender, EventArgs e)
         {
             m_containers.Clear();
-            Delegate.Reset();
+
+            if (Delegate)
+            {
+                Delegate.Reset();
+            }
         }
 
         void Play(BatchContext context, PlayableContent playable, Action onClose)

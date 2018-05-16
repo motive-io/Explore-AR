@@ -1,4 +1,14 @@
-﻿
+﻿using Motive.AR.Models;
+using Motive.AR.Vuforia;
+using Motive.Core.Scripting;
+using Motive.UI;
+using Motive.Unity.AR;
+using Motive.Unity.Globalization;
+using Motive.Unity.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
 #if MOTIVE_VUFORIA
 namespace Motive.Unity.Gaming
 {

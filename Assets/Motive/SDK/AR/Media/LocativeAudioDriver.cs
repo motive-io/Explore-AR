@@ -36,11 +36,11 @@ namespace Motive.AR.Media
             Engine.Update(instanceId, locAudio);
         }
 
-        public void Activate(string instanceId, LocativeAudioContent locAudio)
+        public void Activate(string instanceId, LocativeAudioContent locAudio, Action onPlay = null, Action<bool> onComplete = null)
         {
             //MapController.Instance.AddLocativeSoundAnnotation(locAudio);
 
-            Engine.Activate(instanceId, locAudio);
+            Engine.Activate(instanceId, locAudio, onPlay, onComplete);
         }
 
         public void Deactivate(string instanceId, LocativeAudioContent locAudio)

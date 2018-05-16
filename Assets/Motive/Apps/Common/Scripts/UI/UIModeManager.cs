@@ -36,8 +36,12 @@ public class UIModeManager<T> : MonoBehaviour where T : UIModeManager<T>
 
 	public virtual void SetMapActive(bool active)
 	{
-		MapCanvas.enabled = active;
-		MainCamera.enabled = active;
+        if (MapCanvas)
+        {
+            MapCanvas.enabled = active;
+        }
+
+        MainCamera.enabled = active;
 
 		ObjectHelper.SetObjectsActive(MapModeObjects, active);
 	}
