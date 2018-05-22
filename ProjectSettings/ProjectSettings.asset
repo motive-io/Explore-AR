@@ -247,7 +247,7 @@ PlayerSettings:
   AndroidKeyaliasName: motive explore ar
   AndroidTVCompatibility: 1
   AndroidIsGame: 1
-  AndroidEnableTango: 1
+  AndroidEnableTango: 0
   androidEnableBanner: 1
   androidUseLowAccuracyLocation: 0
   m_AndroidBanners:
@@ -269,11 +269,11 @@ PlayerSettings:
   m_BuildTargetVRSettings: []
   m_BuildTargetEnableVuforiaSettings:
   - m_BuildTarget: Android
-    m_Enabled: 0
+    m_Enabled: 1
   - m_BuildTarget: iOS
-    m_Enabled: 0
+    m_Enabled: 1
   - m_BuildTarget: Standalone
-    m_Enabled: 0
+    m_Enabled: 1
   openGLRequireES31: 0
   openGLRequireES31AEP: 0
   m_TemplateCustomTags: {}
@@ -563,9 +563,9 @@ PlayerSettings:
   webGLUseWasm: 0
   webGLCompressionFormat: 1
   scriptingDefineSymbols:
-    1: MOTIVE_MAPBOX;MOTIVE_USES_CAMERA
-    4: MOTIVE_MAPBOX;MOTIVE_USES_CAMERA;MOTIVE_ARKIT
-    7: MOTIVE_MAPBOX;MOTIVE_USES_CAMERA;MOTIVE_ARCORE
+    1: MOTIVE_MAPBOX;MOTIVE_USES_CAMERA;MOTIVE_VUFORIA
+    4: MOTIVE_MAPBOX;MOTIVE_USES_CAMERA;MOTIVE_ARKIT;MOTIVE_VUFORIA
+    7: MOTIVE_MAPBOX;MOTIVE_USES_CAMERA;MOTIVE_VUFORIA
   platformArchitecture: {}
   scriptingBackend: {}
   incrementalIl2cppBuild: {}
@@ -641,6 +641,7 @@ PlayerSettings:
   XboxOneSplashScreen: {fileID: 0}
   XboxOneAllowedProductIds: []
   XboxOnePersistentLocalStorageSize: 0
+  XboxOneXTitleMemory: 8
   xboxOneScriptCompiler: 0
   vrEditorSettings:
     daydream:
