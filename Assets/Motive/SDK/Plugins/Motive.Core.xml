@@ -1,0 +1,339 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Motive.Core</name>
+    </assembly>
+    <members>
+        <member name="T:Motive.Core.Models.ProjectConfig">
+            <summary>
+            A project config stores all of the data required to run your app.
+            Motive apps query the server periodically to retrieve new configs.
+            If there have been no changes since the last query, the call returns
+            "NotModified". The config is stored locally on the device.
+            </summary>
+        </member>
+        <member name="P:Motive.Core.Models.ProjectConfig.Catalogs">
+            <summary>
+            Catalogs referenced by this config.
+            </summary>
+        </member>
+        <member name="P:Motive.Core.Models.ProjectConfig.ExternalReferences">
+            <summary>
+            All objects referenced by catalogs in this config that are not
+            contained within the catalogs. (E.g., if you reference a Collectible
+            from an external catalog that's not part of the config, it's returned
+            as an external reference.)
+            </summary>
+        </member>
+        <member name="T:Motive.Core.Models.ObjectReference">
+            <summary>
+            Represents a link to an external object, usually from a catalog or
+            as a reference to another object in a script.
+            </summary>
+        </member>
+        <member name="T:Motive.Core.Models.ObjectReference`1">
+            <summary>
+            Object reference that will look up and return the referenced object
+            if found.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:Motive.Core.Models.ObjectReference`1.Object">
+            <summary>
+            Returns the referenced object if it is available in the ScriptObjectDirectory.
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:Motive.Core.Json.JsonHelper.Deserialize``1(Motive.Core.Storage.IStorageAgent)" -->
+        <member name="M:Motive.Core.Media.IAudioPlayerChannel.Play(System.Uri,System.Action{System.Boolean})">
+            <summary>
+            Implicitly play audio from the given source.
+            </summary>
+            <param name="source">Source.</param>
+            <param name="onComplete">On complete.</param>
+        </member>
+        <member name="M:Motive.Core.Media.IAudioPlayerChannel.Stop">
+            <summary>
+            Stops all implicit audio.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Media.IAudioPlayerChannel.Pause">
+            <summary>
+            Pauses all implicit audio.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Media.IAudioPlayerChannel.Resume">
+            <summary>
+            Resumes all implicit audio.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Media.MediaDownloadManager.AddItem(Motive.Core.Media.MediaItem)">
+            <summary>
+            Adds an item and puts it in the WaitResolve state.
+            </summary>
+            <param name="uri">URI.</param>
+        </member>
+        <member name="P:Motive.Core.Media.MetronomeEventArgs.TickNumber">
+            <summary>
+            Number of ticks since the last call to reset.
+            </summary>
+            <value>The tick number.</value>
+        </member>
+        <member name="P:Motive.Core.Media.MetronomeEventArgs.BeatNumber">
+            <summary>
+            Which beat this tick corresponds to in the audio track. Could be different
+            than TickNumber if the track was started part way through.
+            </summary>
+            <value>The beat number.</value>
+        </member>
+        <member name="P:Motive.Core.Media.MetronomeEventArgs.SubBeatNumber">
+            <summary>
+            Only set for inter-beat notifications
+            </summary>
+            <value>The inter beat number.</value>
+        </member>
+        <member name="P:Motive.Core.Media.MetronomeEventArgs.TickTime">
+            <summary>
+            System time corresponding to this tick.
+            </summary>
+            <value>The tick time.</value>
+        </member>
+        <member name="T:Motive.Core.Scripting.InverseConditionMonitor">
+            <summary>
+            Condition monitor that inverts the results of another monitor.
+            Clears out any results since they are not valid once the "isMet"
+            flag is flipped.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Scripting.CompoundConditionMonitor.CheckState(Motive.Core.Scripting.FrameOperationContext,System.Int32,System.Boolean,Motive.Core.Scripting.CompoundCondition)">
+            <summary>
+            Called when checking the state of the compound condition if a subcondition has
+            already reported that it's met.
+            </summary>
+            <param name="fop"></param>
+            <param name="skipIdx">Index of the subcondition that is already met.</param>
+            <param name="condition"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ConditionMonitor`1.StartTimer(System.Double)">
+            <summary>
+            Used for polling conditions.
+            </summary>
+            <param name="seconds"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Motive.Core.Scripting.ConditionMonitor`1.WaitForConditionUpdate(Motive.Core.Scripting.FrameOperationContext,`0)">
+            <summary>
+            Wait for the state of the condition to change from the current state. Do not
+            report on the current state, only any potential state changes.
+            </summary>
+            <param name="fop"></param>
+            <param name="condition"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ConditionMonitor`1.WaitForConditionUpdate(Motive.Core.Scripting.FrameOperationContext,Motive.Core.Scripting.ICondition,Motive.Core.Scripting.ConditionCheckStateComplete)">
+            <summary>
+            Waits for a condition update. This assumes that the current state of the condition
+            is known and only future changes to the state are of interest.
+            </summary>
+            <param name="fop"></param>
+            <param name="condition"></param>
+            <param name="onUpdate"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ConditionMonitor`1.CheckState(Motive.Core.Scripting.FrameOperationContext,Motive.Core.Scripting.ICondition,Motive.Core.Scripting.ConditionCheckStateComplete)">
+            <summary>
+            Called for a one time check of the condition. Does not wait on this condition.
+            </summary>
+            <param name="fop"></param>
+            <param name="c"></param>
+            <param name="onComplete"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ConditionMonitor`1.CheckWaitingConditionState(Motive.Core.Scripting.WaitingCondition{`0})">
+            <summary>
+            Checks the state of a waiting condition asynchronously.
+            OnMet.
+            </summary>
+            <param name="fop"></param>
+            <param name="condition"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ConditionMonitor`1.CheckWaitingConditions">
+            <summary>
+            Checks all waiting conditions. Call this whenever there's a state
+            change that could affect the conditions.
+            </summary>
+        </member>
+        <member name="T:Motive.Core.Scripting.ConditionMonitor`2">
+            <summary>
+            A condition monitor that has the notion of "context" for a condition. This was
+            built because there was a lot of redundant code in location-based conditions. In this
+            example, the context was either the user's current location OR (for some conditions)
+            a set of coordinates in the condition itself (e.g. find all cafes near the user OR find 
+            all cafes near the Eiffel Tower).
+            </summary>
+            <typeparam name="T">Condition type</typeparam>
+            <typeparam name="C">Context type</typeparam>
+        </member>
+        <member name="M:Motive.Core.Scripting.ConditionMonitor`2.GetContext(Motive.Core.Scripting.FrameOperationContext,`0,System.Action{`1})">
+            <summary>
+            Gets the context for a condition.
+            </summary>
+            <param name="fop"></param>
+            <param name="condition"></param>
+            <param name="onReady"></param>
+        </member>
+        <member name="P:Motive.Core.Scripting.IConditionMonitor.HandlesNegate">
+            <summary>
+            Returns true if the underlying monitor handles the NegateResult flag. If false,
+            callers should look at the flag themselves.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Scripting.IConditionMonitor.WaitForConditionUpdate(Motive.Core.Scripting.FrameOperationContext,Motive.Core.Scripting.ICondition,Motive.Core.Scripting.ConditionCheckStateComplete)">
+            <summary>
+            Waits for an update for the condition. "onUpdate" gets called any time an important
+            update happens. "Important" SHOULD mean that the condition changed state, however
+            callers of this method SHOULD NOT assume that this will always be the case.
+            </summary>
+            <param name="context"></param>
+            <param name="condition"></param>
+            <param name="onUpdate"></param>
+        </member>
+        <member name="P:Motive.Core.Scripting.ScriptEventInfo.CurrentOccurencesCount">
+            <summary>
+            Returns the number of occurences of this event
+            since the last reset.
+            </summary>
+        </member>
+        <member name="P:Motive.Core.Scripting.ScriptEventInfo.AllOccurencesCount">
+            <summary>
+            Returns the total number of occurences for this
+            event, ignoring resets.
+            </summary>
+        </member>
+        <member name="T:Motive.Core.Scripting.ScriptProcessor">
+            <summary>
+            Processes scripts and calls into the engine to activate resources,
+            monitor conditions, etc.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.Run(System.Boolean,System.Action{System.Boolean},System.Action{System.Boolean})">
+            <summary>
+            Runs the script, optionally opting *not* to wait for the condition on
+            the root frame to be met. This is useful for "try run" type of semantics.
+            </summary>
+            <param name="waitForCondition">If true, wait for the condition to be true. If false, only check the precondition on the root frame once.</param>
+            <param name="onConditionResult">Callback that returns the result of the precondition check.</param>
+            <param name="onComplete">Called on complete.</param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.Run(System.Action,System.Action{System.Boolean})">
+            <summary>
+            Runs the script, calling "onRunning" and "onComplete" at those points.
+            </summary>
+            <param name="onRunning"></param>
+            <param name="onComplete"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.Run(System.Action{System.Boolean})">
+            <summary>
+            Runs the script and calls "onComplete" when the script is complete.
+            </summary>
+            <param name="onComplete"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.SaveState">
+            <summary>
+            Saves the script state.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.Run">
+            <summary>
+            Runs the script.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.ReplayFrame(Motive.Core.Scripting.FrameContext,System.Boolean)">
+            <summary>
+            Replays the frame with the given context.
+            </summary>
+            <param name="frameContext"></param>
+            <param name="reset">If true, resets the frame state.</param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.ReplayFrame(System.String,System.Boolean)">
+            <summary>
+            Replay the frame with the given ID. The frame must be active
+            for this to have an effect.
+            </summary>
+            <param name="frameId"></param>
+            <param name="reset"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.CloseFrame(System.String)">
+            <summary>
+            Close the frame with the given ID.
+            </summary>
+            <param name="frameId"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.ReplayOpenFrames(System.Boolean)">
+            <summary>
+            Replays the script.
+            </summary>
+            <param name="reset">If true, also resets the script state.</param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.StopRunning(System.Action,System.Boolean)">
+            <summary>
+            Stops running the script.
+            </summary>
+            <param name="onComplete">Called when the script has completely stopped.</param>
+            <param name="close"></param>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.Abort">
+            <summary>
+            Similar to StopRunning, but also resets the
+            script context.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.Restart">
+            <summary>
+            Restarts the script.
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Scripting.ScriptProcessor.Restart(Motive.Core.Scripting.Script)">
+            <summary>
+            Restarts the processor with a new script.
+            </summary>
+            <param name="newScript"></param>
+        </member>
+        <member name="T:Motive.Core.Scripting.Selector">
+            <summary>
+            Abstract base class for selectors.
+            </summary>
+        </member>
+        <member name="T:Motive.Core.Utilities.ArrayHelper">
+            <summary>
+            Used for handling array operations that are broken for
+            Linq on iOS
+            </summary>
+        </member>
+        <member name="M:Motive.Core.Utilities.Tools.GetArray``1(System.Collections.Generic.IEnumerable{``0})">
+            <summary>
+            We often create arrays from collections, and fairly often those collections are arrays.
+            Since arrays are immutable, we can just return the input array in most cases if the
+            collection is an array.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="collection"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Motive.Core.WebServices.WebCacheManager.LoadJson(System.String,System.String,System.Action{System.Boolean,System.String})">
+            <summary>
+            Loads a JSON string from a URL. If the data is already in the cache,
+            loads from the cache first, then from the URL. This means that onLoad
+            may be called twice.
+            </summary>
+            <param name="url">URL.</param>
+            <param name="filePath">File path.</param>
+            <param name="onRefresh">On load.</param>
+        </member>
+        <member name="M:Motive.Core.WebServices.WebCacheManager.LoadJson(System.String,System.String,System.Action{System.String})">
+            <summary>
+            Similar to above, but ignores the success flag and just allows a refresh that doesn't
+            care about success.
+            </summary>
+            <param name="url">URL.</param>
+            <param name="filePath">File path.</param>
+            <param name="onLoad">On load.</param>
+        </member>
+    </members>
+</doc>

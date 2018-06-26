@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 1000010817590464}
+  m_IsPrefabParent: 1
+--- !u!1 &1000010817590464
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4000012820409338}
+  - component: {fileID: 114000011117500884}
+  m_Layer: 0
+  m_Name: AR World
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4000012820409338
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010817590464}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 5006.19, y: 5000, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &114000011117500884
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010817590464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e989bc2cdb3a29d478f0c512954a4a4e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  AugmentedImageObject: {fileID: 114024153244033318, guid: 0ec04050a8c4c1246934c236ef930961,
+    type: 2}
+  Augmented3dObject: {fileID: 114000011910162824, guid: 799170f23f9935d46937de69d213b1f4,
+    type: 2}
+  AugmentedVideoObject: {fileID: 114283420015760294, guid: 8061e5974f1bdd943b4fedcad985f8af,
+    type: 2}
+  AugmentedAudioObject: {fileID: 114999962957227616, guid: 7717bd8df70460b48b053b56a5932ba2,
+    type: 2}
+  DefaultAdapter: {fileID: 114835907061220070, guid: 951fd80c03ef70a43858498d22692501,
+    type: 2}
+  ARCoreAdapter: {fileID: 114704682318665450, guid: 37ec5375a2effbe40b66809841207b0c,
+    type: 2}
+  ARKitAdapter: {fileID: 114274774873244028, guid: 8b298a1f9f2debf45b1289e9197b6c2b,
+    type: 2}
+  DistanceScale: 1
+  DefaultFixedDistance: 5
+  ActiveOnWake: 0
+  ARAdapter: {fileID: 0}

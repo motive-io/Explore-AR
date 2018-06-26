@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<linker>
+<assembly fullname="System">
+	<type fullname="System.ComponentModel.TimeSpanConverter" perserve="all" />
+	<type fullname="System.TimeSpan" preserve="all" />
+	<type fullname="System.DateTime" preserve="all" />
+</assembly>
+<assembly fullname="Motive.Core">
+	<namespace fullname="Motive.UI" preserve="all" />
+	<namespace fullname="Motive.Core.Models" preserve="all" />
+	<namespace fullname="Motive.Core.Social" preserve="all" />
+	<namespace fullname="Motive.Core.Media" preserve="all" />
+	<namespace fullname="Motive.Core.Scripting" preserve="all" />
+	<namespace fullname="Motive.Core.Globalization" preserve="all" />
+	<namespace fullname="Motive.Core.WebServices" preserve="all" />
+</assembly>
+<assembly fullname="Motive.AR">
+	<namespace fullname="Motive.AR.LocationServices" preserve="all" />
+	<namespace fullname="Motive.AR.Scripting" preserve="all" />
+	<namespace fullname="Motive.AR.WeatherServices" preserve="all" />
+    <namespace fullname="Motive.AR.Models" preserve="all" />
+    <namespace fullname="Motive.AR.Social" preserve="all" />
+</assembly>
+</linker>
