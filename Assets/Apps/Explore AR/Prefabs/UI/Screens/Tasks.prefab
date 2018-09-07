@@ -719,6 +719,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34622c956319e4a408e0d17ec9211e4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114000012865218742
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -982,7 +987,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: c5be84dfadf809a48aac46520b3baa2b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ffa56d11d77c3924db1aec86eed8cb95, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1061,6 +1066,8 @@ MonoBehaviour:
   Selectable: 1
   EnabledWhenSelected: {fileID: 0}
   EnabledWhenNotSelected: {fileID: 0}
+  EnableWhenHighlighed: []
+  EnabledWhenNotHighlighted: []
   Text: {fileID: 114115484755160702}
   Image: {fileID: 114013910708187148}
   TextLayoutObject: {fileID: 1628151923122786}
@@ -1334,6 +1341,8 @@ MonoBehaviour:
   Selectable: 1
   EnabledWhenSelected: {fileID: 0}
   EnabledWhenNotSelected: {fileID: 0}
+  EnableWhenHighlighed: []
+  EnabledWhenNotHighlighted: []
   ItemNumber: {fileID: 0}
   Title: {fileID: 114115484755160702}
   Subtitle: {fileID: 0}
@@ -1347,11 +1356,7 @@ MonoBehaviour:
   ActionItemTable: {fileID: 0}
   ActionItemPrefab: {fileID: 0}
   ActionItemCurrencyPrefab: {fileID: 0}
-  NeedsMoreTextColor:
-    r: 1
-    g: 0
-    b: 0
-    a: 1
+  NeedsMoreTextColor: {r: 1, g: 0, b: 0, a: 1}
   RewardItemTable: {fileID: 0}
   RewardItemCurrencyPrefab: {fileID: 0}
   RewardItemPrefab: {fileID: 0}
@@ -1987,7 +1992,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00018900922}
+  m_AnchoredPosition: {x: 0, y: 0.00015441536}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1.0000002}
 --- !u!224 &224080229864432894
@@ -2101,7 +2106,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 7.275958e-12, y: -1.9999999}
+  m_AnchoredPosition: {x: 0, y: -2}
   m_SizeDelta: {x: -10, y: -10}
   m_Pivot: {x: 0.5, y: 0.7}
 --- !u!224 &224450948612295604

@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Timers;
 using JetBrains.Annotations;
 using Motive.Unity.Webcam;
 using UnityEngine;

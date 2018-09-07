@@ -84,6 +84,13 @@ namespace Motive.Unity.UI
                 }
             });
         }
+
+        public override void DidHide()
+        {
+            QRTokenScanner.Instance.Stop();
+
+            base.DidHide();
+        }
 #endif
     }
 }

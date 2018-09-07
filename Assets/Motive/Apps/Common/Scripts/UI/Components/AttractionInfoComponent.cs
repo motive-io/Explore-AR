@@ -32,7 +32,7 @@ namespace Motive.Unity.UI
             }
         }
 
-        public override void DidShow(ActivatedAttractionContext obj)
+        public override void DidPush(ActivatedAttractionContext obj)
         {
             Table.Clear();
 
@@ -66,7 +66,7 @@ namespace Motive.Unity.UI
                 }
             }
 
-            base.DidShow(obj);
+            base.DidPush(obj);
         }
     }
 }

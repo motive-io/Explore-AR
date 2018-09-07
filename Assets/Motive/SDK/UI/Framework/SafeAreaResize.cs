@@ -30,7 +30,6 @@ namespace Motive.UI.Framework
             m_screenWidth = Screen.width;
             m_screenHeight = Screen.height;
 
-#if UNITY_2017_2_OR_NEWER
             var tf = (RectTransform)this.transform;
 
             var dux = Screen.width - Screen.safeArea.width - Screen.safeArea.x;
@@ -50,7 +49,6 @@ namespace Motive.UI.Framework
 
             //Debug.LogFormat("safe area min={0} max={1}", tf.anchorMin, tf.anchorMax);
             //Debug.LogFormat("safe area w={0} h={1} x={2} y={3}", Screen.safeArea.width, Screen.safeArea.height, Screen.safeArea.x, Screen.safeArea.y);
-#endif
         }
 
         void Update()

@@ -120,10 +120,21 @@ namespace Motive.Unity.UI
             }
         }
 
+        void ClearTexture()
+        {
+            if (m_videoPlayer.renderMode == VideoRenderMode.RenderTexture)
+            {
+                var active = RenderTexture.active;
+                RenderTexture.active = m_videoPlayer.targetTexture;
+                GL.Clear(true, true, Color.clear);
+                RenderTexture.active = active;
+            }
+        }
+
         public override void Play()
         {
             m_logger.Debug("Play - isPrepared={0}", m_videoPlayer.isPrepared);
-
+            
             if (m_videoPlayer.isPrepared)
             {
                 m_videoPlayer.Play();
@@ -136,6 +147,8 @@ namespace Motive.Unity.UI
             }
             else
             {
+                ClearTexture();
+
                 m_playOnPrepare = true;
                 m_videoPlayer.Prepare();
             }
@@ -166,6 +179,8 @@ namespace Motive.Unity.UI
                 }
                 else
                 {
+                    ClearTexture();
+
                     m_playOnPrepare = true;
 
                     m_videoPlayer.Prepare();
@@ -215,7 +230,7 @@ namespace Motive.Unity.UI
 
         public override void UpdatePosition(float pos)
         {
-            m_videoPlayer.frame = (long)(pos * m_videoPlayer.frameCount);
+            m_videoPlayer.frame = (long)(pos * m_videoPlayer.frameRate);
         }
 
         public override float Position

@@ -24,7 +24,7 @@ namespace Motive.Unity.UI
             }
         }
 
-        public override void DidShow()
+        public override void DidPush()
         {
             if (m_timer != null)
             {
@@ -39,7 +39,7 @@ namespace Motive.Unity.UI
                 }
             });
 
-            base.DidShow();
+            base.DidPush();
         }
     }
 

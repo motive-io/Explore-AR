@@ -49,10 +49,18 @@ namespace Motive.Unity.Utilities
             layoutObj.transform.localRotation = Quaternion.identity;
             layoutObj.transform.localScale = Vector3.one;
 
+            var animationObj = new GameObject("Scripted Animation");
+
+            animationObj.transform.localPosition = Vector3.zero;
+            animationObj.transform.localRotation = Quaternion.identity;
+            animationObj.transform.localScale = Vector3.one;
+
+            animationObj.transform.SetParent(layoutObj.transform);
+
             gameObj.transform.localPosition = Vector3.zero;
             gameObj.transform.localRotation = Quaternion.identity;
 
-            gameObj.transform.SetParent(layoutObj.transform);
+            gameObj.transform.SetParent(animationObj.transform);
 
             if (assetInstance.Layout != null)
             {

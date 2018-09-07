@@ -67,7 +67,7 @@ namespace Motive.Unity.UI
             }
         }
 
-        public override void DidShow()
+        public override void DidPush()
         {
             //StopPlayer();
         }

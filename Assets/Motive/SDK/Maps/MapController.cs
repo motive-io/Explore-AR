@@ -15,6 +15,7 @@ using Motive.AR.Models;
 using Motive.UI.Framework;
 using UnityEngine.Events;
 using Motive.Core.Models;
+using Motive.Core.Scripting;
 
 namespace Motive.Unity.Maps
 {
@@ -45,10 +46,7 @@ namespace Motive.Unity.Maps
 		public MapControllerEvent Ready;
 
         private SetDictionary<string, MapAnnotation> m_locationAnnotations;
-
-        private Dictionary<string, MapAnnotation> m_searchLocations;
-        private Dictionary<string, MediaElement> m_locationTypeMarkers;
-        private Dictionary<string, MediaElement> m_storyTagMarkers;
+        private SetDictionary<string, IOverlay> m_overlays;
 
         public AnnotationGameObject User;
 
@@ -67,6 +65,9 @@ namespace Motive.Unity.Maps
         public Vector3 MapX = new Vector3(10f, 0, 0);
         public Vector3 MapY = new Vector3(0, 0, 10f);
 
+        public LayeredOverlayGameObject LayeredOverlayPrefab;
+        public OverlayGameObject OverlayPrefab;
+        
         public virtual float DefaultZoomLevel
         {
             get
@@ -153,10 +154,8 @@ namespace Motive.Unity.Maps
         {
             base.Awake();
 
-            m_searchLocations = new Dictionary<string, MapAnnotation>();
-            m_storyTagMarkers = new Dictionary<string, MediaElement>();
-            m_locationTypeMarkers = new Dictionary<string, MediaElement>();
             m_locationAnnotations = new SetDictionary<string, MapAnnotation>();
+            m_overlays = new SetDictionary<string, IOverlay>();
 
             m_toAdd = new HashSet<MapAnnotation>();
             m_toRemove = new HashSet<MapAnnotation>();
@@ -497,80 +496,6 @@ namespace Motive.Unity.Maps
             CenterMap(coordinates, null, null, onPanComplete);
         }
 
-        protected virtual bool ShouldAddSearchLocationAnnotation(Location location)
-        {
-            return true;
-        }
-
-        protected void HandleLocationsUpdated(object sender, System.EventArgs e)
-        {
-            var oldSearchAnns = m_searchLocations;
-            m_searchLocations = new Dictionary<string, MapAnnotation>();
-
-            ThreadHelper.Instance.CallOnMainThread(() =>
-            {
-                foreach (var loc in LocationCache.Instance.Locations)
-                {
-                    if (!ShouldAddSearchLocationAnnotation(loc))
-                    {
-                        continue;
-                    }
-
-                    if (oldSearchAnns.ContainsKey(loc.Id))
-                    {
-                        // We already have this annotation,
-                        // no need to re-add
-                        var ann = oldSearchAnns[loc.Id];
-                        oldSearchAnns.Remove(loc.Id);
-                        m_searchLocations[loc.Id] = ann;
-                    }
-                    else
-                    {
-                        var ann = new MapAnnotation(loc);
-                        m_searchLocations[loc.Id] = ann;
-
-                        // When resolving markers, check location types first,
-                        // then story tags.
-                        if (loc.LocationTypes != null)
-                        {
-                            foreach (var t in loc.LocationTypes)
-                            {
-                                MediaElement marker = null;
-
-                                if (m_locationTypeMarkers.TryGetValue(t, out marker))
-                                {
-                                    ann.Marker = marker;
-                                    break;
-                                }
-                            }
-                        }
-
-                        if (ann.Marker == null && loc.StoryTags != null)
-                        {
-                            foreach (var s in loc.StoryTags)
-                            {
-                                MediaElement marker = null;
-
-                                if (m_storyTagMarkers.TryGetValue(s, out marker))
-                                {
-                                    ann.Marker = marker;
-                                    break;
-                                }
-                            }
-                        }
-
-                        AddAnnotation(ann);
-                    }
-                }
-
-                // Any that are left in the old dictionary can be removed
-                foreach (var ann in oldSearchAnns.Values)
-                {
-                    MapView.RemoveAnnotation(ann);
-                }
-            });
-        }
-
         #region IMapViewDelegate
         public virtual System.Collections.Generic.IEnumerable<IAnnotation> GetAnnotationsForCluster(MapView sender, AnnotationCluster cluster)
         {
@@ -609,9 +534,32 @@ namespace Motive.Unity.Maps
                 return GetUserAnnotationObject(sender, annotation).gameObject;
             }
 
+            if (annotation is Overlay)
+            {
+                var overlayObj = Instantiate(OverlayPrefab);
+
+                overlayObj.Overlay = annotation as Overlay;
+
+                return overlayObj.gameObject;
+            }
+
+            if (annotation is LayeredOverlay)
+            {
+                var overlayObj = Instantiate(LayeredOverlayPrefab);
+
+                overlayObj.Overlay = annotation as LayeredOverlay;
+
+                return overlayObj.gameObject;
+            }
+
             AnnotationGameObject annotationObj = null;
 
             var mapAnnotation = annotation as MapAnnotation;
+
+            if (mapAnnotation == null)
+            {
+                return null;
+            }
 
             if (mapAnnotation.Delegate != null)
             {
@@ -787,6 +735,58 @@ namespace Motive.Unity.Maps
             }
 
             CenterMap(coordinates, targetZoom, duration, onComplete);
+        }
+
+        internal void AddMapOverlay(ResourceActivationContext context, MapOverlay overlay)
+        {
+            if (overlay.CenterLocation != null)
+            {
+                var ann = new Overlay(overlay);
+
+                m_overlays.Add(context.InstanceId, ann);
+
+                MapView.AddOverlay(ann);
+            }
+        }
+
+        internal void RemoveMapOverlay(ResourceActivationContext context, MapOverlay resource)
+        {
+            var annotations = m_overlays[context.InstanceId];
+            m_overlays.RemoveAll(context.InstanceId);
+
+            if (annotations != null)
+            {
+                foreach (var ann in annotations)
+                {
+                    MapView.RemoveOverlay(ann);
+                }
+            }
+        }
+
+        internal void AddLayeredOverlay(ResourceActivationContext context, LayeredMapOverlay overlay)
+        {
+            if (overlay.CenterLocation != null)
+            {
+                var ann = new LayeredOverlay(overlay);
+
+                m_overlays.Add(context.InstanceId, ann);
+
+                MapView.AddOverlay(ann);
+            }
+        }
+
+        internal void RemoveLayeredOverlay(ResourceActivationContext context, LayeredMapOverlay resource)
+        {
+            var annotations = m_overlays[context.InstanceId];
+            m_overlays.RemoveAll(context.InstanceId);
+
+            if (annotations != null)
+            {
+                foreach (var ann in annotations)
+                {
+                    MapView.RemoveOverlay(ann);
+                }
+            }
         }
     }
 }

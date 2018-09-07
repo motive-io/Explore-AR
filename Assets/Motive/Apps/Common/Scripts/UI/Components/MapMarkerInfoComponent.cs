@@ -21,6 +21,7 @@ namespace Motive.Unity.UI
         public Text Subtitle;
         public Text InfoDescription;
         public RawImage InfoImage;
+        public GameObject InfoImageLayout;
 
         public void SetTitle(string title)
         {
@@ -45,9 +46,9 @@ namespace Motive.Unity.UI
             base.ClearData();
         }
 
-        public override void DidShow(MapAnnotation<LocationMarker> data)
+        public override void DidPush(MapAnnotation<LocationMarker> data)
         {
-            base.DidShow(data);
+            base.DidPush(data);
 
             if (data.Data != null && data.Data.Information != null)
             {
@@ -63,10 +64,7 @@ namespace Motive.Unity.UI
                         InfoDescription.text = data.Data.Information.Description;
                     }
 
-                    if (InfoImage)
-                    {
-                        ImageLoader.LoadImageOnMainThread(data.Data.Information.ImageUrl, InfoImage);
-                    }
+                    SetImage(InfoImageLayout, InfoImage, data.Data.Information.ImageUrl);
                 }
             }
             else

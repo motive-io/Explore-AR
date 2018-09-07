@@ -25,13 +25,38 @@ namespace Motive.UI.Framework
         {
         }
 
+        public override void DidPush()
+        {
+            if (OnPush != null)
+            {
+                OnPush.Invoke();
+            }
+
+            if (m_components != null)
+            {
+                foreach (var c in m_components)
+                {
+                    c.DidPush(this.m_dataObject);
+                }
+            }
+
+            //Populate();
+
+            //DidShow();
+            
+            //base.DidPush();
+        }
+
         public override void DidPush(object data)
         {
             m_dataObject = data;
 
+            DidPush();
+
             if (data is T)
             {
                 Data = (T)data;
+
                 Populate((T)data);
             }
             else
@@ -41,7 +66,12 @@ namespace Motive.UI.Framework
                 ClearData();
             }
 
-            base.DidPush(data);
+            Populate();
+
+            DidShow();
+
+            // Order is important, so we can't just call the base object
+            //base.DidPush(data);
         }
     }
 
@@ -108,6 +138,8 @@ namespace Motive.UI.Framework
         
         public bool IsReady { get; private set; }
 
+        public bool IsShowing { get; private set; }
+
         public object Data
         {
             get
@@ -118,7 +150,7 @@ namespace Motive.UI.Framework
 
         protected object m_dataObject;
 		bool m_isActive;
-        IEnumerable<PanelComponent> m_components;
+        protected IEnumerable<PanelComponent> m_components;
 
         protected virtual void Awake()
         {
@@ -209,7 +241,7 @@ namespace Motive.UI.Framework
 
         public virtual void Populate()
         {
-            //IsReady = true;
+            PopulateComponents(this.m_dataObject);
         }
 
         public virtual void PopulateComponent<T>(object data)
@@ -229,18 +261,20 @@ namespace Motive.UI.Framework
             {
                 foreach (var c in m_components)
                 {
-                    c.DidShow(obj);
+                    c.Populate(obj);
                 }
             }
         }
 
         public virtual void DidShow()
         {
-            PopulateComponents(this.m_dataObject);
+            IsShowing = true;
         }
 
         public virtual void DidHide()
         {
+            IsShowing = true;
+
             if (LinkedObjects != null)
             {
                 foreach (var obj in LinkedObjects)
@@ -271,22 +305,28 @@ namespace Motive.UI.Framework
 
         public virtual void DidPush()
         {
-            Populate();
-
             if (OnPush != null)
             {
                 OnPush.Invoke();
             }
 
-			DidShow();
+            if (m_components != null)
+            {
+                foreach (var c in m_components)
+                {
+                    c.DidPush(this.m_dataObject);
+                }
+            }
+
+            Populate();
+
+            DidShow();
         }
 
         public virtual void DidPush(object data)
         {
             m_dataObject = data;
-
-            //IsReady = true;
-
+            
             DidPush();
         }
 

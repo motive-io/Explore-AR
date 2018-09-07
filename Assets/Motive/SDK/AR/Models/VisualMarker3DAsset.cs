@@ -13,7 +13,7 @@ namespace Motive.AR.Models
 {
     public class VisualMarker3DAsset : ScriptObject, IMediaItemProvider
     {
-        public IVisualMarker[] Markers { get; set; }
+        public IScriptObject[] Markers { get; set; }
         public AssetInstance AssetInstance { get; set; }
         public MediaElement FallbackImage { get; set; }
 

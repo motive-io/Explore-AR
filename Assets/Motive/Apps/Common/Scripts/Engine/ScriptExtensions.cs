@@ -14,6 +14,7 @@ using Motive.UI;
 using Motive.UI.Models;
 using Motive.Unity.Models;
 using Motive.Unity.Storage;
+using Motive.Unity.World;
 
 namespace Motive.Unity.Scripting
 {
@@ -30,7 +31,7 @@ namespace Motive.Unity.Scripting
 
             ScriptEngine.Instance.Initialize(smPath);
 
-            // This intializes the Alternate Reality and Location Based features.
+            // This initializes the Alternate Reality and Location Based features.
             ARComponents.Instance.Initialize(smPath, locationManager, beaconManager, compass, null);
 
             // This tells the JSON reader how to deserialize various object types based on
@@ -49,6 +50,12 @@ namespace Motive.Unity.Scripting
             JsonTypeRegistry.Instance.RegisterType("motive.3d.relativeWorldPosition", typeof(RelativeWorldPosition));
             JsonTypeRegistry.Instance.RegisterType("motive.3d.fixedWorldPosition", typeof(FixedWorldPosition));
             JsonTypeRegistry.Instance.RegisterType("motive.3d.worldObjectProximityCondition", typeof(WorldObjectProximityCondition));
+            JsonTypeRegistry.Instance.RegisterType("motive.3d.binaryAsset", typeof(BinaryAsset));
+
+            JsonTypeRegistry.Instance.RegisterType("motive.3d.scriptedKeyframe", typeof(ScriptedKeyframe));
+            JsonTypeRegistry.Instance.RegisterType("motive.3d.scriptedAnimation", typeof(ScriptedAnimation));
+            JsonTypeRegistry.Instance.RegisterType("motive.3d.scriptedParticleEffect", typeof(ScriptedParticleEffect));
+            JsonTypeRegistry.Instance.RegisterType("motive.3d.transform", typeof(MotiveTransform));
 
             JsonTypeRegistry.Instance.RegisterType("motive.unity.animation", typeof(UnityAnimation));
 
@@ -98,10 +105,14 @@ namespace Motive.Unity.Scripting
             JsonTypeRegistry.Instance.RegisterType("motive.ar.visualMarkerTask", typeof(VisualMarkerTask));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.locationMarker", typeof(LocationMarker));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.location3dAsset", typeof(Location3DAsset));
+            JsonTypeRegistry.Instance.RegisterType("motive.ar.mapOverlay", typeof(MapOverlay));
+            JsonTypeRegistry.Instance.RegisterType("motive.ar.layeredMapOverlay", typeof(LayeredMapOverlay));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.arCatcherMinigame", typeof(ARCatcherMinigame));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.mapZoomCommand", typeof(MapZoomCommand));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.storyTagLocationTypes", typeof(StoryTagLocationType));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.mapZoomCommand", typeof(MapZoomCommand));
+            JsonTypeRegistry.Instance.RegisterType("motive.ar.rawImageMarker", typeof(RawImageMarker));
+            JsonTypeRegistry.Instance.RegisterType("motive.ar.pedometerCondition", typeof(PedometerCondition));
 
             JsonTypeRegistry.Instance.RegisterType("motive.ar.arLocationCollectionMechanic", typeof(ARLocationCollectionMechanic));
             JsonTypeRegistry.Instance.RegisterType("motive.ar.mapLocationCollectionMechanic", typeof(MapLocationCollectionMechanic));
@@ -142,6 +153,8 @@ namespace Motive.Unity.Scripting
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.locationMarker", new LocationMarkerProcessor());
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.location3dAsset", new Location3DAssetProcessor());
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.locativeAudioContent", new LocativeAudioContentProcessor());
+            ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.mapOverlay", new MapOverlayProcessor());
+            ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.layeredMapOverlay", new LayeredMapOverlayProcessor());
 
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.3d.worldObjectEffectPlayer", new WorldObjectEffectPlayerProcessor());
 
@@ -160,6 +173,7 @@ namespace Motive.Unity.Scripting
             ScriptEngine.Instance.RegisterConditionMonitor(new CanExecuteRecipeConditionMonitor());
             ScriptEngine.Instance.RegisterConditionMonitor(new CanCompleteTaskConditionMonitor());
             ScriptEngine.Instance.RegisterConditionMonitor(new CanCompleteObjectiveTaskConditionMonitor());
+            ScriptEngine.Instance.RegisterConditionMonitor(new PedometerConditionMonitor());
             ScriptEngine.Instance.RegisterConditionMonitor(WorldObjectProximityConditionMonitor.Instance);
         }
     }

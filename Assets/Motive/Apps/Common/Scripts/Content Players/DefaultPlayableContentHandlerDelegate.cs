@@ -10,6 +10,7 @@ using Motive.Unity.UI;
 using Motive.Unity.Utilities;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 using Logger = Motive.Core.Diagnostics.Logger;
 
 namespace Motive.Unity.Playables
@@ -122,9 +123,7 @@ namespace Motive.Unity.Playables
         public Panel VideoPanel;
         public Panel AudioPanel;
         public Panel ImagePanel;
-
-        public string PanelStack = "main";
-
+        
         public float MinFillerDelay = 15f;
 
         protected Logger m_logger;
@@ -189,49 +188,49 @@ namespace Motive.Unity.Playables
             return VideoPanel;
         }
 
-        protected void Push(ResourceActivationContext context, string stackName, Panel panel, object data, Action onClose)
+        protected void Push(ResourceActivationContext context, Panel panel, object data, Action onClose)
         {
             ThreadHelper.Instance.CallOnMainThread(() =>
             {
                 context.Open();
 
-                PanelManager.Instance.Push(stackName, panel, data, onClose);
+                PanelManager.Instance.Push(panel, data, onClose);
             });
         }
 
         protected virtual void PushScreenDialogPanel(ResourceActivationContext context, PlayableContent playable, ScreenMessage screenMsg, ResourcePanelData<ScreenMessage> data, Action onClose)
         {
-            Push(context, PanelStack, GetScreenDialogPanel(context, playable), data, onClose);
+            Push(context, GetScreenDialogPanel(context, playable), data, onClose);
         }
 
         protected virtual void PushScreenMessagePanel(ResourceActivationContext context, PlayableContent playable, ScreenMessage screenMsg, ResourcePanelData<ScreenMessage> data, Action onClose)
         {
-            Push(context, PanelStack, GetScreenMessagePanel(context, playable), data, onClose);
+            Push(context, GetScreenMessagePanel(context, playable), data, onClose);
         }
 
         protected virtual void PushCharacterDialogPanel(ResourceActivationContext context, PlayableContent playable, CharacterMessage charMsg, ResourcePanelData<CharacterMessage> data, Action onClose)
         {
-            Push(context, PanelStack, GetCharacterDialogPanel(context, playable), data, onClose);
+            Push(context, GetCharacterDialogPanel(context, playable), data, onClose);
         }
 
         protected virtual void PushCharacterMessagePanel(ResourceActivationContext context, PlayableContent playable, CharacterMessage charMsg, ResourcePanelData<CharacterMessage> data, Action onClose)
         {
-            Push(context, PanelStack, GetCharacterMessagePanel(context, playable), data, onClose);
+            Push(context, GetCharacterMessagePanel(context, playable), data, onClose);
         }
 
         protected virtual void PushImagePanel(ResourceActivationContext context, PlayableContent playable, MediaContent media, ResourcePanelData<MediaContent> data, Action onClose)
         {
-            Push(context, PanelStack, GetImagePanel(context, playable), data, onClose);
+            Push(context, GetImagePanel(context, playable), data, onClose);
         }
 
         protected virtual void PushVideoPanel(ResourceActivationContext context, PlayableContent playable, MediaContent media, ResourcePanelData<MediaContent> data, Action onClose)
         {
-            Push(context, PanelStack, GetVideoPanel(context, playable), data, onClose);
+            Push(context, GetVideoPanel(context, playable), data, onClose);
         }
 
         protected virtual void PushAudioPanel(ResourceActivationContext context, PlayableContent playable, MediaContent media, ResourcePanelData<MediaContent> data, Action onClose)
         {
-            Push(context, PanelStack, GetAudioPanel(context, playable), data, onClose);
+            Push(context, GetAudioPanel(context, playable), data, onClose);
         }
 
         protected virtual void PlayMediaContent(ResourceActivationContext context, PlayableContent playable, MediaContent media, ResourcePanelData<MediaContent> data, Action onClose)
@@ -436,10 +435,10 @@ namespace Motive.Unity.Playables
         {
             activationContext.Open();
 
-            AudioContentPlayer.Instance.PlayAudioContent(activationContext.InstanceId, playable.Content as LocalizedAudioContent, GetRouteForAudioContent(playable), (whenDone) =>
-                {
-                    BeforePlayAudio(activationContext, playable, whenDone);
-                },
+            AudioContentPlayer.Instance.PlayAudioContent(activationContext, playable.Content as LocalizedAudioContent, GetRouteForAudioContent(playable), (whenDone) =>
+            {
+                BeforePlayAudio(activationContext, playable, whenDone);
+            },
                 () =>
                 {
                     AfterPlayAudio(activationContext, playable, onClose);
@@ -615,7 +614,7 @@ namespace Motive.Unity.Playables
                 if (notification.Title != null ||
                     notification.Message != null)
                 {
-                    Push(context, PanelStack, NotificationPanel, data, onClose);
+                    Push(context, NotificationPanel, data, onClose);
                 }
                 else
                 {
@@ -676,7 +675,7 @@ namespace Motive.Unity.Playables
         public override void StopPlaying(ResourceActivationContext ctxt, PlayableContent playable, bool interrupt = false)
         {
             PlayableContentQueue queue = null;
-
+            
             lock (m_queues)
             {
                 m_queues.TryGetValue(ctxt.InstanceId, out queue);
@@ -686,7 +685,8 @@ namespace Motive.Unity.Playables
 
             if (audioContent != null)
             {
-                if (AudioContentPlayer.Instance.StopPlaying(ctxt.InstanceId, interrupt))
+
+                if (AudioContentPlayer.Instance.StopPlaying(ctxt, interrupt))
                 {
                     // If audio content player didn't stop in this call, the playable will
                     // stop playing and call back, we can remove it from the queue then

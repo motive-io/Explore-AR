@@ -338,7 +338,7 @@ namespace Motive
         {
             SpaceName = !string.IsNullOrEmpty(AppId) ? AppId.Substring(0, AppId.LastIndexOf('.')) : null;
 
-#if !UNITY_WP8
+#if !WINDOWS_UWP
             System.Net.ServicePointManager.ServerCertificateValidationCallback =
                 new System.Net.Security.RemoteCertificateValidationCallback(
                     (object sender, System.Security.Cryptography.X509Certificates.X509Certificate certificate,
@@ -522,17 +522,38 @@ namespace Motive
             {
                 var cfgManager = StorageManager.GetAppStorageManager().GetManager("downloads", SpaceName, "config");
 
-                ProjectConfigService.Instance.Load(cfgManager, MotiveUrl, SpaceName, ConfigName, ShouldUseDevCatalogs, (status) =>
+                if (InternetReachability == NetworkReachability.NotReachable)
                 {
-                    if (status == ServiceCallLoadStatus.Success)
+                    bool result = false;
+
+                    if (!RequireNetworkConnection)
+                    {
+                        result = ProjectConfigService.Instance.LoadFromCache(cfgManager, ConfigName, ShouldUseDevCatalogs);
+                    }
+
+                    if (result)
                     {
                         configLoadComplete();
                     }
                     else
                     {
-                        SetDownloadError(status);
+                        SetDownloadError(ServiceCallLoadStatus.ServiceCallFail);
                     }
-                });
+                }
+                else
+                {
+                    ProjectConfigService.Instance.Load(cfgManager, MotiveUrl, SpaceName, ConfigName, ShouldUseDevCatalogs, (status) =>
+                    {
+                        if (status == ServiceCallLoadStatus.Success)
+                        {
+                            configLoadComplete();
+                        }
+                        else
+                        {
+                            SetDownloadError(status);
+                        }
+                    });
+                }
             }
             else
             {

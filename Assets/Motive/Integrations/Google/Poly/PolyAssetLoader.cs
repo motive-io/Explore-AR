@@ -1,8 +1,10 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
 
-using PolyToolkit;
 using System;
 using UnityEngine;
+
+#if MOTIVE_GOOGLE_POLY
+using PolyToolkit;
 
 namespace Motive.Google
 {
@@ -47,3 +49,4 @@ namespace Motive.Google
         }
     }
 }
+#endif

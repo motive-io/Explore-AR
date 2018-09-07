@@ -2,7 +2,9 @@
 using Motive.Core.Diagnostics;
 using Motive.Core.Media;
 using Motive.Core.Models;
+using Motive.Core.Scripting;
 using Motive.Core.Timing;
+using Motive.Unity.Scripting;
 using Motive.Unity.Utilities;
 using System;
 using System.Collections.Generic;
@@ -41,7 +43,7 @@ namespace Motive.Unity.Playables
 
             public IAudioPlayer Player { get; private set; }
 
-            public string InstanceId { get; private set; }
+            public ResourceActivationContext activationContext { get; private set; }
 
             public void Play()
             {
@@ -58,11 +60,23 @@ namespace Motive.Unity.Playables
                 Player.Stop();
             }
 
-            public PlayerContext(string instanceId, IAudioPlayer player, LocalizedAudioContent audioContent)
+            public PlayerContext(ResourceActivationContext activationContext, IAudioPlayer player, LocalizedAudioContent audioContent)
             {
-                this.InstanceId = instanceId;
+                this.activationContext = activationContext;
                 this.Player = player;
                 this.AudioContent = audioContent;
+            }
+        }
+
+        class PlaybackContext
+        {
+            public TimeSpan PausedTime { get; private set; }
+
+            public PlaybackContext() { }
+
+            public PlaybackContext(TimeSpan pausedTime)
+            {
+                this.PausedTime = pausedTime;
             }
         }
 
@@ -273,7 +287,7 @@ namespace Motive.Unity.Playables
                 onPlaybackComplete:
                 (success) =>
                 {
-                    StopPlaying(ctxt.InstanceId);
+                    StopPlaying(ctxt.activationContext);
 
                     if (onComplete != null)
                     {
@@ -314,11 +328,11 @@ namespace Motive.Unity.Playables
 
         }
 
-        public void PlayAudioContent(string instanceId, LocalizedAudioContent audioContent, AudioContentRoute route, Action<Action> beforeOpen, Action onComplete)
+        public void PlayAudioContent(ResourceActivationContext activationContext, LocalizedAudioContent audioContent, AudioContentRoute route, Action<Action> beforeOpen, Action onComplete)
         {
             if (IsPaused)
             {
-                m_onUnpause[instanceId] = () => { PlayAudioContent(instanceId, audioContent, route, beforeOpen, onComplete); };
+                m_onUnpause[activationContext.InstanceId] = () => { PlayAudioContent(activationContext, audioContent, route, beforeOpen, onComplete); };
                 return;
             }
 
@@ -340,11 +354,18 @@ namespace Motive.Unity.Playables
             player.Loop = audioContent.Loop;
             player.Volume = audioContent.Volume;
 
-            var ctxt = new PlayerContext(instanceId, player, audioContent);
+            PlaybackContext Resume = activationContext.Retrieve<PlaybackContext>();
+
+            if(Resume != null)
+            {
+                player.Position = Resume.PausedTime;
+            }
+
+            var ctxt = new PlayerContext(activationContext, player, audioContent);
 
             lock (m_playablePlayers)
             {
-                m_playablePlayers.Add(instanceId, ctxt);
+                m_playablePlayers.Add(activationContext.InstanceId, ctxt);
             }
 
             // Set up values
@@ -390,7 +411,7 @@ namespace Motive.Unity.Playables
                                     {
                                         player.Play((success) =>
                                         {
-                                            StopPlaying(instanceId);
+                                            StopPlaying(activationContext);
 
                                             onComplete();
                                         });
@@ -412,7 +433,7 @@ namespace Motive.Unity.Playables
 
                                 Unduck();
 
-                                StopPlaying(instanceId);
+                                StopPlaying(activationContext);
 
                                 onComplete();
                             });
@@ -424,7 +445,7 @@ namespace Motive.Unity.Playables
                         {
                             player.Play((success) =>
                             {
-                                StopPlaying(instanceId);
+                                StopPlaying(activationContext);
 
                                 onComplete();
                             });
@@ -444,25 +465,27 @@ namespace Motive.Unity.Playables
             }
         }
 
-        public void PlayAudioContent(string instanceId, LocalizedAudioContent audioContent, AudioContentRoute route, Action onComplete)
+        public void PlayAudioContent(ResourceActivationContext activationContext, LocalizedAudioContent audioContent, AudioContentRoute route, Action onComplete)
         {
-            PlayAudioContent(instanceId, audioContent, route, null, onComplete);
+            PlayAudioContent(activationContext, audioContent, route, null, onComplete);
         }
 
-        public bool StopPlaying(string instanceId, bool interrupt = false)
+        public bool StopPlaying(ResourceActivationContext activationContext, bool interrupt = false)
         {
             PlayerContext ctxt = null;
 
             lock (m_onUnpause)
             {
-                m_onUnpause.Remove(instanceId);
+                m_onUnpause.Remove(activationContext.InstanceId);
             }
 
-            if (m_playablePlayers.TryGetValue(instanceId, out ctxt))
+            if (m_playablePlayers.TryGetValue(activationContext.InstanceId, out ctxt))
             {
                 var player = ctxt.Player;
 
-                m_playablePlayers.Remove(instanceId);
+                activationContext.Store(new PlaybackContext(player.Position));
+                
+                m_playablePlayers.Remove(activationContext.InstanceId);
 
                 // FIX:: SOUNDTRACK LOCK OBJECT.
                 lock (SoundtrackLockObject)

@@ -20,6 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4000011441259430}
   - component: {fileID: 114687251127483160}
+  - component: {fileID: 114902591663800468}
   m_Layer: 0
   m_Name: Diagnostics
   m_TagString: Untagged
@@ -387,3 +388,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccb821c03b708664f90b1d1316293550, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114902591663800468
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1000010035746270}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb450167cf31cc440abfb047193e943f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UseDebugClock: 0
+  BaseDate: 
+  BaseTime: 
+  ClockSpeedup: 1
+  TimerSpeedup: 1

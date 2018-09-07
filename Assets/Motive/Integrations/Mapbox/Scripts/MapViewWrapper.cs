@@ -10,6 +10,8 @@ using Mapbox.Unity.Utilities;
 using Mapbox.Utils;
 #endif
 
+using Logger = Motive.Core.Diagnostics.Logger;
+
 namespace Motive.Unity.Maps
 {
     /// <summary>
@@ -45,6 +47,8 @@ namespace Motive.Unity.Maps
         int m_tileCountX;
         int m_tileCountY;
         bool m_ready;
+
+        Logger m_logger;
 
         public Vector2d CenterMercator
         {
@@ -138,6 +142,8 @@ namespace Motive.Unity.Maps
 
         void Start()
         {
+            m_logger = new Logger(this);
+
             MapView.TileDriver.RegisterRenderer(this);
 
             m_tileCountX = MapView.TileDriver.TileCountX; // +BoundaryTiles * 2;
@@ -174,6 +180,9 @@ namespace Motive.Unity.Maps
 
         void RenderTile(TileInfo info, int ox, int oy, int x, int y, int z)
         {
+            m_logger.Debug("Render tile {0} ox={1} oy={2} x={3} y={4} z={5}",
+                info.TileId, ox, oy, x, y, z);
+
             /*
             var parameters = new Tile.Parameters
             {
@@ -189,6 +198,8 @@ namespace Motive.Unity.Maps
                 (int)info.TileId.X == x &&
                 (int)info.TileId.Y == y)
             {
+                m_logger.Debug("Place existing tile {0}", info.TileId);
+
                 PlaceTile(info.UnityTile, ox, oy, x, y);
                 /*
                  * ?? who owns what here?
@@ -198,8 +209,12 @@ namespace Motive.Unity.Maps
             }
             else
             {
+                m_logger.Debug("Load tile {0}", info.TileId);
+
                 if (info.UnityTile)
                 {
+                    m_logger.Debug("Disposing current tile {0} (canonical id={1}, name={2})", info.TileId, info.UnityTile.CanonicalTileId, info.UnityTile.gameObject.name);
+
                     MapVisualizer.DisposeTile(info.TileId);
                     info.UnityTile = null;
                 }

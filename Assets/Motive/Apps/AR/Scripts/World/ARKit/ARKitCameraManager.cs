@@ -1,6 +1,8 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 
 #if MOTIVE_ARKIT
@@ -14,7 +16,6 @@ namespace Motive.Unity.AR
     /// </summary>
     public class ARKitCameraManager : MonoBehaviour
     {
-
         public Camera m_camera;
 
 #if MOTIVE_ARKIT
@@ -28,7 +29,6 @@ namespace Motive.Unity.AR
         public bool enableLightEstimation = true;
 
         public bool IsInitialized { get; private set; }
-        public bool IsRunning { get; private set; }
 
         public bool EnableCameraTracking;
         public bool IgnoreProjectionMatrix;
@@ -61,7 +61,7 @@ namespace Motive.Unity.AR
 #if !UNITY_EDITOR
 		Application.targetFrameRate = 60;
 
-		StartRunning();
+		//StartRunning();
 
 		if (m_camera == null) {
 		m_camera = Camera.main;
@@ -79,39 +79,6 @@ namespace Motive.Unity.AR
 
             IsInitialized = true;
         }
-
-        public void Pause()
-        {
-            if (IsRunning)
-            {
-                m_session.Pause();
-
-                IsRunning = false;
-            }
-        }
-
-        public void Resume()
-        {
-            if (!IsRunning)
-            {
-                StartRunning();
-            }
-        }
-
-        void StartRunning()
-        {
-#if !UNITY_EDITOR
-		ARKitWorldTrackingSessionConfiguration config = new ARKitWorldTrackingSessionConfiguration();
-		config.planeDetection = planeDetection;
-		config.alignment = startAlignment;
-		config.getPointCloudData = getPointCloud;
-		config.enableLightEstimation = enableLightEstimation;
-		m_session.RunWithConfig(config);
-#endif
-
-            IsRunning = true;
-        }
-
 #endif
     } 
 }

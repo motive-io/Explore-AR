@@ -12,7 +12,7 @@ namespace Motive.AR.Models
 {
     public class VisualMarkerMedia : ScriptObject, IMediaItemProvider
     {
-        public IVisualMarker[] Markers { get; set; }
+        public IScriptObject[] Markers { get; set; }
         public MediaElement MediaElement { get; set; }
 
         public void GetMediaItems(IList<MediaItem> items)

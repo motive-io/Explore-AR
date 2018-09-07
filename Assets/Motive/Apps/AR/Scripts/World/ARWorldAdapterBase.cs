@@ -62,6 +62,11 @@ namespace Motive.Unity.AR
 				Canvas.enabled = false;
 			}
 
+            if (WorldAnchor)
+            {
+                WorldAnchor.SetActive(false);
+            }
+
             IsActive = false;
         }
 
@@ -73,6 +78,11 @@ namespace Motive.Unity.AR
 			{
 				Canvas.enabled = true;
 			}
+
+            if (WorldAnchor)
+            {
+                WorldAnchor.SetActive(true);
+            }
 
             IsActive = true;
         }

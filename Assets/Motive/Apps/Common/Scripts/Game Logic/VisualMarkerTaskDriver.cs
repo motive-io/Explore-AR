@@ -1,5 +1,4 @@
 ﻿using Motive.AR.Models;
-using Motive.AR.Vuforia;
 using Motive.Core.Scripting;
 using Motive.UI;
 using Motive.Unity.AR;
@@ -9,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-#if MOTIVE_VUFORIA
 namespace Motive.Unity.Gaming
 {
     public class VisualMarkerTaskDriver : ARTaskDriverBase<VisualMarkerTask>
@@ -34,9 +32,9 @@ namespace Motive.Unity.Gaming
 
             if (Task.VisualMarkers != null)
             {
-                foreach (var marker in Task.VisualMarkers)
+                foreach (var marker in Task.VisualMarkers.OfType<IVisualMarker>())
                 {
-                    allTracking &= VuforiaWorld.Instance.IsTracking((IVuforiaMarker)marker);
+                    allTracking &= ARMarkerManager.Instance.IsTracking(marker);
                 }
             }
 
@@ -47,9 +45,9 @@ namespace Motive.Unity.Gaming
         {
             if (Task.VisualMarkers != null)
             {
-                foreach (var marker in Task.VisualMarkers)
+                foreach (var marker in Task.VisualMarkers.OfType<IVisualMarker>())
                 {
-                    if (VuforiaWorld.Instance.IsTracking((IVuforiaMarker)marker))
+                    if (ARMarkerManager.Instance.IsTracking(marker))
                     {
                         return true;
                     }
@@ -94,9 +92,9 @@ namespace Motive.Unity.Gaming
 
         protected override void HideTask()
         {
-            VuforiaWorld.Instance.Activated.RemoveListener(UpdateState);
+            ARMarkerManager.Instance.Activated.RemoveListener(UpdateState);
 
-            VuforiaWorld.Instance.TrackingConditionMonitor.Updated -= WorldUpdatedHandler;
+            ARMarkerManager.Instance.TrackingConditionMonitor.Updated -= WorldUpdatedHandler;
 
             if (IsTakeTask)
             {
@@ -109,7 +107,7 @@ namespace Motive.Unity.Gaming
 
                     m_worldObjects.Clear();
 
-                    VuforiaWorld.Instance.RemoveResourceObjects(ActivationContext.InstanceId);
+                    ARMarkerManager.Instance.RemoveResourceObjects(ActivationContext.InstanceId);
                 }
             }
             else
@@ -139,24 +137,24 @@ namespace Motive.Unity.Gaming
                             Position = new Motive.Core.Models.Vector(0, 0, 0.2)
                         };
 
-                        foreach (var m in Task.VisualMarkers)
+                        foreach (var m in Task.VisualMarkers.OfType<IVisualMarker>())
                         {
                             if (collectible.AssetInstance != null)
                             {
-                                VuforiaWorld.Instance.Add3dAsset(ActivationContext, (IVuforiaMarker)m, ActivationContext.InstanceId, collectible.AssetInstance, collectible.ImageUrl, imageLayout, null, onSelect);
+                                ARMarkerManager.Instance.Add3DAsset(ActivationContext, m, ActivationContext.InstanceId, collectible.AssetInstance, collectible.ImageUrl, imageLayout, null, onSelect);
                             }
                             else
                             {
-                                VuforiaWorld.Instance.AddMarkerImage(ActivationContext, (IVuforiaMarker)m, ActivationContext.InstanceId, collectible.ImageUrl, imageLayout, null, onSelect);
+                                ARMarkerManager.Instance.AddMarkerImage(ActivationContext, m, ActivationContext.InstanceId, collectible.ImageUrl, imageLayout, null, onSelect);
                             }
                         }
                     }
                 }
             }
 
-            VuforiaWorld.Instance.TrackingConditionMonitor.Updated += WorldUpdatedHandler;
+            ARMarkerManager.Instance.TrackingConditionMonitor.Updated += WorldUpdatedHandler;
 
-            VuforiaWorld.Instance.Activated.AddListener(UpdateState);
+            ARMarkerManager.Instance.Activated.AddListener(UpdateState);
 
             UpdateState();
 
@@ -167,9 +165,9 @@ namespace Motive.Unity.Gaming
         {
             if (Task.VisualMarkers != null)
             {
-                foreach (var marker in Task.VisualMarkers)
+                foreach (var marker in Task.VisualMarkers.OfType<IVisualMarker>())
                 {
-                    if (VuforiaWorld.Instance.IsTracking((IVuforiaMarker)marker))
+                    if (ARMarkerManager.Instance.IsTracking(marker))
                     {
                         return true;
                     }
@@ -200,7 +198,11 @@ namespace Motive.Unity.Gaming
                             {
                                 var text = Localize.GetLocalizedString("ARAnnotation.TapToTake", "Tap to Collect");
 
-                                ARAnnotationViewController.Instance.AddTapAnnotation(obj, text);
+                                ARAnnotationViewController.Instance.AddTapAnnotation(obj, text, () =>
+                                {
+                                    Complete();
+                                });
+                            
                             }
                         }
 
@@ -229,6 +231,4 @@ namespace Motive.Unity.Gaming
             UpdateState();
         }
     }
-
 }
-#endif

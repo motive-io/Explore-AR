@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
 using UnityEngine;
 using Motive.Unity.Models;
+using Motive.Core.Scripting;
 
 namespace Motive.Unity.World
 {
@@ -11,6 +12,8 @@ namespace Motive.Unity.World
         public GameObject AnimationTarget;
 
         public UnityAsset Asset { get; set; }
+
+        public ResourceActivationContext ActivationContext { get; set; }
 
         public virtual GameObject GetAnimationTarget()
         {

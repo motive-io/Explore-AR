@@ -29,11 +29,11 @@ namespace Motive.Unity.Gaming
         public IRewardManagerDelegate Delegate { get; set; }
         public event EventHandler<RewardEventArgs> RewardAdded;
 
-        public void ActivatePlayerReward(PlayerReward reward)
+        public void ActivatePlayerReward(PlayerReward reward, Action onClose = null)
         {
             if (reward.Reward != null)
             {
-                RewardValuables(reward.Reward);
+                RewardValuables(reward.Reward, onClose);
             }
         }
 
@@ -44,16 +44,16 @@ namespace Motive.Unity.Gaming
         /// <param name="onReward">Callback after the valuables have been rewarded to the player.</param>
         public void RewardValuables(ValuablesCollection valuables, Action onReward = null)
         {
-            if (RewardAdded != null)
-            {
-                RewardAdded(this, new RewardEventArgs(valuables));
-            }
-
             Action doReward = () =>
             {
                 if (onReward != null)
                 {
                     onReward();
+                }
+
+                if (RewardAdded != null)
+                {
+                    RewardAdded(this, new RewardEventArgs(valuables));
                 }
 
                 TransactionManager.Instance.AddValuables(valuables);

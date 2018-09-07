@@ -16,6 +16,8 @@ using Motive.Unity.Utilities;
 using Motive.Unity.Storage;
 using Motive.Unity.Playables;
 
+using Logger = Motive.Core.Diagnostics.Logger;
+
 namespace Motive.Unity.Scripting
 {
 
@@ -35,6 +37,8 @@ namespace Motive.Unity.Scripting
 
         IStorageManager m_storageManager;
 
+        Logger m_logger;
+
         const string ScriptManagerFolder = "scriptManager";
 
         public event EventHandler ScriptsReset;
@@ -48,6 +52,8 @@ namespace Motive.Unity.Scripting
         protected override void Awake()
         {
             base.Awake();
+
+            m_logger = new Logger(this);
 
             m_runningProcessors = new Dictionary<string, ScriptProcessor>();
             m_scriptFolders = new SetDictionary<string, string>();
@@ -264,9 +270,27 @@ namespace Motive.Unity.Scripting
 
             var proc = new ScriptProcessor(launcher, callingFrameContext, script, stateMgr, runId);
 
+            proc.HandlingError += Proc_HandlingError;
+
             m_runningProcessors[key] = proc;
 
             proc.Run(null, onComplete);
+        }
+
+        private void Proc_HandlingError(object sender, ScriptProcessorEventHandlerArgs e)
+        {
+            if (e.Exception != null)
+            {
+                SystemErrorHandler.Instance.ReportError(
+                    "Encountered error processing script: {0}. ({1})",
+                    e.ErrorCode, e.Exception.Message);
+            }
+            else
+            {
+                SystemErrorHandler.Instance.ReportError(
+                    "Encountered error processing script: {0}",
+                    e.ErrorCode);
+            }
         }
 
         string GetScriptFolderName(string scriptId)
@@ -304,6 +328,8 @@ namespace Motive.Unity.Scripting
 
             var proc = new ScriptProcessor(script, stateMgr, runId);
 
+            proc.HandlingError += Proc_HandlingError;
+
             m_runningProcessors[key] = proc;
 
             proc.Run(onRunning, onComplete);
@@ -340,7 +366,14 @@ namespace Motive.Unity.Scripting
                     ScriptsReset(this, EventArgs.Empty);
                 }
 
-                ScriptEngine.Instance.Reset();
+                try
+                {
+                    ScriptEngine.Instance.Reset();
+                }
+                catch (Exception x)
+                {
+                    m_logger.Warning("Unhandled exception {0} resetting script engine. Continuing anyway.", x.ToString());
+                }
 
                 StorageManager.DeleteGameFolder();
 

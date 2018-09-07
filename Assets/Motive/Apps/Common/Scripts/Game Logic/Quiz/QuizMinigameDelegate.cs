@@ -18,9 +18,9 @@ namespace Motive.Unity.Gaming
     /// </summary>
     public class QuizMinigameDelegate : SingletonComponent<QuizMinigameDelegate>, IMultipleChoiceQuizDelegate, IFreeResponseQuizDelegate
     {
-        public const string k_quizStack = "quiz_stack";
-
         private Logger m_logger;
+        private Panel m_currQuizPanel;
+
         public UnityEvent OnAction;
 
         /// <summary>
@@ -38,7 +38,13 @@ namespace Motive.Unity.Gaming
 
         public void PushSuccessPanel(IPlayerTaskDriver driver)
         {
+            if (m_currQuizPanel != null)
+            {
+                m_currQuizPanel.Back();
+            }
+
             var panel = PanelManager.Instance.GetPanel<QuizSuccessPanel>();
+
             if (panel == null)
             {
                 m_logger.Error(typeof(QuizSuccessPanel).ToString() + " not found.");
@@ -50,9 +56,37 @@ namespace Motive.Unity.Gaming
                 TaskManager.Instance.Complete(driver, false);
             };
 
-            PanelManager.Instance.Push(k_quizStack, panel, driver, onStackClose);
+            PanelManager.Instance.Push(panel, driver, onStackClose);
         }
 
+        void PushQuizPanel<D, P>(D quizDriver) where P : Panel
+        {
+            if (m_currQuizPanel != null)
+            {
+                m_currQuizPanel.Back();
+            }
+
+            m_currQuizPanel = PanelManager.Instance.GetPanel<P>();
+
+            if (m_currQuizPanel == null)
+            {
+                m_logger.Error(typeof(P).ToString() + " not found.");
+                return;
+            }
+
+            var curr = m_currQuizPanel;
+
+            PanelManager.Instance.Push(m_currQuizPanel, quizDriver, () =>
+            {
+                // If the current panel is the one we pushed, clear m_currQuizPanel
+                if (m_currQuizPanel == curr &&
+                    m_currQuizPanel.Data == curr.Data)
+                {
+                    m_currQuizPanel = null;
+                }
+            });
+
+        }
 
         //////////////////////////////////////////////////////////////
         //      MULTIPLE CHOICE QUIZ
@@ -67,28 +101,24 @@ namespace Motive.Unity.Gaming
 
             ThreadHelper.Instance.CallOnMainThread(() =>
             {
-                var panel = PanelManager.Instance.GetPanel<MultipleChoiceQuizPanel>();
-                if (panel == null)
-                {
-                    m_logger.Error(typeof(MultipleChoiceQuizPanel).ToString() + " not found.");
-                    return;
-                }
-
-                PanelManager.Instance.Push(k_quizStack, panel, quizDriver);
+                PushQuizPanel<MultipleChoiceQuizMinigameDriver, MultipleChoiceQuizPanel>(quizDriver);
             });
         }
-
-
+        
         public void OnSelectResponse(QuizPanelMCItem item, MultipleChoiceQuizMinigameDriver driver)
         {
             driver.AttemptsTried++;
 
             if (item.Response.IsCorrect)
             {
+                driver.CorrectAnswer();
+
                 OnResponseCorrect(item, driver);
             }
             else
             {
+                driver.IncorrectAnswer();
+
                 OnResponseWrong(item, driver);
             }
 
@@ -107,6 +137,8 @@ namespace Motive.Unity.Gaming
 
             if (driver.Quiz.MaximumAttempts > 0 && driver.AttemptsTried >= driver.Quiz.MaximumAttempts)
             {
+                driver.Fail();
+
                 OnAttemptsExhausted(driver);
             }
         }
@@ -136,14 +168,7 @@ namespace Motive.Unity.Gaming
 
             ThreadHelper.Instance.CallOnMainThread(() =>
             {
-                var panel = PanelManager.Instance.GetPanel<FreeResponseQuizPanel>();
-                if (panel == null)
-                {
-                    m_logger.Error(typeof(FreeResponseQuizPanel).ToString() + " not found.");
-                    return;
-                }
-
-                PanelManager.Instance.Push(k_quizStack, panel, quizDriver);
+                PushQuizPanel<FreeResponseMinigameDriver, FreeResponseQuizPanel>(quizDriver);
             });
         }
 
@@ -188,13 +213,18 @@ namespace Motive.Unity.Gaming
 
             if (isCorrect)
             {
+                driver.CorrectAnswer();
+
                 OnAttemptCorrect(attempt, driver);
             }
             else
             {
+                driver.IncorrectAnswer();
 
                 if (driver.Quiz.MaximumAttempts > 0 && driver.AttemptsTried >= driver.Quiz.MaximumAttempts)
                 {
+                    driver.Fail();
+
                     OnAttemptsExhausted(driver);
                 }
                 if (onIncorrect != null)
@@ -212,8 +242,7 @@ namespace Motive.Unity.Gaming
                 AttemptsExhausted.Invoke();
             }
         }
-
-
+        
         /// <summary>
         /// Player answer attempt must match one of the answer texts, with enfore case optionally true.
         /// Cleans strings of spaces on ends.

@@ -11,6 +11,22 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1595935266592554}
   m_IsPrefabParent: 1
+--- !u!1 &1095698204024188
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4729612948875264}
+  - component: {fileID: 108553211121890910}
+  m_Layer: 0
+  m_Name: Point Light
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1100175783808864
 GameObject:
   m_ObjectHideFlags: 0
@@ -80,7 +96,7 @@ GameObject:
   - component: {fileID: 114708596276376960}
   - component: {fileID: 114064151883439938}
   m_Layer: 0
-  m_Name: Main Camera
+  m_Name: ARKit Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -290,6 +306,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4034747894031030}
   - component: {fileID: 114274774873244028}
+  - component: {fileID: 114543579100285692}
   m_Layer: 0
   m_Name: ARKit World Adapter
   m_TagString: Untagged
@@ -436,7 +453,7 @@ GameObject:
   - component: {fileID: 4732840324467744}
   - component: {fileID: 108814411842500820}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: Point Light
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -548,7 +565,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4511575437743602}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4318255092133556
 Transform:
@@ -613,6 +630,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 4729612948875264}
   - {fileID: 4557384413106182}
   - {fileID: 4158809857705438}
   m_Father: {fileID: 4034747894031030}
@@ -630,21 +648,34 @@ Transform:
   m_Children:
   - {fileID: 4824032114257034}
   m_Father: {fileID: 4511575437743602}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4729612948875264
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1095698204024188}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 10, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4511575437743602}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &4732840324467744
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1853128197768634}
-  m_LocalRotation: {x: 0.30070576, y: 0, z: 0, w: 0.953717}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4891813314592026}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 35, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &4748402255289446
 Transform:
   m_ObjectHideFlags: 1
@@ -1142,6 +1173,42 @@ TextMesh:
   m_Color:
     serializedVersion: 2
     rgba: 4294967295
+--- !u!108 &108553211121890910
+Light:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1095698204024188}
+  m_Enabled: 1
+  serializedVersion: 8
+  m_Type: 2
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 1
+  m_Range: 500
+  m_SpotAngle: 30
+  m_CookieSize: 10
+  m_Shadows:
+    m_Type: 0
+    m_Resolution: -1
+    m_CustomResolution: -1
+    m_Strength: 1
+    m_Bias: 0.05
+    m_NormalBias: 0.4
+    m_NearPlane: 0.2
+  m_Cookie: {fileID: 0}
+  m_DrawHalo: 0
+  m_Flare: {fileID: 0}
+  m_RenderMode: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_Lightmapping: 4
+  m_AreaSize: {x: 1, y: 1}
+  m_BounceIntensity: 1
+  m_ColorTemperature: 6570
+  m_UseColorTemperature: 0
+  m_ShadowRadius: 0
+  m_ShadowAngle: 0
 --- !u!108 &108814411842500820
 Light:
   m_ObjectHideFlags: 1
@@ -1150,10 +1217,10 @@ Light:
   m_GameObject: {fileID: 1853128197768634}
   m_Enabled: 1
   serializedVersion: 8
-  m_Type: 1
+  m_Type: 2
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 1
-  m_Range: 10
+  m_Intensity: 0.5
+  m_Range: 500
   m_SpotAngle: 30
   m_CookieSize: 10
   m_Shadows:
@@ -1382,7 +1449,7 @@ MonoBehaviour:
   TrackingAnchor: {fileID: 1518476933532878}
   CameraGyro: {fileID: 114708596276376960}
   Cameras: {fileID: 0}
-  WorldLight: {fileID: 108814411842500820}
+  WorldLight: {fileID: 108553211121890910}
   CameraManager: {fileID: 114504437987074530}
   TrackingState: {fileID: 0}
   RotationState: {fileID: 0}
@@ -1494,6 +1561,22 @@ MonoBehaviour:
   enableLightEstimation: 1
   EnableCameraTracking: 0
   IgnoreProjectionMatrix: 0
+--- !u!114 &114543579100285692
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1595935266592554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a313d48f7d10e4a379200773e70caee0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WorldAnchor: {fileID: 1798005973008036}
+  WorldCamera: {fileID: 20389393435218454}
+  TrackedImagePrefab: {fileID: 114013951441524494, guid: bdedd5f165195469ea714d5a2dbe9fba,
+    type: 2}
+  WorldAdapter: {fileID: 0}
 --- !u!114 &114595411304021104
 MonoBehaviour:
   m_ObjectHideFlags: 1

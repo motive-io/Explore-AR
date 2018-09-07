@@ -16,13 +16,13 @@ namespace Motive.Unity.UI
 
         AssignmentItem m_pushedItem;
 
-        public override void DidShow()
+        public override void DidPush()
         {
             TodoManager.Instance.OnUpdate.AddListener(Todo_Updated);
 
             Todo_Updated();
 
-            base.DidShow();
+            base.DidPush();
         }
 
         void Todo_Updated()

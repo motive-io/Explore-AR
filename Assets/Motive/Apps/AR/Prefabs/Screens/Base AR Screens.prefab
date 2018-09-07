@@ -921,6 +921,7 @@ GameObject:
   - component: {fileID: 222399494089816766}
   - component: {fileID: 114240438482563458}
   - component: {fileID: 114749981101533582}
+  - component: {fileID: 114224882745730382}
   m_Layer: 5
   m_Name: Base AR Screens
   m_TagString: Untagged
@@ -1484,6 +1485,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_ShowMaskGraphic: 0
+--- !u!114 &114224882745730382
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1859932755758142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9224f7b5c2286bd4db050f636f3fb2af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InteractiveItem: {fileID: 114531444600435218, guid: 071254f00fe45454b91c22e06ad11bd2,
+    type: 2}
+  InteractiveItemTable: {fileID: 114746098094193702}
+  ShowAllItems: 0
+  OnSuccess:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnFail:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114233421354139814
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -3826,7 +3852,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00007264036}
+  m_AnchoredPosition: {x: 0, y: 0.000053178577}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1.0000002}
 --- !u!224 &224343246479867636

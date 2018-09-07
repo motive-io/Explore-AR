@@ -60,6 +60,8 @@ namespace Motive.AR.Vuforia
         public VisualMarkerObject MarkerAudioObject;
         public VisualMarkerObject MarkerAssetObject;
 
+        public Vector3 ItemScale = Vector3.one;
+
         static VuforiaWorld g_instance;
 
         public static VuforiaWorld Instance
@@ -111,9 +113,6 @@ namespace Motive.AR.Vuforia
 
         SetDictionary<VuMarkIdentifier, MarkerMedia> m_activeResourceMedia;
         SetDictionary<VuMarkIdentifier, MarkerAsset> m_activeResourceAssets;
-
-        //HashSet<AudioSubpanel> m_playingAudios;
-        //HashSet<VideoSubpanel> m_playingVideos;
 
         Dictionary<string, ActiveObject> m_activeResourceObjects;
 
@@ -528,7 +527,7 @@ namespace Motive.AR.Vuforia
             {
                 worldObj.GameObject.transform.SetParent(parent.transform, false);
                 worldObj.GameObject.transform.localPosition = Vector3.zero;
-                worldObj.GameObject.transform.localScale = Vector3.one;
+                worldObj.GameObject.transform.localScale = ItemScale;
                 worldObj.GameObject.transform.localRotation = Quaternion.identity;
 
                 if (asset.OnOpen != null)
@@ -573,7 +572,7 @@ namespace Motive.AR.Vuforia
 
                         markerObj.transform.SetParent(parent.transform, false);
                         markerObj.transform.localPosition = Vector3.zero;
-                        markerObj.transform.localScale = Vector3.one;
+                        markerObj.transform.localScale = ItemScale;
                         markerObj.transform.localRotation = Quaternion.identity;
 
                         if (asset.AssetInstance.Layout != null)
@@ -776,7 +775,7 @@ namespace Motive.AR.Vuforia
             if (markerObj)
             {
                 markerObj.transform.SetParent(parent.transform, false);
-                markerObj.transform.localScale = Vector3.one;
+                markerObj.transform.localScale = ItemScale;
                 markerObj.transform.localPosition = Vector3.zero;
                 markerObj.transform.localRotation = Quaternion.identity;
 
@@ -1257,8 +1256,6 @@ namespace Motive.AR.Vuforia
                 obj.SetActive(false);
             }
 
-            //m_trackableBehaviour.Clicked.RemoveAllListeners();
-
             if (m_trackableBehaviour.Identifier != null)
             {
                 var instanceId = m_trackableBehaviour.Identifier;
@@ -1283,12 +1280,6 @@ namespace Motive.AR.Vuforia
             m_logger.Debug("start tracking " + instanceId);
 
             m_trackingVuMarkers.Add(trackableBehaviour.Identifier, trackableBehaviour);
-
-            /*
-        m_trackableBehaviour.Clicked.AddListener(() =>
-        {
-            m_trackableBehaviour_Clicked(m_trackableBehaviour);
-        });*/
 
             var media = m_activeResourceMedia[trackableBehaviour.Identifier];
 
@@ -1334,39 +1325,6 @@ namespace Motive.AR.Vuforia
                         a.MediaLayout,
                         a.OnOpen,
                         a.OnSelect);*/
-                }
-            }
-        }
-
-        void m_trackableBehaviour_Clicked(VuforiaTrackableEventHandler trackable)
-        {
-            var medias = m_activeResourceMedia[trackable.Identifier];
-
-            if (medias != null)
-            {
-                foreach (var m in medias.ToArray())
-                {
-                    if (m.OnSelect != null)
-                    {
-                        m.OnSelect();
-                    }
-
-                    ObjectInspectorManager.Instance.Select(m.ObjectId);
-                }
-            }
-
-            var assets = m_activeResourceAssets[trackable.Identifier];
-
-            if (assets != null)
-            {
-                foreach (var m in assets.ToArray())
-                {
-                    if (m.OnSelect != null)
-                    {
-                        m.OnSelect();
-                    }
-
-                    ObjectInspectorManager.Instance.Select(m.ObjectId);
                 }
             }
         }

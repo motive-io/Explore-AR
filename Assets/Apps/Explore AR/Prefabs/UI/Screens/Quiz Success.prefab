@@ -735,6 +735,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34622c956319e4a408e0d17ec9211e4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114083729651221440
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -845,7 +850,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: c5be84dfadf809a48aac46520b3baa2b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ffa56d11d77c3924db1aec86eed8cb95, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1023,6 +1028,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34622c956319e4a408e0d17ec9211e4a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
 --- !u!114 &114305645002681414
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1412,7 +1422,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: c5be84dfadf809a48aac46520b3baa2b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ffa56d11d77c3924db1aec86eed8cb95, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1576,6 +1586,8 @@ MonoBehaviour:
   Selectable: 1
   EnabledWhenSelected: {fileID: 0}
   EnabledWhenNotSelected: {fileID: 0}
+  EnableWhenHighlighed: []
+  EnabledWhenNotHighlighted: []
   Text: {fileID: 114152331573525140}
   Image: {fileID: 114365195062161828}
   TextLayoutObject: {fileID: 0}
@@ -1587,11 +1599,7 @@ MonoBehaviour:
   DateText: {fileID: 0}
   HideCountIfZero: 0
   UseColorIfZero: 0
-  NoItemColor:
-    r: 0.62
-    g: 0.62
-    b: 0.59
-    a: 0.69
+  NoItemColor: {r: 0.62, g: 0.62, b: 0.59, a: 0.69}
   OpenItem: {fileID: 114221047039759964}
 --- !u!114 &114709976908486196
 MonoBehaviour:
@@ -1713,9 +1721,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_MethodName: PopStack
-        m_Mode: 5
+      - m_Target: {fileID: 114040069199305712}
+        m_MethodName: Back
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1869,6 +1877,8 @@ MonoBehaviour:
   Selectable: 1
   EnabledWhenSelected: {fileID: 0}
   EnabledWhenNotSelected: {fileID: 0}
+  EnableWhenHighlighed: []
+  EnabledWhenNotHighlighted: []
   Text: {fileID: 114536172981745334}
   Image: {fileID: 114946779075563418}
   TextLayoutObject: {fileID: 0}
@@ -1880,11 +1890,7 @@ MonoBehaviour:
   DateText: {fileID: 0}
   HideCountIfZero: 0
   UseColorIfZero: 0
-  NoItemColor:
-    r: 0.62
-    g: 0.62
-    b: 0.59
-    a: 0.69
+  NoItemColor: {r: 0.62, g: 0.62, b: 0.59, a: 0.69}
   OpenItem: {fileID: 114512250991723304}
 --- !u!114 &114827974197101032
 MonoBehaviour:
@@ -2331,7 +2337,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00016784668, y: -0.000014305118}
+  m_AnchoredPosition: {x: 0.00010681152, y: -0.000015258789}
   m_SizeDelta: {x: 0, y: -0.000015258789}
   m_Pivot: {x: 0.5, y: 1.0000002}
 --- !u!224 &224084965731551446
@@ -2764,7 +2770,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.00016784668, y: -0.000014305118}
+  m_AnchoredPosition: {x: 0.00010681152, y: -0.000015258789}
   m_SizeDelta: {x: 0, y: -0.000015258789}
   m_Pivot: {x: 0.5, y: 1.0000002}
 --- !u!224 &224777700194052768

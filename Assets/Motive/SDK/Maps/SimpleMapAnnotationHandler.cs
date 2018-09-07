@@ -16,7 +16,7 @@ namespace Motive.Unity.Maps
         where T : MapAnnotation
     {
         public AnnotationGameObject AnnotationPrefab;
-        public Panel SelectedLocationPanel;
+        public PanelLink SelectedLocationPanel;
 
         public AnnotationRangeDisplayMode RangeDisplayMode;
         public int Range;
@@ -25,7 +25,8 @@ namespace Motive.Unity.Maps
 
         public virtual Panel GetSelectedLocationPanel()
         {
-            return SelectedLocationPanel;
+            return SelectedLocationPanel != null ?
+                SelectedLocationPanel.GetPanel() : null;
         }
 
         public override AnnotationGameObject GetPrefabForAnnotation(T annotation)

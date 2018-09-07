@@ -446,16 +446,8 @@ MonoBehaviour:
   AudioWaveForm: {fileID: 114139347247266182}
   updateAudioTextureTime: 0.033
   WaveformSegmentSize: 256
-  WaveformBackgroundColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 0
-  WaveformForegroundColor:
-    r: 0.16078432
-    g: 0.67058825
-    b: 0.8862745
-    a: 1
+  WaveformBackgroundColor: {r: 0, g: 0, b: 0, a: 0}
+  WaveformForegroundColor: {r: 0.16078432, g: 0.67058825, b: 0.8862745, a: 1}
 --- !u!114 &114212953277975994
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -740,12 +732,12 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: 3d8675433a508ec47b8f895201eacf20, type: 3}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
+  m_FillMethod: 0
+  m_FillAmount: 0.203
   m_FillClockwise: 1
   m_FillOrigin: 0
 --- !u!114 &114750827368511816
@@ -855,10 +847,11 @@ MonoBehaviour:
   PrePositioned: 0
   ActiveAtStart: 0
   Modal: 0
+  KeepActiveInStack: 0
   StackName: 
   PreferredOrientation: 0
   LinkedObjects: []
-  AnimationTarget: {fileID: 1249750267292390}
+  AnimationTarget: {fileID: 1616440548439678}
   PushAnimation: {fileID: 9100000, guid: f9c5eac0f9d0d1143b35444b0eed6540, type: 2}
   PopAnimation: {fileID: 9100000, guid: d43915b35bc997742bb6a0d428d54cf4, type: 2}
   ExitAnimation: {fileID: 0}
@@ -950,7 +943,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 114998455016287604}
         m_MethodName: UpdatePosition
         m_Mode: 1
         m_Arguments:
@@ -1009,7 +1002,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: c5be84dfadf809a48aac46520b3baa2b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ffa56d11d77c3924db1aec86eed8cb95, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1034,7 +1027,8 @@ MonoBehaviour:
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
   Time: {fileID: 114289854747465058}
-  Slider: {fileID: 0}
+  Slider: {fileID: 114816549301969326}
+  SliderFill: {fileID: 114693780571818470}
   PlayPauseButton: {fileID: 114373927484258486}
   Autoplay: 1
   SoundView: {fileID: 114208745682913542}

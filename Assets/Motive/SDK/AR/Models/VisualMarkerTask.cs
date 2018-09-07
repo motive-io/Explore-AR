@@ -25,7 +25,7 @@ namespace Motive.AR.Models
 {
 	public partial class VisualMarkerTask : CharacterTask
 	{
-		public IVisualMarker[] VisualMarkers { get; set; }
+		public IScriptObject[] VisualMarkers { get; set; }
 
 		public VisualMarkerTask() : base("motive.ar.visualMarkerTask")
 		{

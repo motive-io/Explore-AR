@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System;
+using UnityEngine.Events;
 
 namespace Motive.UI.Framework
 {
@@ -12,13 +13,20 @@ namespace Motive.UI.Framework
     /// </summary>
     public class Table : MonoBehaviour
     {
-       protected List<GameObject> m_items;
+        public UnityEvent OnUpdated;
+
+        protected List<GameObject> m_items;
 
         public IEnumerable<GameObject> Items { get { return m_items; } }
 
         void Awake()
         {
             m_items = new List<GameObject>();
+
+            if (OnUpdated == null)
+            {
+                OnUpdated = new UnityEvent();
+            }
         }
 
         public IEnumerable<T> GetItems<T>() where T : Component
@@ -60,9 +68,14 @@ namespace Motive.UI.Framework
         public virtual void Clear()
         {
             RemoveFrom(0);
+
+            if (OnUpdated != null)
+            {
+                OnUpdated.Invoke();
+            }
         }
 
-		public GameObject AddItem(GameObject prefab)
+        public GameObject AddItem(GameObject prefab)
 		{
 			var obj = Instantiate(prefab);
 
@@ -73,9 +86,18 @@ namespace Motive.UI.Framework
 			return obj;
 		}
 
+        static int gidx = 0;
+
         public virtual void AttachItem(Transform item, int idx)
         {
+            item.name = gidx++.ToString();
+
             item.SetParent(transform, false);
+
+            if (OnUpdated != null)
+            {
+                OnUpdated.Invoke();
+            }
         }
 
         public T AddItem<T>(T prefab) where T : Component
@@ -97,6 +119,11 @@ namespace Motive.UI.Framework
 
                 item.transform.SetParent(null);
                 Destroy(item.gameObject);
+
+                if (OnUpdated != null)
+                {
+                    OnUpdated.Invoke();
+                }
             }
         }
 

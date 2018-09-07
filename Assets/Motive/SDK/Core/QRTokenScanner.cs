@@ -76,10 +76,13 @@ namespace Motive.Unity
                         tex2D.width <= 16)
                     {
                         Debug.Log("No pixels loaded.");
+                        DestroyImmediate(tex2D);
                         return;
                     }
 
                     Result result = m_barcodeReader.Decode(pixels, tex2D.width, tex2D.height);
+                    DestroyImmediate(tex2D);
+
                     if (result == null)
                     {
                         return;
@@ -90,9 +93,9 @@ namespace Motive.Unity
                     {
                         Debug.Log("Share TOKEN: " + shareToken);
 
-                        m_webCam.StopCamera();
-                        this.TokenScanned.Invoke(shareToken);
-                        m_isScanning = false;
+                        AuthQRToken(shareToken, m_onQRCodeResponse);
+
+                        Stop();
                     }
                     else
                     {
@@ -108,12 +111,18 @@ namespace Motive.Unity
             }
         }
 
+        public void Stop()
+        {
+            if (m_webCam) m_webCam.StopCamera();
+            m_isScanning = false;
+        }
+
         private void TearDown()
         {
             m_onQRCodeResponse = null;
-            if (m_webCam) m_webCam.StopCamera();
+
+            Stop();
             m_webCam = null;
-            m_isScanning = false;
         }
 
         /// <summary>

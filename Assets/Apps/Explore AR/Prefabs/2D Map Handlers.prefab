@@ -35,8 +35,41 @@ GameObject:
   m_Component:
   - component: {fileID: 4653239012526740}
   - component: {fileID: 114159690187681188}
+  - component: {fileID: 114353193222180768}
   m_Layer: 0
   m_Name: Locative Audio Annotation Handler
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1337325084638626
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4923095584626470}
+  - component: {fileID: 114498999454669138}
+  m_Layer: 0
+  m_Name: Location Task Preview Panel Link
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &1600066688389592
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4983774120080628}
+  - component: {fileID: 114666341324931430}
+  m_Layer: 0
+  m_Name: AR Task Preview Panel Link
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,6 +101,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4763871638171968}
   - component: {fileID: 114140082091583176}
+  - component: {fileID: 114519040127568936}
   m_Layer: 0
   m_Name: Marker Annotation Handler
   m_TagString: Untagged
@@ -117,6 +151,19 @@ Transform:
   m_Father: {fileID: 4339821458169696}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4923095584626470
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1337325084638626}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4935769510498828}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4935769510498828
 Transform:
   m_ObjectHideFlags: 1
@@ -126,9 +173,24 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
+  m_Children:
+  - {fileID: 4923095584626470}
+  - {fileID: 4983774120080628}
   m_Father: {fileID: 4339821458169696}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4983774120080628
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1600066688389592}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4935769510498828}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &114049264554365338
 MonoBehaviour:
@@ -144,25 +206,13 @@ MonoBehaviour:
   AnnotationsAreShowing: 1
   AnnotationPrefab: {fileID: 114522971607334578, guid: 6a1a6020e185a9e4590c96e2aa1ef0bd,
     type: 2}
-  SelectedLocationPanel: {fileID: 0}
+  SelectedLocationPanel: {fileID: 114498999454669138}
   RangeDisplayMode: 2
   Range: 0
   CenterMapOnSelectedAnnotation: 1
-  RangeCircleColor:
-    r: 0.76862746
-    g: 0.8235294
-    b: 0.14509805
-    a: 0.5019608
-  OutOfRangeColor:
-    r: 0.13725491
-    g: 0.1882353
-    b: 0.31764707
-    a: 0.5019608
-  InvertRangeCircleColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 0
+  RangeCircleColor: {r: 0.76862746, g: 0.8235294, b: 0.14509805, a: 0.5019608}
+  OutOfRangeColor: {r: 0.13725491, g: 0.1882353, b: 0.31764707, a: 0.5019608}
+  InvertRangeCircleColor: {r: 0, g: 0, b: 0, a: 0}
   UseTaskImageForAnnotation: 0
 --- !u!114 &114140082091583176
 MonoBehaviour:
@@ -178,7 +228,7 @@ MonoBehaviour:
   AnnotationsAreShowing: 1
   AnnotationPrefab: {fileID: 114405582373445904, guid: 64a8cd6fbc43e8345b5c31bc4ebfda18,
     type: 2}
-  SelectedLocationPanel: {fileID: 0}
+  SelectedLocationPanel: {fileID: 114519040127568936}
   RangeDisplayMode: 0
   Range: 0
   CenterMapOnSelectedAnnotation: 1
@@ -197,7 +247,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AnnotationsAreShowing: 1
   AnnotationPrefab: {fileID: 0}
-  SelectedLocationPanel: {fileID: 0}
+  SelectedLocationPanel: {fileID: 114353193222180768}
   RangeDisplayMode: 0
   Range: 0
   CenterMapOnSelectedAnnotation: 1
@@ -205,26 +255,10 @@ MonoBehaviour:
     type: 2}
   _2DAnnotationPrefab: {fileID: 114319902677925740, guid: 010b7ee1dc04f48b1ab9d880c7c81e2b,
     type: 2}
-  _3DInRangeColor:
-    r: 0.76862746
-    g: 0.8235294
-    b: 0.14509805
-    a: 0.5019608
-  _3DOutOfRangeColor:
-    r: 0.76862746
-    g: 0.8235294
-    b: 0.14509805
-    a: 0.29411766
-  _2DInRangeColor:
-    r: 0.92941177
-    g: 0.7254902
-    b: 0.31764707
-    a: 0.5019608
-  _2DOutOfRangeColor:
-    r: 0.92941177
-    g: 0.7254902
-    b: 0.31764707
-    a: 0.29411766
+  _3DInRangeColor: {r: 0.76862746, g: 0.8235294, b: 0.14509805, a: 0.5019608}
+  _3DOutOfRangeColor: {r: 0.76862746, g: 0.8235294, b: 0.14509805, a: 0.29411766}
+  _2DInRangeColor: {r: 0.92941177, g: 0.7254902, b: 0.31764707, a: 0.5019608}
+  _2DOutOfRangeColor: {r: 0.92941177, g: 0.7254902, b: 0.31764707, a: 0.29411766}
 --- !u!114 &114242978734397952
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -239,23 +273,103 @@ MonoBehaviour:
   AnnotationsAreShowing: 1
   AnnotationPrefab: {fileID: 114522971607334578, guid: 6a1a6020e185a9e4590c96e2aa1ef0bd,
     type: 2}
-  SelectedLocationPanel: {fileID: 0}
+  SelectedLocationPanel: {fileID: 114666341324931430}
   RangeDisplayMode: 0
   Range: 0
   CenterMapOnSelectedAnnotation: 1
-  RangeCircleColor:
-    r: 0.76862746
-    g: 0.8235294
-    b: 0.14509805
-    a: 0.5019608
-  OutOfRangeColor:
-    r: 0.13725491
-    g: 0.1882353
-    b: 0.31764707
-    a: 0.5019608
-  InvertRangeCircleColor:
-    r: 0
-    g: 0
-    b: 0
-    a: 0
+  RangeCircleColor: {r: 0.76862746, g: 0.8235294, b: 0.14509805, a: 0.5019608}
+  OutOfRangeColor: {r: 0.13725491, g: 0.1882353, b: 0.31764707, a: 0.5019608}
+  InvertRangeCircleColor: {r: 0, g: 0, b: 0, a: 0}
   UseTaskImageForAnnotation: 0
+--- !u!114 &114353193222180768
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1118970416542236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746ec62e80050354f8c148e5861a0324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PanelName: LocativeAudioPreview
+  m_panel: {fileID: 0}
+  OnPush:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnPop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &114498999454669138
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1337325084638626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746ec62e80050354f8c148e5861a0324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PanelName: LocationTaskPreview
+  m_panel: {fileID: 0}
+  OnPush:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnPop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &114519040127568936
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1762058767512192}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746ec62e80050354f8c148e5861a0324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PanelName: SelectedMarker
+  m_panel: {fileID: 0}
+  OnPush:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnPop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+--- !u!114 &114666341324931430
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1600066688389592}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 746ec62e80050354f8c148e5861a0324, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PanelName: ARTaskPreview
+  m_panel: {fileID: 0}
+  OnPush:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  OnPop:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null

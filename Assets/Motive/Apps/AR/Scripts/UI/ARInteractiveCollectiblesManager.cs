@@ -8,6 +8,7 @@ using Motive.Unity.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace Motive.Unity.UI
@@ -20,13 +21,18 @@ namespace Motive.Unity.UI
         public ARInteractiveCollectibleItem InteractiveItem;
         public Table InteractiveItemTable;
         public bool ShowAllItems;
-
+        
         public UnityEvent OnSuccess;
         public UnityEvent OnFail;
+
+        public GameObject[] ShowWhenHasItems;
+        public GameObject[] ShowWhenDoesntHaveItems;
 
         DictionaryDictionary<string, string, Action> m_collectibleCallbacks;
         ListDictionary<string, ARInteractiveCollectibleItem> m_interactiveCollectibles;
         HashSet<string> m_currentCollectibles;
+
+        ARInteractiveCollectibleItem m_currentItem;
 
         protected override void Awake()
         {
@@ -93,6 +99,16 @@ namespace Motive.Unity.UI
                     });
                 }
             }
+
+            SetHasItems();
+        }
+
+        void SetHasItems()
+        {
+            bool hasItems = InteractiveItemTable.Items.Count() > 0;
+
+            ObjectHelper.SetObjectsActive(ShowWhenHasItems, hasItems);
+            ObjectHelper.SetObjectsActive(ShowWhenDoesntHaveItems, !hasItems);
         }
 
         private void Inventory_Updated(object sender, EventArgs e)
@@ -130,8 +146,12 @@ namespace Motive.Unity.UI
             {
                 var item = AddCollectibleItem(collectible, onSelect);
 
+                m_currentItem = item;
+
                 m_interactiveCollectibles.Add(id, item);
             }
+
+            SetHasItems();
         }
 
         public void RemoveInteractiveCollectibles(string id)
@@ -146,10 +166,25 @@ namespace Motive.Unity.UI
                 {
                     foreach (var i in items)
                     {
+                        if (i == m_currentItem)
+                        {
+                            m_currentItem = null;
+                        }
+
                         InteractiveItemTable.RemoveItem(i);
                         m_currentCollectibles.Remove(i.Collectible.Id);
                     }
                 }
+            }
+
+            SetHasItems();
+        }
+
+        public void SelectCurrentItem()
+        {
+            if (m_currentItem)
+            {
+                m_currentItem.Select();
             }
         }
     }

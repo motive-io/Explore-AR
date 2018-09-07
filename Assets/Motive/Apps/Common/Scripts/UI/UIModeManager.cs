@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Motive.Unity.AR;
 using Motive.Unity.Utilities;
+using Motive;
 
 public class UIModeManager<T> : MonoBehaviour where T : UIModeManager<T>
 {
@@ -17,7 +18,16 @@ public class UIModeManager<T> : MonoBehaviour where T : UIModeManager<T>
 
 	public virtual void SetARActive(bool active)
 	{
-		ObjectHelper.SetObjectsActive(ARModeObjects, active);
+        if (active)
+        {
+            Platform.Instance.SetSystemState("arMode");
+        }
+        else
+        {
+            Platform.Instance.ClearSystemState("arMode");
+        }
+
+        ObjectHelper.SetObjectsActive(ARModeObjects, active);
 
 		if (ARCanvas)
 		{

@@ -12,6 +12,14 @@ namespace Motive.Unity.Utilities
 {
     public static class AssetLoader
     {
+        public static void PreloadAsset(IScriptObject asset)
+        {
+            if (asset is UnityAsset)
+            {
+                UnityAssetLoader.LoadAsset<GameObject>((UnityAsset)asset, (obj) => { });
+            }
+        }
+
         public static void LoadAsset<T>(IScriptObject asset, Action<T> onLoad)
             where T : UnityEngine.Object
         {
@@ -35,6 +43,7 @@ namespace Motive.Unity.Utilities
                     onLoad(obj);
                 });
             }
+#if MOTIVE_GOOGLE_POLY
             else if (asset is PolyAsset)
             {
                 PolyAssetLoader.LoadAsset(asset as PolyAsset, (obj) =>
@@ -42,8 +51,19 @@ namespace Motive.Unity.Utilities
                     onLoad(obj as T);
                 });
             }
+#endif
+            else if (asset is BinaryAsset) 
+            {
+                BinaryAssetLoader.LoadAsset(asset as BinaryAsset, (obj) =>
+                {
+                    onLoad(obj as T);
+                });
+            }
+
             else
             {
+                SystemErrorHandler.Instance.ReportError("Unknown asset type {0}", asset.Type);
+
                 throw new NotSupportedException("Unknown asset type " + asset.GetType());
             }
         }

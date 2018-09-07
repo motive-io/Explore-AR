@@ -40,7 +40,10 @@ namespace Motive.Unity.UI
                 TaskManager.Instance.Updated += Tasks_Updated;
             };
 
-            ARQuestAppUIManager.Instance.OnModeChanged.AddListener(UIModeChanged);
+            if (ARQuestAppUIManager.Instance)
+            {
+                ARQuestAppUIManager.Instance.OnModeChanged.AddListener(UIModeChanged);
+            }
         }
 
         void UIModeChanged()

@@ -15,7 +15,7 @@ namespace Motive.AR.Vuforia
 {
     public abstract class VuforiaTrackableEventHandler : MonoBehaviour, ITrackableEventHandler, IPointerClickHandler
     {
-        public UnityEvent Clicked;
+        public UnityEvent Clicked = new UnityEvent();
 
         public string TargetName;
         public string DatabaseId;
@@ -44,9 +44,11 @@ namespace Motive.AR.Vuforia
 
         protected virtual void Start()
         {
-            if (Clicked == null)
+            // Vuforia spawns new trackables as clones of other ones.
+            // Delete anything attached to this trackable.
+            foreach (Transform child in this.transform)
             {
-                Clicked = new UnityEvent();
+                Destroy(child.gameObject);
             }
         }
 
@@ -114,10 +116,12 @@ namespace Motive.AR.Vuforia
                 }
             }
 
+            /*
             if (VuforiaWorld.Instance.TrackingConditionMonitor != null)
             {
                 VuforiaWorld.Instance.TrackingConditionMonitor.TrackingMarkersUpdated();
             }
+            */
         }
 
         protected virtual void OnTrackingFound()
@@ -142,10 +146,10 @@ namespace Motive.AR.Vuforia
 
             Debug.Log("Trackable " + Identifier.ToString() + " found");
 
-            VuforiaWorld.Instance.StartTracking(this);
+            VuforiaMarkerAdapter.Instance.StartTracking(this);
         }
 
-        protected virtual void OnTrackingLost()
+        protected virtual void ResetState()
         {
             m_identifier = null;
 
@@ -157,8 +161,13 @@ namespace Motive.AR.Vuforia
             {
                 instance.gameObject.SetActive(false);
             }
+        }
 
-            VuforiaWorld.Instance.StopTracking(this);
+        protected virtual void OnTrackingLost()
+        {
+            ResetState();
+
+            VuforiaMarkerAdapter.Instance.StopTracking(this);
         }
 
         public void OnPointerClick(PointerEventData eventData)

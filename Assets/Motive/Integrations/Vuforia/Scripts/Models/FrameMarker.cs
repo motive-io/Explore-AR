@@ -11,5 +11,10 @@ namespace Motive.AR.Vuforia
     {
         public string Name { get; set; }
         public int MarkerId { get; set; }
+
+        public override string GetIdentifier()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

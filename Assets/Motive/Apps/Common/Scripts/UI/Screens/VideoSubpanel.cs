@@ -17,12 +17,6 @@ namespace Motive.Unity.UI
         public UnityEvent PlaybackCompleted;
         public UnityEvent ClipLoaded;
 
-        public GameObject Embedded;
-        public GameObject FullScreen;
-        public Text time;
-        public bool SwitchModeOnRotate;
-        public bool AutoRotateInFullScreen;
-
         private Action m_onComplete;
 
         public abstract float AspectRatio { get; }
@@ -32,9 +26,6 @@ namespace Motive.Unity.UI
 
         public abstract bool Loop { get; set; }
         public abstract float Volume { get; set; }
-
-        bool m_checkedOrientation;
-        bool m_isLandscape;
 
         public virtual void Play(Action onComplete)
         {
@@ -89,37 +80,6 @@ namespace Motive.Unity.UI
             }
         }
 
-        public void SetFullScreen(bool fullScreen)
-        {
-            if (FullScreen && Embedded)
-            {
-                FullScreen.SetActive(fullScreen);
-                Embedded.SetActive(!fullScreen);
-            }
-
-            if (AutoRotateInFullScreen)
-            {
-                if (fullScreen)
-                {
-                    PanelManager.Instance.SetOrientation(ScreenOrientation.AutoRotation);
-                }
-                else
-                {
-                    PanelManager.Instance.SetOrientation(PanelManager.Instance.DefaultOrientation);
-                }
-            }
-        }
-
-        public void ToggleFullScreen()
-        {
-            if (FullScreen && Embedded)
-            {
-                bool fullScreen = FullScreen.activeSelf;
-
-                SetFullScreen(!fullScreen);
-            }
-        }
-
         public void PlayPause()
         {
             if (IsPlaying)
@@ -129,37 +89,6 @@ namespace Motive.Unity.UI
             else
             {
                 Play();
-            }
-        }
-
-        protected virtual void Update()
-        {
-            if (SwitchModeOnRotate)
-            {
-                if (!m_checkedOrientation)
-                {
-                    m_isLandscape = (Input.deviceOrientation == DeviceOrientation.LandscapeLeft ||
-                                     Input.deviceOrientation == DeviceOrientation.LandscapeRight);
-                }
-
-                bool isLandscape = (Input.deviceOrientation == DeviceOrientation.LandscapeLeft ||
-                                    Input.deviceOrientation == DeviceOrientation.LandscapeRight);
-
-                if (isLandscape && (!m_checkedOrientation || isLandscape != m_isLandscape))
-                {
-                    SetFullScreen(true);
-                }
-
-                m_isLandscape = isLandscape;
-                m_checkedOrientation = true;
-            }
-
-            if (time)
-            {
-                var durationTime = string.Format("{0}:{1:00}", (int)Duration / 60, (int)Duration % 60);
-                var prettyTime = string.Format("{0}:{1:00} / {2}", (int)Position / 60, (int)Position % 60, durationTime);
-                time.text = prettyTime;
-
             }
         }
 

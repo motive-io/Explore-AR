@@ -48,7 +48,7 @@ namespace Motive.AR.Vuforia
 
             return false;
         }
-
+        
         public override string ToString()
         {
             return string.Format("TargetName={0}, InstanceId={1}, DatabaseId={2}",

@@ -8,13 +8,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: -2067402452, guid: 1e108ae5f2133934f948edded555f03e, type: 3}
+  m_Script: {fileID: -2067402452, guid: bab6fa851cf5a1a4bba3cec5f191cb8e, type: 3}
   m_Name: VuforiaConfiguration
   m_EditorClassIdentifier: 
   vuforia:
     vuforiaLicenseKey: 
-    ufoLicenseKey: QVh2VVhzZi8vLy8vQUFBQUtEL3NVQklrbFVhNnE0VmhlMDB6QlN3YW9uRGNYQ3dwLzVEWlVaVXNPV0VPbFNoNFRwNVR5cjF5VVdUOFlVSFI2dmZhZkY2Wk9HZC9LQkVnbEhLNWJDKzlxZG5DZEwvN3JDcWI3N2hQK2xqRDZsMXorUlJiU3NjVmg2Nk94c3pvWnNRY2d6UllCalZ5WVJxVmt2ZjJEVUFTRU04bkk2enFPcnRvY1R5MVliVnN4WkZpVGJ1bUU2REJOajBRMXVhUE9BYXp4M3l2ajlmNC9wOUsxT3J6WVJiMi9LdFY2SzY4aWF6V3JHeGlqNXRLdjNYdU5QK1EyV3VNaVRKOEhEL1hEcVBEVTdHYmpEdWQyT3BMQkhRR09TRlJiTUR3WlFjM3RnbVBxdzE2cXdSV3R5Z045V3czOTZMMkdURE1jc0krdE5Pd2p5K0F5eURlVG5PSnE0NWpKbEhER1llQXA5UmRDaG50WlAyT2hFdnE=
-    delayedInitialization: 0
+    ufoLicenseKey: QVNGTDF5ai8vLy8vQUFBQUtJRWdsZmdjRkUreHV0WkpIK2xFeVdPVkNnMWwzWnJPUTd3UU5hWDRJT3kyek4vWVhkVVNkbzBOV29pTWVjODN1bmtLVDEzOEphRXFlSVowNGZLOVRaMm8yWHZubW5MODV4MHozcGh5LzVDclVWRGtYQ3BmbWVuM2RjN3IxcDN3TzliZkx1UkhKQ3p5YTF4OTBUQkJUd0NUNG5FcVVDd1FZaUpGWVdhS24zQWE4UXZRQjZocVpqMFUrWGFzTU1xSFFWTEt3M1U5MUtSK3BIQmNEbjVac09ZWk5hUW5DdUs4S1A0UnJPcmRnOE1LR2xpTnRSSnlmQ0dxL1N1YzAzeHpyeVVXSGZ1ekl2R3BqNkFYeGxzTklqZDgzbFpYK1BGK0RWeHBRbjNwV2gycDVjdHIvNGFFTThSZFdYWE1SSHg0eTJ4cFZuZTNDeVhnc2s2OURaVzF0c3M3WE02NHNTOE1WckNidE9vc3h4WmU=
+    delayedInitialization: 1
     cameraDeviceModeSetting: -1
     maxSimultaneousImageTargets: 4
     maxSimultaneousObjectTargets: 4
@@ -43,12 +43,8 @@ MonoBehaviour:
       FieldOfView: {x: 0, y: 0, z: 0, w: 0}
       ContainsMagnet: 0
   databaseLoad:
-    dataSetsToLoad:
-    - VuforiaMars_Images
-    - VuforiaMars_VuMark
-    dataSetsToActivate:
-    - VuforiaMars_Images
-    - VuforiaMars_VuMark
+    dataSetsToLoad: []
+    dataSetsToActivate: []
   videoBackground:
     clippingMode: 0
     numDivisions: 2
@@ -57,9 +53,9 @@ MonoBehaviour:
     matteShader: {fileID: 15310, guid: 0000000000000000f000000000000000, type: 0}
     videoBackgroundEnabled: 1
   deviceTracker:
-    autoInitTracker: 0
-    autoStartTracker: 0
-    trackingMode: 0
+    autoInitTracker: 1
+    autoStartTracker: 1
+    trackingMode: 1
     posePrediction: 0
     modelCorrectionMode: 0
     modelTransformEnabled: 0
