@@ -21,7 +21,8 @@ namespace Motive.Unity.UI
         public UnityEvent PlaybackCompleted;
 
         public Text Time;
-        public UserInputSlider Slider;
+        public Slider Slider;
+        public Image SliderFill;
         public Button PlayPauseButton;
         public bool Autoplay = true;
 
@@ -32,6 +33,7 @@ namespace Motive.Unity.UI
 
         IAudioPlayer m_player;
         Action m_onComplete;
+
 
         public void Play(string url, Action onComplete = null)
         {
@@ -72,19 +74,19 @@ namespace Motive.Unity.UI
         private void FinishPlaying()
         {
             ThreadHelper.Instance.CallOnMainThread(() =>
+            {
+                if (PlaybackCompleted != null)
                 {
-                    if (PlaybackCompleted != null)
-                    {
-                        PlaybackCompleted.Invoke();
-                    }
+                    PlaybackCompleted.Invoke();
+                }
 
-                    if (m_onComplete != null)
-                    {
-                        var toCall = m_onComplete;
-                        m_onComplete = null;
-                        toCall();
-                    }
-                });
+                if (m_onComplete != null)
+                {
+                    var toCall = m_onComplete;
+                    m_onComplete = null;
+                    toCall();
+                }
+            });
         }
 
         public void Play(Action onComplete)
@@ -123,18 +125,15 @@ namespace Motive.Unity.UI
 
         public void UpdatePosition()
         {
-            if (Slider.IsUserUpdate)
-            {
-                var pos = Slider.value * m_player.Duration.TotalSeconds;
-
-                m_player.Position = TimeSpan.FromSeconds(pos);
-            }
+            var pos = Slider.value;
+            m_player.Position = TimeSpan.FromSeconds(pos);
         }
 
         /// <summary>
         /// Updates audio position based on the new audio controls.
         /// </summary>
         /// <param name="slider"></param>
+
         public void UpdatePosition(UserInputSlider slider)
         {
             if (!slider.IsUserUpdate) return;
@@ -144,17 +143,15 @@ namespace Motive.Unity.UI
             m_player.Position = TimeSpan.FromSeconds(pos);
         }
 
-        // Update is called once per frame
         void Update()
         {
             if (m_player != null && m_player.Duration.TotalSeconds > 0)
             {
                 var pct = m_player.Position.TotalSeconds / m_player.Duration.TotalSeconds;
 
-                if (Slider && !Slider.IsUserUpdate)
-                {
-                    Slider.value = (float)pct;
-                }
+                Slider.maxValue = (float)(m_player.Duration.TotalSeconds);
+
+                SliderFill.fillAmount = (float)m_player.Position.TotalSeconds/ (float)m_player.Duration.TotalSeconds;
 
                 if (Time)
                 {

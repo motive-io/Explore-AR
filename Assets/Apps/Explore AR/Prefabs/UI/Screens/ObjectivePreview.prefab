@@ -114,7 +114,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &114208071177918206
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -247,7 +247,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 114945272522152952}
+      - m_Target: {fileID: 114919174463469232}
         m_MethodName: PushPanel
         m_Mode: 2
         m_Arguments:
@@ -290,6 +290,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PanelName: Task Info
+  m_panel: {fileID: 0}
   OnPush:
     m_PersistentCalls:
       m_Calls: []

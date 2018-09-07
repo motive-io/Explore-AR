@@ -6,10 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Motive.Core.Scripting;
+using Motive.Unity.AR;
 
-#if MOTIVE_VUFORIA
-using Motive.AR.Vuforia;
-#endif
 
 namespace Motive.Unity.Scripting
 {
@@ -17,22 +15,12 @@ namespace Motive.Unity.Scripting
     {
         public override void ActivateResource(ResourceActivationContext context, VisualMarkerMedia resource)
         {
-#if MOTIVE_VUFORIA
-        if (VuforiaWorld.Instance != null)
-        {
-            VuforiaWorld.Instance.AddMarkerMedia(context, resource);
-        }
-#endif
+            ARMarkerManager.Instance.AddMarkerMedia(context, resource);
         }
 
         public override void DeactivateResource(ResourceActivationContext context, VisualMarkerMedia resource)
         {
-#if MOTIVE_VUFORIA
-        if (VuforiaWorld.Instance != null)
-        {
-            VuforiaWorld.Instance.RemoveMarkerMedia(context, resource);
-        }
-#endif
+            ARMarkerManager.Instance.RemoveMarkerMedia(context, resource);
         }
     }
 }

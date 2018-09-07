@@ -4,6 +4,49 @@
         <name>Motive.Unity.Maps</name>
     </assembly>
     <members>
+        <member name="M:Motive.Unity.Maps.MapTileDriver.GetCoordinatesFromOffset(System.Double,System.Double)">
+            <summary>
+            Returns the GPS coordinates for the given x,y offset of the viewable
+            map
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Motive.Unity.Maps.MapTileDriver.GetZoomForDistanceSpan(System.Double,System.Double)">
+            <summary>
+            Determines the required zoom level to achieve the specified
+            distance span on the map
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Motive.Unity.Maps.MapTileDriver.GetWorldOffset(System.Double,System.Double)">
+            <summary>
+            Gets the tile offset for the given lat, lon, and current zoom.
+            </summary>
+            <param name="lat"></param>
+            <param name="lon"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Motive.Unity.Maps.MapTileDriver.SetMapRegion(System.Double,System.Double,System.Double)">
+            <summary>
+            Sets the viewable map region to the given lat, lon, zoom.
+            </summary>
+            <param name="lat"></param>
+            <param name="lon"></param>
+            <param name="zoom"></param>
+        </member>
+        <member name="M:Motive.Unity.Maps.MapTileDriver.SetMapRegion(System.Double,System.Double,System.Double,System.Double)">
+            <summary>
+            Sets the map to the viewable region given lat, lon, lat delta, lon delta
+            </summary>
+            <param name="lat"></param>
+            <param name="lon"></param>
+            <param name="latDelta"></param>
+            <param name="lonDelta"></param>
+        </member>
         <member name="M:Motive.Unity.Maps.MapTileDriver.Translate(System.Double,System.Double)">
             <summary>
             Translates as a percentage of the surface size. This call takes the

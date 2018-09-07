@@ -50,14 +50,14 @@ namespace Motive.Unity.UI
             }
         }
 
-        public override void DidShow()
+        public override void DidPush()
         {
             if (ItemViewContainer)
             {
                 ItemViewContainer.HideAll();
             }
 
-            base.DidShow();
+            base.DidPush();
         }
 
         public override void Populate(InventoryTableItem item)

@@ -45,15 +45,17 @@ namespace Motive.Unity.UI
 
         public override void Populate(ScreenMessage screenMessage)
         {
-            ImageLoader.LoadImageOnThread(screenMessage.ImageUrl, Image, () =>
-            {
-                PopulateComponent<MediaItemComponent>(screenMessage.MediaItem);
-            });
-
             if (ImageLayoutObject)
             {
-                ImageLayoutObject.SetActive(screenMessage.ImageUrl != null);
+                // ImageLayoutObject serves as the container for video as well
+                ImageLayoutObject.SetActive(screenMessage.ImageUrl != null ||
+                    (screenMessage.MediaItem != null && screenMessage.MediaItem.MediaType == Core.Media.MediaType.Video));
             }
+
+            ImageLoader.LoadImageOnThread(screenMessage.ImageUrl, Image, () =>
+            {
+                PopulateComponents<MediaItemComponent>(screenMessage.MediaItem);
+            });
 
             if (Text)
             {

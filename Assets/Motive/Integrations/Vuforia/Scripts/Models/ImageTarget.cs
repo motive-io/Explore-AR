@@ -23,6 +23,11 @@ namespace Motive.AR.Vuforia
             }
         }
 
+        public string GetIdentifier()
+        {
+            return Identifier.ToString();
+        }
+
         private VuMarkIdentifier m_identifier;
 
         public VuMarkIdentifier Identifier

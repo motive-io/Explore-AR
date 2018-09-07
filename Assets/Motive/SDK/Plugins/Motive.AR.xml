@@ -568,10 +568,58 @@
             as their location source. 
             </summary>
         </member>
+        <member name="T:Motive.AR.Media.LocativeAudioEngine">
+            <summary>
+            Handles logic that drives GPS-based locative audio.
+            </summary>
+        </member>
         <member name="P:Motive.AR.Media.LocativeAudioEngine.AudioActivationBoundary">
             <summary>
             Additional boundary around locative audio that determines
             when the audio clips are actually loaded into memory
+            </summary>
+        </member>
+        <member name="P:Motive.AR.Media.LocativeAudioEngine.DefaultInnerFadeInDuration">
+            <summary>
+            How long to fade in the audio when a user moves in range from the
+            inner edge of the disc if a min range is specified.
+            </summary>
+        </member>
+        <member name="P:Motive.AR.Media.LocativeAudioEngine.DefaultInnerFadeOutDuration">
+            <summary>
+            How long to fade out the audio when a user moves out of range from the
+            inner edge of the disc if a min range is specified.
+            </summary>
+        </member>
+        <member name="P:Motive.AR.Media.LocativeAudioEngine.DefaultOuterFadeInDuration">
+            <summary>
+            How long to fade in the audio when a user moves in range from the
+            outer edge of the disc.
+            </summary>
+        </member>
+        <member name="P:Motive.AR.Media.LocativeAudioEngine.DefaultOuterFadeOutDuration">
+            <summary>
+            How long to fade out the audio when a user moves out of range from the
+            outer edge of the disc.
+            </summary>
+        </member>
+        <member name="P:Motive.AR.Media.LocativeAudioEngine.IsRunning">
+            <summary>
+            True if the engine is running.
+            </summary>
+        </member>
+        <member name="M:Motive.AR.Media.LocativeAudioEngine.Activate(System.String,Motive.AR.Models.LocativeAudioContent,System.Action,System.Action{System.Boolean})">
+            <summary>
+            Activates locative audio content.
+            </summary>
+            <param name="instanceId"></param>
+            <param name="locAudio"></param>
+            <param name="onPlay">Optional callback when the content starts playing.</param>
+            <param name="onComplete">Optional callback when the content stops playing.</param>
+        </member>
+        <member name="T:Motive.AR.Models.RelativeLocationSelector">
+            <summary>
+            Selects a location at a relative position to the specified origin or user location.
             </summary>
         </member>
         <member name="M:Motive.AR.Models.LocationMatchCondition.Filter(System.Collections.Generic.IEnumerable{Motive.AR.LocationServices.Location},Motive.AR.LocationServices.Coordinates)">

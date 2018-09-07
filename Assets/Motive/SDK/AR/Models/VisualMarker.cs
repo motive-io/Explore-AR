@@ -9,5 +9,6 @@ namespace Motive.AR.Models
 {
     public abstract class VisualMarker : ScriptObject, IVisualMarker
     {
+        public abstract string GetIdentifier();
     }
 }

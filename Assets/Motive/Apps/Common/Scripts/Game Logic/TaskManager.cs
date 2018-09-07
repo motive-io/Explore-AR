@@ -458,6 +458,8 @@ namespace Motive.Unity.Gaming
                         else
                         {
                             TransactionManager.Instance.AddValuables(task.ActionItems);
+
+                            doClose();
                         }
                     }
                     else
@@ -474,7 +476,7 @@ namespace Motive.Unity.Gaming
 
         private void UpdateAssignments()
         {
-            foreach (var driver in m_assignments.Values)
+            foreach (var driver in m_assignments.Values.ToArray())
             {
                 driver.CheckComplete();
             }
@@ -534,6 +536,9 @@ namespace Motive.Unity.Gaming
             {
                 Updated(this, EventArgs.Empty);
             }
+
+            // TODO: make this configurable
+            driver.Close();
         }
 
         public void ClosePlayerTask(IPlayerTaskDriver driver)
@@ -612,7 +617,6 @@ namespace Motive.Unity.Gaming
             }
         }
 
-#if MOTIVE_VUFORIA
     public void ActivateVisualMarkerTask(ResourceActivationContext context, VisualMarkerTask task)
     {
         IPlayerTaskDriver driver = null;
@@ -628,7 +632,6 @@ namespace Motive.Unity.Gaming
 
         ActivatePlayerTaskDriver(context, driver);
     }
-#endif
 
         public virtual void ActivateARTask(ResourceActivationContext context, ARTask task)
         {

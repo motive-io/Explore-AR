@@ -536,49 +536,35 @@ namespace Motive.UI.Framework
             Show(panel, data, onClose);
         }
 
-        IEnumerator SetOrientationCoroutine(ScreenOrientation orientation)
-        {
-            if (orientation == ScreenOrientation.Unknown)
-            {
-                Screen.orientation = DefaultOrientation;
-            }
-            else
-            {
-                if (orientation == ScreenOrientation.AutoRotation)
-                {
-                    // Force the current device orientation, then switch to auto
-                    switch (Input.deviceOrientation)
-                    {
-                        case DeviceOrientation.LandscapeLeft:
-                            Screen.orientation = ScreenOrientation.LandscapeLeft;
-                            break;
-                        case DeviceOrientation.LandscapeRight:
-                            Screen.orientation = ScreenOrientation.LandscapeRight;
-                            break;
-                        case DeviceOrientation.Portrait:
-                            Screen.orientation = ScreenOrientation.Portrait;
-                            break;
-                        case DeviceOrientation.PortraitUpsideDown:
-                            Screen.orientation = ScreenOrientation.PortraitUpsideDown;
-                            break;
-                    }
-
-                    yield return null;
-
-                    Screen.orientation = ScreenOrientation.AutoRotation;
-                }
-                else
-                {
-                    Screen.orientation = orientation;
-                }
-            }
-        }
-
         public void SetOrientation(ScreenOrientation orientation)
         {
             if (gameObject.activeSelf && gameObject.activeInHierarchy)
             {
-                StartCoroutine(SetOrientationCoroutine(orientation));
+                if (orientation == ScreenOrientation.Unknown)
+                {
+                    Screen.autorotateToLandscapeLeft =
+                        Screen.autorotateToLandscapeRight =
+                        Screen.autorotateToPortrait =
+                        Screen.autorotateToPortraitUpsideDown = false;
+
+                    Screen.orientation = DefaultOrientation;
+                }
+                else
+                {
+                    if (orientation == ScreenOrientation.AutoRotation)
+                    {
+                        Screen.autorotateToLandscapeLeft =
+                            Screen.autorotateToLandscapeRight =
+                            Screen.autorotateToPortrait =
+                            Screen.autorotateToPortraitUpsideDown = true;
+                        
+                        Screen.orientation = ScreenOrientation.AutoRotation;
+                    }
+                    else
+                    {
+                        Screen.orientation = orientation;
+                    }
+                }
             }
         }
 

@@ -35,14 +35,7 @@ namespace Motive.Unity.Maps
                 m_lastRange != Range)
             {
                 var viewScale = MapController.Instance.MapView.TileDriver.GetDistanceScale(MapController.Instance.MapView.CenterCoordinates, Range);
-
-                //var renderer = MapController.Instance.MapView.MapTexture.GetComponent<Renderer>();
-
-                /*
-                Logger.PrintMessage(LogLevel.Debug, "vs={0} scale={1} tx scale={2}",
-                    viewScale, viewScale, renderer.material.mainTextureScale.x);
-                */
-
+                
                 transform.localScale = RangeUnitScale * (float)viewScale;
 
                 m_lastRange = Range;

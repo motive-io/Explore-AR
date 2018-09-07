@@ -422,7 +422,6 @@ namespace Motive
             if (Application.isMobilePlatform)
             {
                 var accTracker = new AccelerometerStepTracker(Accelerometer);
-
                 stepTracker = accTracker;
 
                 Accelerometer.Start();

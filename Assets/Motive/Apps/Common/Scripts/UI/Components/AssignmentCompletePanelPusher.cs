@@ -29,10 +29,10 @@ namespace Motive.Unity.UI
             base.Populate(obj);
         }
 
-        public override void DidShow()
+        public override void DidPush()
         {
             TaskManager.Instance.Updated += Tasks_Updated;
-            base.DidShow();
+            base.DidPush();
         }
 
         private void Tasks_Updated(object sender, System.EventArgs e)

@@ -135,26 +135,22 @@ namespace Motive.Unity.UI
         /// </summary>
         public void StopCurrentQuest()
         {
-            // should only be one
-            var runningEpisodes = ScriptRunnerManager.Instance.GetRunningItems();
-            if (runningEpisodes == null || runningEpisodes.Count() > 1) return;
-
-            var dirItem = runningEpisodes.FirstOrDefault();
-            if (dirItem == null) return;
-
-            if (StopTourConfirm)
+            if (RunningQuest != null)
             {
-                StopTourConfirm.Show(new string[] { "stop", "cancel" }, (opt) =>
+                if (StopTourConfirm)
+                {
+                    StopTourConfirm.Show(new string[] { "stop", "cancel" }, (opt) =>
                     {
                         if (opt == "stop")
                         {
-                            ScriptRunnerManager.Instance.Stop(dirItem);
+                            ScriptRunnerManager.Instance.Stop(RunningQuest);
                         }
                     });
-            }
-            else
-            {
-                ScriptRunnerManager.Instance.Stop(dirItem);
+                }
+                else
+                {
+                    ScriptRunnerManager.Instance.Stop(RunningQuest);
+                }
             }
         }
 

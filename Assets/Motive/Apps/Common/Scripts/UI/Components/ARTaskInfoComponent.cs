@@ -12,11 +12,11 @@ namespace Motive.Unity.UI
     {
         public Text Title;
 
-        public override void DidShow(ARTaskDriver driver)
+        public override void DidPush(ARTaskDriver driver)
         {
             driver.Updated += driver_Updated;
 
-            base.DidShow(driver);
+            base.DidPush(driver);
         }
 
         public override void Populate(ARTaskDriver driver)

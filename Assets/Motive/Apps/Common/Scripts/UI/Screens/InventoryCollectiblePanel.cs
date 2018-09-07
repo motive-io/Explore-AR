@@ -44,7 +44,7 @@ namespace Motive.Unity.UI
             if (Date)
             {
                 var collectTime = Inventory.Instance.GetCollectTime(collectible.Id);
-                Date.text = collectTime != null ? collectTime.Value.ToShortDateString() : "";// data.InventoryCollectible.CollectTime.GetValueOrDefault().ToString();
+                Date.text = collectTime != null ? collectTime.Value.ToString("d") : "";// data.InventoryCollectible.CollectTime.GetValueOrDefault().ToString();
             }
 
             if (Image)

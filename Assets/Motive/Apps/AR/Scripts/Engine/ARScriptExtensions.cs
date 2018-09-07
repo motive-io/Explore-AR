@@ -3,6 +3,7 @@ using Motive.AR.Models;
 using Motive.AR.Vuforia;
 using Motive.Core.Json;
 using Motive.Core.Scripting;
+using Motive.Unity.AR;
 using Motive.Unity.Models;
 
 namespace Motive.Unity.Scripting
@@ -39,15 +40,13 @@ namespace Motive.Unity.Scripting
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.locationAugmented3dAsset", new LocationAugmented3DAssetProcessor());
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.visualMarkerMedia", new VisualMarkerMediaProcessor());
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.visualMarker3dAsset", new VisualMarker3DAssetProcessor());
+            ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.visualMarkerTask", new VisualMarkerTaskProcessor());
             ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.locationValuablesCollection", new LocationValuablesCollectionProcessor());
 
             // Could live somewhere else eventually:
             JsonTypeRegistry.Instance.RegisterType("motive.unity.asset", typeof(UnityAsset));
 
-#if MOTIVE_VUFORIA
-        ScriptEngine.Instance.RegisterConditionMonitor(VuforiaWorld.Instance.TrackingConditionMonitor);
-        ScriptEngine.Instance.RegisterScriptResourceProcessor("motive.ar.visualMarkerTask", new VisualMarkerTaskProcessor());
-#endif
+            ScriptEngine.Instance.RegisterConditionMonitor(ARMarkerManager.Instance.TrackingConditionMonitor);
         }
     }
 }

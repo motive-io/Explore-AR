@@ -215,13 +215,14 @@ GameObject:
   - component: {fileID: 114228965760965236}
   - component: {fileID: 114504049642791142}
   - component: {fileID: 114248254520533272}
+  - component: {fileID: 114187261189360910}
   m_Layer: 5
   m_Name: ARTaskPreview
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &1865225530884854
 GameObject:
   m_ObjectHideFlags: 1
@@ -292,6 +293,31 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Go find a thing with AR
+--- !u!114 &114187261189360910
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1860151827048808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d49beb12b97b704285da3cc6bd0b2ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  LinkedObjects: []
+  TitleLayout: {fileID: 0}
+  Title: {fileID: 114034148988849912}
+  DescriptionLayout: {fileID: 0}
+  Description: {fileID: 0}
+  ActionButtonLayout: {fileID: 0}
+  ActionButton: {fileID: 0}
+  ActionButtonText: {fileID: 0}
+  ImageLayout: {fileID: 0}
+  Image: {fileID: 0}
+  ShowWhenCanComplete: []
+  ShowWhenCannotComplete: []
+  CollectiblesTable: {fileID: 0}
+  TableItemPrefab: {fileID: 0}
 --- !u!114 &114228965760965236
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -441,6 +467,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PanelName: Task Info
+  m_panel: {fileID: 0}
   OnPush:
     m_PersistentCalls:
       m_Calls: []
@@ -960,7 +987,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: f04f7faa5cfd8444a9b61e426135725f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: cc372cde6153d4f4baef4cbc63928ef2, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

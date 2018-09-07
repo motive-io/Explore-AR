@@ -58,7 +58,7 @@ namespace Motive.Unity.Gaming
                         TaskDriver.Task.Locations[0],
                         0,
                         collectible.ImageUrl,
-                        ARWorld.Instance.GetDefaultImageOptions(TaskDriver.Task.ActionRange));
+                        GetOptions());
                 }
 
                 if (m_worldObject != null)
@@ -79,20 +79,25 @@ namespace Motive.Unity.Gaming
         {
             if (ARCatcherMinigameDriverDelegate.Instance)
             {
-                ARCatcherMinigameDriverDelegate.Instance.SetFocus(TaskDriver, m_worldObject, focus);
+                ARCatcherMinigameDriverDelegate.Instance.SetFocus(this, m_worldObject, focus);
             }
 
             base.SetFocus(focus);
         }
 
-        void m_worldObject_Clicked(object sender, EventArgs e)
+        public void Complete()
         {
             if (ARCatcherMinigameDriverDelegate.Instance)
             {
-                ARCatcherMinigameDriverDelegate.Instance.Complete(TaskDriver, m_worldObject);
+                ARCatcherMinigameDriverDelegate.Instance.Complete(this, m_worldObject);
             }
 
             TaskDriver.Complete(m_worldObject.Location);
+        }
+
+        void m_worldObject_Clicked(object sender, EventArgs e)
+        {
+            Complete();
         }
 
         public override void Stop()
@@ -116,7 +121,7 @@ namespace Motive.Unity.Gaming
         {
             if (ARCatcherMinigameDriverDelegate.Instance)
             {
-                ARCatcherMinigameDriverDelegate.Instance.Action(TaskDriver, m_worldObject);
+                ARCatcherMinigameDriverDelegate.Instance.Action(this, m_worldObject);
             }
         }
 

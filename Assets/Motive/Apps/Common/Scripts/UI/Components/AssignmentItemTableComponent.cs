@@ -21,14 +21,14 @@ namespace Motive.Unity.UI
 
         string m_tasksDefaultTitle;
 
-        public override void DidShow()
+        public override void DidPush()
         {
             if (AssignmentTitle && m_tasksDefaultTitle == null)
             {
                 m_tasksDefaultTitle = AssignmentTitle.text;
             }
 
-            base.DidShow();
+            base.DidPush();
 
             TaskManager.Instance.Updated += Tasks_Updated;
         }

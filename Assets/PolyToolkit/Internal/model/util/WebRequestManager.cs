@@ -46,23 +46,13 @@ namespace PolyToolkitInternal.client.model.util {
     public const long CACHE_ANY_AGE = -1;
 
     /// <summary>
-    /// Maximum number of concurrent downloads to allow. This indicates how many download buffers we should keep.
+    /// Maximum number of concurrent downloads to allow.
     /// </summary>
+#if UNITY_STANDALONE
     private const int MAX_CONCURRENT_DOWNLOADS = 8;
-
-    /// <summary>
-    /// Initial size of the pre-allocated data buffer.
-    /// The data buffer is re-allocated when needed, but we want to avoid doing that because it's
-    /// expensive and will happen in the UI thread, so we need to start out with a reasonably large
-    /// size to handle the data we will download.
-    /// </summary>
-    private const int DATA_BUFFER_INIT_SIZE = 128 * 1024 * 1024;  // 128MB
-
-    /// <summary>
-    /// Size of the temporary buffer used to receive data. This is for a temporary buffer used
-    /// by Unity to transfer data to us.
-    /// </summary>
-    private const int TEMP_BUFFER_SIZE = 2 * 1024 * 1024;  // 2MB
+#else
+    private const int MAX_CONCURRENT_DOWNLOADS = 4;
+#endif
 
     /// <summary>
     /// Delegate that creates a UnityWebRequest. This is used by client code to set up a UnityWebRequest
@@ -113,10 +103,8 @@ namespace PolyToolkitInternal.client.model.util {
     /// that each of our active coroutines owns one BufferHolder.
     /// </summary>
     private class BufferHolder {
-      // Temporary buffer used by Unity to transfer data to us.
-      public byte[] tempBuffer = new byte[TEMP_BUFFER_SIZE];
-      // Permanent buffer in which we accumulate data as we receive.
-      public byte[] dataBuffer = new byte[DATA_BUFFER_INIT_SIZE];
+      // TODO: use pre-allocated buffers for downloading.
+      // (For now, this object serves as a "token" whose availability controls the maximum concurrent downloads).
     }
 
     /// <summary>
@@ -277,8 +265,15 @@ namespace PolyToolkitInternal.client.model.util {
       yield return UnityCompat.SendWebRequest(webRequest);
 
       // Request is finished. Call user-supplied callback.
-      PtDebug.LogVerboseFormat("Web request finished: {0}, HTTP response code {1}, response: {2}",
-        webRequest.url, webRequest.responseCode, webRequest.downloadHandler.text);
+      // We surround this part with "if PtDebug.DEBUG_LOG_VERBOSE" because calling webRequest.downloadHandler.text
+      // is very expensive, and even if verbose logging is off, we would incur the cost of decoding.
+      #pragma warning disable 0162  // Don't warn about unreachable code.
+      if (PtDebug.DEBUG_LOG_VERBOSE) {
+        PtDebug.LogVerboseFormat("Web request finished: {0}, HTTP response code {1}, response: {2}",
+            webRequest.url, webRequest.responseCode, webRequest.downloadHandler.text);
+      }
+      #pragma warning restore 0162  // Don't warn about unreachable code.
+
       PolyStatus status = UnityCompat.IsNetworkError(webRequest) ? PolyStatus.Error(webRequest.error) : PolyStatus.Success();
       request.completionCallback(status, (int)webRequest.responseCode, webRequest.downloadHandler.data);
 
@@ -286,9 +281,10 @@ namespace PolyToolkitInternal.client.model.util {
       if (!UnityCompat.IsNetworkError(webRequest) && cacheAllowed) {
         byte[] data = webRequest.downloadHandler.data;
         if (data != null && data.Length > 0) {
-          byte[] copy = new byte[data.Length];
-          Buffer.BlockCopy(data, 0, copy, 0, data.Length);
-          cache.RequestWrite(webRequest.url, copy);
+          // Note: DownloadHandlerBuffer.data is a copy of the underlying buffer, so we own the
+          // byte array that it returns. This means it's safe to pass it to RequestWrite, which is
+          // asynchronous:
+          cache.RequestWrite(webRequest.url, data);
         }
       }
 

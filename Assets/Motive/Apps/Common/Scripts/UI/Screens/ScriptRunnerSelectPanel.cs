@@ -76,25 +76,38 @@ namespace Motive.Unity.UI
                 }
             };
 
-            if (!ScriptRunnerManager.Instance.AllowMultiple && StopCurrentDigalog)
+            if (!ScriptRunnerManager.Instance.AllowMultiple)
             {
                 var currTour = GetCurrentRunner();
 
                 if (currTour != null && currTour != dirItem)
                 {
-                    StopCurrentDigalog.Show(new string[] { "stop", "cancel" }, (opt) =>
+                    if (StopCurrentDigalog)
                     {
-                        if (opt == "stop")
+                        StopCurrentDigalog.Show(new string[] { "stop", "cancel" }, (opt) =>
                         {
-                            ScriptRunnerManager.Instance.Stop(currTour, launch);
-                        }
-                    });
+                            if (opt == "stop")
+                            {
+                                ScriptRunnerManager.Instance.Stop(currTour, launch);
+                            }
+                        });
+                    }
+                    else
+                    {
+                        ScriptRunnerManager.Instance.Stop(currTour, launch);
+                    }
 
                     return;
                 }
+                else
+                {
+                    launch();
+                }
             }
-
-            launch();
+            else
+            {
+                launch();
+            }
         }
 
         private void StartSessionAndLaunchScript(ScriptDirectoryItem dirItem, bool reset)

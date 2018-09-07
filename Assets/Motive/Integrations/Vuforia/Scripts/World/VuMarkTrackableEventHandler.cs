@@ -110,7 +110,7 @@ namespace Motive.AR.Vuforia
 
             if (m_trackableBehaviour)
             {
-                OnTrackingLost();
+                ResetState();
 
                 m_trackableBehaviour.RegisterVuMarkTargetAssignedCallback(() =>
                     {
@@ -121,6 +121,7 @@ namespace Motive.AR.Vuforia
                     {
                         Debug.Log("Trackable lost " + GetTrackableInstanceId());
                     });
+
                 m_trackableBehaviour.RegisterTrackableEventHandler(this);
             }
         }   

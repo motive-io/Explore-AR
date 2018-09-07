@@ -37,6 +37,7 @@ namespace Motive.Unity.Apps
         private List<Action<Action>> m_onLoadActions = new List<Action<Action>>();
 
         public bool IsInitialized { get; private set; }
+        public bool IsRunning { get; private set; }
 
         /// <summary>
         /// Resets the app, deleting any saved game data.
@@ -87,7 +88,11 @@ namespace Motive.Unity.Apps
                             {
                                 if (LaunchFailed != null)
                                 {
+#if WINDOWS_UWP
+                                    LaunchFailed(this, EventArgs.Empty);
+#else
                                     LaunchFailed(this, new UnhandledExceptionEventArgs(x, false));
+#endif
                                 }
                             }
                         };
@@ -161,6 +166,8 @@ namespace Motive.Unity.Apps
             {
                 loadingPanel = PanelManager.Instance.Push<LoadingPanel>();
             }
+
+            IsRunning = true;
 
             ReloadFromServer(loadingPanel);
 

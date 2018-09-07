@@ -13,6 +13,7 @@ namespace Motive.Unity.UI
     public class VideoContentPlayerComponent : MediaContentComponent
     {
         public VideoSubpanel VideoSubpanel;
+        public VideoControls VideoControls;
 
         public UnityEvent PlaybackCompleted;
 
@@ -26,8 +27,17 @@ namespace Motive.Unity.UI
         {
             base.Awake();
 
-            VideoSubpanel = GetComponentInChildren<VideoSubpanel>();
+            if (!VideoSubpanel)
+            {
+                VideoSubpanel = GetComponentInChildren<VideoSubpanel>();
+            }
+
             VideoSubpanel.PlaybackCompleted.AddListener(m_videoSubpanel_PlaybackCompleted);
+
+            if (!VideoControls)
+            {
+                VideoControls = GetComponentInChildren<VideoControls>();
+            }
 
             if (PlaybackCompleted == null)
             {
@@ -47,8 +57,16 @@ namespace Motive.Unity.UI
 
         public override void Populate(MediaContent data)
         {
-            VideoSubpanel.SetFullScreen(UseFullScreen);
             VideoSubpanel.Play(data.MediaItem);
+
+            PopulateComponents(VideoSubpanel);
+
+            if (UseFullScreen && VideoControls)
+            {
+                VideoControls.EnterFullScreen();
+            }
+
+            base.Populate(data);
         }
 
         public override void DidHide()

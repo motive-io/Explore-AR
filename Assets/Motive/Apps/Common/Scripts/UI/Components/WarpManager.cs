@@ -5,6 +5,8 @@ using Motive.Unity.Maps;
 using Motive.Unity.UI;
 using Motive.Unity.Utilities;
 using UnityEngine;
+using Motive.Core.Models;
+using System.Collections.Generic;
 
 namespace Motive.Unity.Apps
 {
@@ -18,26 +20,46 @@ namespace Motive.Unity.Apps
         public WarpPanel UnwarpPanel;
         public GameObject UnwarpButton;
         public string WarpDebugSetting;
-
+        
         void Start()
         {
             MapController.Instance.OnHold.AddListener(Warp);
+
+            ARQuestAppUIManager.Instance.QuestUpdated.AddListener(() =>
+            {
+                if (!CanWarp())
+                {
+                    Unwarp();
+                }
+            });
+        }
+
+        bool CanWarp()
+        {
+            bool isPublished =
+                ARQuestAppUIManager.Instance.RunningQuest != null &&
+                ARQuestAppUIManager.Instance.RunningQuest.PublishingStatus == PublishingStatus.Published;
+
+            return !isPublished;
         }
 
         void Warp(MapControllerEventArgs args)
         {
-            bool warp = string.IsNullOrEmpty(WarpDebugSetting) ||
+            if (CanWarp())
+            {
+                bool warp = string.IsNullOrEmpty(WarpDebugSetting) ||
                 SettingsHelper.IsDebugSet(WarpDebugSetting);
 
-            if (warp)
-            {
-                PanelManager.Instance.Push(WarpPanel, args.Coordinates);
-            }
+                if (warp)
+                {
+                    PanelManager.Instance.Push(WarpPanel, args.Coordinates);
+                }
+            }          
         }
 
         public void Unwarp()
         {
-            ForegroundPositionService.Instance.SetAnchorPosition(null);
+            ForegroundPositionService.Instance.SetAnchorPosition(null);            
         }
 
         void Update()
@@ -48,5 +70,4 @@ namespace Motive.Unity.Apps
             }
         }
     }
-
 }

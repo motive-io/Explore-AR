@@ -1,6 +1,7 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
 using Motive;
 using Motive.Core.Utilities;
+using Motive.Unity.UI;
 using Motive.Unity.Utilities;
 using System;
 using System.Collections;
@@ -18,6 +19,40 @@ namespace Motive.Unity.Utilities
     /// </summary>
     public static class ImageLoader
     {
+        static TextureFormat? g_textureFormat;
+
+        public static TextureFormat DefaultTextureFormat
+        {
+            get
+            {
+                if (!g_textureFormat.HasValue)
+                {
+#if !UNITY_ANDROID && !UNITY_IOS
+                    if (SystemInfo.SupportsTextureFormat(TextureFormat.DXT1))
+                    {
+                        g_textureFormat = TextureFormat.DXT1;
+                    }
+                    else 
+#endif
+                    if (SystemInfo.SupportsTextureFormat(TextureFormat.ETC2_RGBA8))
+                    {
+                        g_textureFormat = TextureFormat.ETC2_RGBA8;
+                    }
+                    else
+                    {
+                        g_textureFormat = TextureFormat.RGBA32;
+                    }
+
+                    Motive.Core.Diagnostics.Logger.PrintMessage(
+                        "ImageLoader",
+                        Core.Diagnostics.LogLevel.Debug,
+                        "Using default format {0}", g_textureFormat.Value);
+                }
+
+                return g_textureFormat.Value;
+            }
+        }
+
         class CachedTexture
         {
             public string Url;
@@ -231,7 +266,7 @@ namespace Motive.Unity.Utilities
         static void ApplyImage(string url, byte[] responseData, RawImage image, Action onComplete)
         {
             // Pass it off to the texture. 
-            var texture = new Texture2D(2, 2);
+            var texture = new Texture2D(2, 2, DefaultTextureFormat, false);
             texture.LoadImage(responseData);
 
             ApplyImage(url, texture, image, onComplete);
@@ -279,7 +314,7 @@ namespace Motive.Unity.Utilities
 
         static void LoadTextureOnThread(string url, Action<Texture2D> onLoad)
         {
-            var loadImage = new ThreadStart(() =>
+            Action loadAction = () =>
             {
                 var local = WebServices.Instance.MediaDownloadManager.GetPathForItem(url);
 
@@ -287,15 +322,21 @@ namespace Motive.Unity.Utilities
 
                 ThreadHelper.Instance.CallOnMainThread(() =>
                 {
-                    var texture = new Texture2D(2, 2);
+                    var texture = new Texture2D(2, 2, DefaultTextureFormat, false);
                     texture.LoadImage(data);
                     onLoad(texture);
                 });
-            });
+            };
+
+#if WINDOWS_UWP
+            System.Threading.Tasks.Task.Run(loadAction);
+#else
+            var loadImage = new ThreadStart(loadAction);
 
             // Start the actual thread. 
             var LoadImage = new Thread(loadImage);
             LoadImage.Start();
+#endif
         }
 
         public static void LoadWebImageOnMainThread(string url, RawImage image, Action onComplete = null)
@@ -320,7 +361,7 @@ namespace Motive.Unity.Utilities
 
             if (image)
             {
-                var texture = new Texture2D(4, 4, TextureFormat.DXT1, false);
+                var texture = new Texture2D(4, 4, DefaultTextureFormat, false);
                 www.LoadImageIntoTexture(texture);
 
                 image.texture = texture;
@@ -342,6 +383,20 @@ namespace Motive.Unity.Utilities
             }
 
             Resources.UnloadUnusedAssets();
+        }
+
+        public static void LoadTexture(string url, Action<Texture2D> onLoad)
+        {
+            var tex = GetTextureFromCache(url);
+
+            if (tex != null)
+            {
+                onLoad(tex);
+
+                return;
+            }
+
+            LoadTextureOnThread(url, onLoad);
         }
 
         /// <summary>
@@ -476,7 +531,7 @@ namespace Motive.Unity.Utilities
 
                 yield return www;
 
-                var texture = new Texture2D(4, 4, TextureFormat.DXT1, false);
+                var texture = new Texture2D(4, 4, DefaultTextureFormat, false);
                 www.LoadImageIntoTexture(texture);
 
                 AddTextureToCache(url, texture);
@@ -501,7 +556,7 @@ namespace Motive.Unity.Utilities
             {
                 yield break;
             }
-
+            
             renderer.gameObject.SetActive(false);
 
             bool needsCall = AddPendingRequest(url, (texture) => ApplyImage(texture, obj, scaleToFit, onComplete));
@@ -514,8 +569,8 @@ namespace Motive.Unity.Utilities
                 var www = new WWW(localUri);
 
                 yield return www;
-
-                var texture = new Texture2D(4, 4, TextureFormat.DXT1, false);
+                
+                var texture = new Texture2D(4, 4, DefaultTextureFormat, false);
                 www.LoadImageIntoTexture(texture);
 
                 renderer.gameObject.SetActive(true);
@@ -524,6 +579,4 @@ namespace Motive.Unity.Utilities
             }
         }
     }
-
-
 }

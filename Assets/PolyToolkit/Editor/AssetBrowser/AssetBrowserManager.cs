@@ -36,6 +36,8 @@ public class AssetBrowserManager {
   private const string DOWNLOAD_PROGRESS_TITLE = "Downloading...";
   private const string DOWNLOAD_PROGRESS_TEXT = "Downloading asset. Please wait...";
 
+  private const int THUMBNAIL_REQUESTED_SIZE = 300;
+
   /// <summary>
   /// If true, we are currently performing a query and waiting for the query result.
   /// </summary>
@@ -382,7 +384,7 @@ public class AssetBrowserManager {
       assetResult = result.Value;
 
       if (!thumbnailCache.TryGet(assetResult.name, out assetResult.thumbnailTexture)) {
-        PolyApi.FetchThumbnail(assetResult, OnThumbnailFetched);
+        FetchThumbnail(assetResult);
       }
     } else {
       Debug.LogError("Error: " + result.Status.errorMessage);
@@ -403,9 +405,15 @@ public class AssetBrowserManager {
         }
       }
       foreach (PolyAsset asset in assetsMissingThumbnails) {
-        PolyApi.FetchThumbnail(asset, OnThumbnailFetched);
+        FetchThumbnail(asset);
       }
     }
+  }
+
+  private void FetchThumbnail(PolyAsset asset) {
+    PolyFetchThumbnailOptions options = new PolyFetchThumbnailOptions();
+    options.SetRequestedImageSize(THUMBNAIL_REQUESTED_SIZE);
+    PolyApi.FetchThumbnail(asset, options, OnThumbnailFetched);
   }
 
   /// <summary>
@@ -446,7 +454,10 @@ public class AssetBrowserManager {
     PtDebug.LogFormat("ABM: starting to fetch asset {0} ({1}) -> {2}", asset.name, asset.displayName,
       ptAssetLocalPath);
 
-    // Prefer glTF2 format. 
+    // Prefer glTF1 to glTF2.
+    // It used to be that no Poly assets had both formats, so the ordering did not matter.
+    // Blocks assets now have both glTF1 and glTF2. PT does not understand the glTF2 version,
+    // so the ordering matters a great deal.
     PolyFormat glTF2format = asset.GetFormatIfExists(PolyFormatType.GLTF_2);
     PolyFormat glTFformat = asset.GetFormatIfExists(PolyFormatType.GLTF);
 
@@ -454,19 +465,19 @@ public class AssetBrowserManager {
       EditorUtility.DisplayProgressBar(DOWNLOAD_PROGRESS_TITLE, DOWNLOAD_PROGRESS_TEXT, progress);
     };
 
-    if (glTF2format != null) {
-      EditorUtility.DisplayProgressBar(DOWNLOAD_PROGRESS_TITLE, DOWNLOAD_PROGRESS_TEXT, 0.0f);
-      PolyMainInternal.Instance.FetchFormatFiles(asset, PolyFormatType.GLTF_2,
-          (PolyAsset resultAsset, PolyStatus status) => {
-        EditorUtility.ClearProgressBar();
-        OnFetchFinished(status, resultAsset, /*isGltf2*/ true, ptAssetLocalPath, options);
-      }, progressCallback);
-    } else if (glTFformat != null) {
+    if (glTFformat != null) {
       EditorUtility.DisplayProgressBar(DOWNLOAD_PROGRESS_TITLE, DOWNLOAD_PROGRESS_TEXT, 0.0f);
       PolyMainInternal.Instance.FetchFormatFiles(asset, PolyFormatType.GLTF,
           (PolyAsset resultAsset, PolyStatus status) => {
         EditorUtility.ClearProgressBar();
         OnFetchFinished(status, resultAsset, /*isGltf2*/ false, ptAssetLocalPath, options);
+      }, progressCallback);
+    } else if (glTF2format != null) {
+      EditorUtility.DisplayProgressBar(DOWNLOAD_PROGRESS_TITLE, DOWNLOAD_PROGRESS_TEXT, 0.0f);
+      PolyMainInternal.Instance.FetchFormatFiles(asset, PolyFormatType.GLTF_2,
+          (PolyAsset resultAsset, PolyStatus status) => {
+        EditorUtility.ClearProgressBar();
+        OnFetchFinished(status, resultAsset, /*isGltf2*/ true, ptAssetLocalPath, options);
       }, progressCallback);
     } else {
       Debug.LogError("Asset not in GLTF_2 or GLTF format. Can't import.");

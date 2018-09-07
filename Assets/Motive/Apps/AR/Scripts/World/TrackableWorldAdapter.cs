@@ -3,6 +3,7 @@ using Motive.AR.LocationServices;
 using Motive.AR.Models;
 using Motive.Core.Utilities;
 using Motive.UI.Framework;
+using Motive.Unity.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -79,51 +80,26 @@ namespace Motive.Unity.AR
             base.Deactivate();
         }
 
-        protected float GetCompassRotation(Transform cameraTransform, Transform worldTransform, double heading)
+        public Vector2 GetCamera2DPosition()
         {
-            m_logger.Debug("Get rotation for cam=({0}) swivel=({1})",
-                           cameraTransform.rotation.eulerAngles, worldTransform.rotation.eulerAngles);
-
-            //// TODO: put this in a common space once I figure out wth it's doing
-            /// 
-            var globalCamFwd = cameraTransform.TransformPoint(Vector3.forward);
-            var globalCamUp = cameraTransform.TransformPoint(Vector3.up);
-
-            var delta = cameraTransform.position - worldTransform.position;
-
-            var worldCamFwd = worldTransform.InverseTransformPoint(globalCamFwd - delta);
-            var worldCamUp = worldTransform.InverseTransformPoint(globalCamUp - delta);
-
-            // Normalized forward projection in swivel space
-            var camFwdProject = new Vector3(worldCamFwd.x, worldCamFwd.z).normalized;
-            var camUpProject = new Vector3(worldCamUp.x, worldCamUp.z);
-
-            var cross = Vector3.Cross(camFwdProject, camUpProject);
-
-            var camHdg = Mathf.Atan2(worldCamFwd.x, worldCamFwd.z) * Mathf.Rad2Deg;
-
-            var camTilt = Mathf.Asin(cross.z) * Mathf.Rad2Deg;
-
-            // Adjust heading based on tilt
-            var hdgDiff = MathHelper.GetDegreesInRange(camHdg - heading);
-
-            m_logger.Debug("hdgDiff={0} cross={1} tilt={2}", hdgDiff, cross, camTilt);
-
-            var hdgDela = hdgDiff - camTilt;
-
-            return (float)hdgDela;
-            ///////
+            return Get2DPosition(GetCamera().transform);
         }
-
-        protected void CalibrateCompass(Transform worldAnchor, Vector3 pivot)
+        
+        protected void CalibrateCompass(Transform worldAnchor = null)
         {
+            worldAnchor = worldAnchor ?? WorldAnchor.transform;
+
             var heading = ForegroundPositionService.Instance.Compass.TrueHeading;
 
-            var rotation = GetCompassRotation(WorldCamera.transform, WorldCamera.transform.parent, heading);
+            var camTransform = GetCamera().transform;
+
+            // The camera moves around its parent. This determines which direction the camera is pointing
+            // relative to the ARWorld "north"
+            var rotation = TransformHelper.GetCompassRotation(camTransform, camTransform.parent, heading);
 
             m_logger.Debug("BEFORE: heading={0} rotation={1} pivot={2}", heading, rotation, worldAnchor.rotation.eulerAngles);
 
-            worldAnchor.RotateAround(pivot, Vector3.up, rotation - worldAnchor.rotation.eulerAngles.y);
+            worldAnchor.RotateAround(GetCamera2DPosition(), Vector3.up, rotation - worldAnchor.rotation.eulerAngles.y);
             //worldAnchor.Rotate(new Vector3(0, rotation, 0));
             //WorldPivot.transform.RotateAround(Vector3.up, rotation);
             //WorldPivot.transform.localRotation = Quaternion.Euler(0, 
@@ -355,6 +331,16 @@ namespace Motive.Unity.AR
 
         protected int m_resetCount;
 
+        protected void ResetWorldHeight(Transform worldTransform = null)
+        {
+            worldTransform = worldTransform ?? WorldAnchor.transform;
+
+            var camTransform = GetCamera().transform;
+            var pos = worldTransform.position;
+            pos.y = camTransform.position.y;
+            worldTransform.position = pos;
+        }
+
         protected void MoveToCamera(Transform transform, bool resetHeight)
         {
             var y = resetHeight ? WorldCamera.transform.position.y : TrackingAnchor.transform.position.y;
@@ -369,7 +355,7 @@ namespace Motive.Unity.AR
             m_resetCount++;
 
             //MoveToCamera(DefaultAnchor.transform, true);
-            CalibrateCompass(WorldAnchor.transform, Get2DPosition(WorldCamera.transform));
+            CalibrateCompass();
 
             m_gpsAnchorCoords = ForegroundPositionService.Instance.Position;
 

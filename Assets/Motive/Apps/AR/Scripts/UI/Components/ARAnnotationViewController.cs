@@ -46,13 +46,14 @@ namespace Motive.Unity.UI
 
                 var bounds = ARWorld.Instance.GetScreenBounds(worldObject);
 
+                var ctlRect = (RectTransform)this.transform;
                 var rect = (RectTransform)container.transform;
 
                 //var x = Screen.width * pos.x - (Screen.width / 2);
                 //var y = Screen.height * pos.y - (Screen.height / 2);
-
-                var minx = container.MinSize.x / Screen.width;
-                var miny = container.MinSize.y / Screen.height;
+                
+                var minx = container.MinSize.x / ctlRect.rect.width;
+                var miny = container.MinSize.y / ctlRect.rect.height;
 
                 Vector2 max = bounds.max;
                 Vector2 min = bounds.min;
@@ -67,7 +68,7 @@ namespace Motive.Unity.UI
                 rect.anchorMax = bounds.max;
                 rect.anchorMin = bounds.min;
                 rect.sizeDelta = Vector3.zero;
-
+                
                 //rect.anchorMin = new Vector2(pos.x, pos.y);
                 //rect.anchoredPosition = new Vector2(0, 0);
             }
@@ -106,11 +107,11 @@ namespace Motive.Unity.UI
 
         }
 
-        public void AddTapAnnotation(ARWorldObject worldObject, string text = null)
+        public void AddTapAnnotation(ARWorldObject worldObject, string text = null, Action onClick = null)
         {
             var container = GetOrCreateContainer(worldObject);
 
-            container.AddTapAnnotation(text);
+            container.AddTapAnnotation(text, onClick);
         }
 
         internal void RemoveTapAnnotation(ARWorldObject worldObject)

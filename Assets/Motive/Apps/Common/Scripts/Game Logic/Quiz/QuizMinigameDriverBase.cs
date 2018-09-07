@@ -56,6 +56,21 @@ namespace Motive.Unity.Gaming
             get { return Localize.GetLocalizedString("Task.OutOfRange", "Out of Range"); }
         }
 
+        public virtual void CorrectAnswer()
+        {
+            this.TaskDriver.ActivationContext.FireEvent("correct");
+        }
+
+        public virtual void IncorrectAnswer()
+        {
+            this.TaskDriver.ActivationContext.FireEvent("incorrect");
+        }
+
+        public virtual void Fail()
+        {
+            this.TaskDriver.ActivationContext.FireEvent("fail");
+        }
+
         public virtual bool ShowActionButton
         {
             // By default, show action button for any action except "in range"

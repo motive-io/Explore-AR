@@ -6,26 +6,63 @@ using Motive.Core.Utilities;
 using Motive.Unity.Models;
 using Motive.Unity.UI;
 using Motive.Unity.Utilities;
+using System;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
+using Logger = Motive.Core.Diagnostics.Logger;
+
 namespace Motive.Unity.World
 {
+    public class AppliedEffect
+    {
+        public IWorldObjectEffectHandler Handler { get; private set; }
+        public WorldObjectBehaviour WorldObject { get; private set; }
+        public ResourceActivationContext ActivationContext { get; private set; }
+        public WorldObjectEffectPlayer EffectPlayer { get; private set; }
+        public IScriptObject Effect { get; private set; }
+
+        public AppliedEffect(IWorldObjectEffectHandler handler, WorldObjectBehaviour worldObject, ResourceActivationContext activationContext, WorldObjectEffectPlayer effectPlayer, IScriptObject effect)
+        {
+            Handler = handler;
+            WorldObject = worldObject;
+            ActivationContext = activationContext;
+            EffectPlayer = effectPlayer;
+            Effect = effect;
+        }
+    }
+
+    public interface IWorldObjectEffectHandler
+    {
+        void RemoveEffect(AppliedEffect appliedEffect);
+        void ApplyEffect(AppliedEffect appliedEffect);
+    }
+
     public class WorldObjectManager : Singleton<WorldObjectManager>
     {
         private Dictionary<string, WorldObjectBehaviour> m_objectsByName;
-        private Dictionary<string, WorldObjectBehaviour> m_objectsById;
         private SetDictionary<string, WorldObjectBehaviour> m_worldObjects;
-        private SetDictionary<string, ActiveResourceContainer<WorldObjectEffectPlayer>> m_pendingEffects;
-        private SetDictionary<string, MonoBehaviour> m_effects;
+        private ListDictionary<string, ActiveResourceContainer<WorldObjectEffectPlayer>> m_pendingEffects;
+        private SetDictionary<string, AppliedEffect> m_appliedEffects;
+        private Dictionary<string, IWorldObjectEffectHandler> m_effectHandlers;
+
+        private Logger m_logger;
 
         public WorldObjectManager()
         {
+            m_logger = new Logger(this);
+
+            m_effectHandlers = new Dictionary<string, IWorldObjectEffectHandler>();
             m_objectsByName = new Dictionary<string, WorldObjectBehaviour>();
-            m_objectsById = new Dictionary<string, WorldObjectBehaviour>();
             m_worldObjects = new SetDictionary<string, WorldObjectBehaviour>();
-            m_pendingEffects = new SetDictionary<string, ActiveResourceContainer<WorldObjectEffectPlayer>>();
-            m_effects = new SetDictionary<string, MonoBehaviour>();
+            m_pendingEffects = new ListDictionary<string, ActiveResourceContainer<WorldObjectEffectPlayer>>();
+            m_appliedEffects = new SetDictionary<string, AppliedEffect>();
+
+            m_effectHandlers["motive.unity.animation"] = new UnityAnimationEffectHandler();
+            m_effectHandlers["motive.3d.embeddedAnimation"] = new EmbeddedAnimationEffectHandler();
+            m_effectHandlers["motive.3d.scriptedAnimation"] = new ScriptedAnimationHandler();
+            m_effectHandlers["motive.3d.scriptedParticleEffect"] = new ScriptedParticleEffectHandler();
         }
 
         public void RegisterNamedWorldObject(MotiveSceneObject asset)
@@ -50,9 +87,9 @@ namespace Motive.Unity.World
         {
             if (assetRef != null &&
                 assetRef.ObjectId != null &&
-                m_objectsById.ContainsKey(assetRef.ObjectId))
+                m_worldObjects.GetCount(assetRef.ObjectId) > 0)
             {
-                return m_objectsById[assetRef.ObjectId];
+                return m_worldObjects[assetRef.ObjectId].First();
             }
             else
             {
@@ -102,7 +139,7 @@ namespace Motive.Unity.World
                 }
             }
 
-            m_objectsById[resource.AssetInstance.Id] = worldObj;
+            m_worldObjects.Add(resource.AssetInstance.Id, worldObj);
         }
 
         public IEnumerable<WorldObjectBehaviour> GetWorldObjects(string instanceId)
@@ -112,11 +149,14 @@ namespace Motive.Unity.World
 
         public WorldObjectBehaviour AddWorldObject(ResourceActivationContext context, GameObject obj, GameObject animationTarget, GameObject rootObj = null)
         {
+            context.Open();
+
             var worldObj = (rootObj ?? obj).AddComponent<WorldObjectBehaviour>();
 
             worldObj.AnimationTarget = animationTarget;
             worldObj.InteractibleObject = obj;
             worldObj.WorldObject = obj;
+            worldObj.ActivationContext = context;
 
             m_worldObjects.Add(context.InstanceId, worldObj);
 
@@ -138,6 +178,16 @@ namespace Motive.Unity.World
         public void RemoveWorldObjects(string instanceId)
         {
             m_worldObjects.RemoveAll(instanceId);
+
+            var effects = m_appliedEffects[instanceId];
+
+            if (effects != null)
+            {
+                foreach (var effect in effects)
+                {
+
+                }
+            }
         }
 
         public void SpawnAsset(ResourceActivationContext context, AssetSpawner resource)
@@ -196,16 +246,13 @@ namespace Motive.Unity.World
 
         public void RemoveEffects(ResourceActivationContext context, WorldObjectEffectPlayer resource)
         {
-            if (m_effects.ContainsKey(context.InstanceId))
-            {
-                var effects = m_effects[context.InstanceId];
+            var appliedEffects = m_appliedEffects[context.InstanceId];
 
-                if (effects != null)
+            if (appliedEffects != null)
+            {
+                foreach (var effect in appliedEffects)
                 {
-                    foreach (var effect in effects)
-                    {
-                        GameObject.Destroy(effect);
-                    }
+                    effect.Handler.RemoveEffect(effect);
                 }
             }
 
@@ -213,13 +260,13 @@ namespace Motive.Unity.World
             {
                 foreach (var objRef in resource.WorldObjectReferences)
                 {
-                    var instId = context.GetInstanceId(objRef.ObjectId);
+                    var objInstId = context.GetInstanceId(objRef.ObjectId);
 
-                    m_pendingEffects.RemoveAll(instId);
+                    m_pendingEffects.RemoveAll(objInstId);
                 }
             }
 
-            m_effects.RemoveAll(context.InstanceId);
+            m_appliedEffects.RemoveAll(context.InstanceId);
         }
 
         void ApplyEffects(WorldObjectBehaviour worldObj, ResourceActivationContext effectContext, WorldObjectEffectPlayer resource)
@@ -228,31 +275,23 @@ namespace Motive.Unity.World
             {
                 foreach (var eref in resource.Effects)
                 {
-                    switch (eref.Type)
+                    IWorldObjectEffectHandler handler;
+
+                    if (m_effectHandlers.TryGetValue(eref.Type, out handler))
                     {
-                        case "motive.unity.animation":
+                        var appliedEffect = new AppliedEffect(handler, worldObj, effectContext, resource, eref);
 
-                            var anim = eref as UnityAnimation;
+                        handler.ApplyEffect(appliedEffect);
 
-                            if (anim != null)
-                            {
-                                var asset = anim.Asset;
+                        m_appliedEffects.Add(effectContext.InstanceId, appliedEffect);
+                    }
+                    else
+                    {
+                        var errStr = string.Format("Could not find handler for effect type {0}", eref.Type);
 
-                                if (asset != null)
-                                {
-                                    var animTgt = worldObj.GetAnimationTarget();
+                        SystemErrorHandler.Instance.ReportError(errStr);
 
-                                    if (animTgt)
-                                    {
-                                        // Target may have been destroyed somewhere
-                                        var objAnim = worldObj.GetAnimationTarget().AddComponent<WorldObjectAnimation>();
-                                        objAnim.AnimationAsset = asset;
-
-                                        m_effects.Add(effectContext.InstanceId, objAnim);
-                                    }
-                                }
-                            }
-                            break;
+                        m_logger.Warning(errStr);
                     }
                 }
             }

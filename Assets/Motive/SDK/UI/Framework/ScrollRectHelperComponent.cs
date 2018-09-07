@@ -32,9 +32,9 @@ namespace Motive.UI.Framework
             }
         }
 
-        public override void DidShow()
+        public override void DidPush()
         {
-            base.DidShow();
+            base.DidPush();
 
             if (ScrollRect)
             {

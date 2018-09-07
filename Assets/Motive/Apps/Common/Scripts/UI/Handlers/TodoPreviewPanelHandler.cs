@@ -159,7 +159,7 @@ namespace Motive.Unity.UI
                     }
                     else
                     {
-                        SetToDoPanel(LocationTaskAnnotationHandler.Instance.SelectedLocationPanel, driver);
+                        SetToDoPanel(LocationTaskAnnotationHandler.Instance.GetSelectedLocationPanel(), driver);
                     }
                 }
                 else if (driver is ARTaskDriver && ARTaskAnnotationHandler.Instance)
@@ -172,15 +172,13 @@ namespace Motive.Unity.UI
                     }
                     else
                     {
-                        SetToDoPanel(ARTaskAnnotationHandler.Instance.SelectedLocationPanel, driver);
+                        SetToDoPanel(ARTaskAnnotationHandler.Instance.GetSelectedLocationPanel(), driver);
                     }
                 }
-#if MOTIVE_VUFORIA
-            else if (driver is VisualMarkerTaskDriver)
-            {
-                SetToDoPanel(VisualMarkerTaskPanel, driver);
-            }
-#endif
+                else if (driver is VisualMarkerTaskDriver)
+                {
+                    SetToDoPanel(VisualMarkerTaskPanel, driver);
+                }
                 else if (driver.Task.Type == "motive.gaming.characterTask")
                 {
                     SetToDoPanel(CharacterTaskPanel, driver);

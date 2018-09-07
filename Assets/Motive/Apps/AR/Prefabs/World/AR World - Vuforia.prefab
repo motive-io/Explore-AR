@@ -160,6 +160,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4015227949168796}
   - component: {fileID: 114270639733774274}
+  - component: {fileID: 114665999421744398}
   m_Layer: 0
   m_Name: AR World - Vuforia
   m_TagString: Untagged
@@ -324,6 +325,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4323491717172734}
   - component: {fileID: 114953031891367492}
+  - component: {fileID: 114870721894641874}
   m_Layer: 8
   m_Name: Default Vuforia AR World Adapter
   m_TagString: Untagged
@@ -424,7 +426,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4069827475920308}
-  - component: {fileID: 114196195402549556}
   m_Layer: 0
   m_Name: VuforiaWorld
   m_TagString: Untagged
@@ -1927,43 +1928,6 @@ MonoBehaviour:
   m_deviceSwivel: {fileID: 0}
   m_compassSwivel: {fileID: 0}
   m_world: {fileID: 0}
---- !u!114 &114196195402549556
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1687185944087310}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5de9cf0e5ea8fb44b88e0dd3ce96275d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  WorldCamera: {fileID: 20080003563163816}
-  WorldAnchor: {fileID: 1567906830389428}
-  Canvas: {fileID: 0}
-  ActivateWhenActive: []
-  ARCamera: {fileID: 114568174373726802}
-  InitializingPane: {fileID: 0}
-  Activated:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  Deactivated:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
-      Culture=neutral, PublicKeyToken=null
-  ActivateOnWake: 0
-  CameraBehavior: 0
-  MarkerImageObject: {fileID: 114634943668783570, guid: 1a310be2079f05b4089d8ab59c91d6db,
-    type: 2}
-  MarkerVideoObject: {fileID: 114283420015760294, guid: a11bdb53f4c8648439347304e611f698,
-    type: 2}
-  MarkerAudioObject: {fileID: 114999962957227616, guid: ec94312fdb1dc274c83aefd95f9df32f,
-    type: 2}
-  MarkerAssetObject: {fileID: 114324808910917062, guid: 27f698c2eca0a684da70664ccfb7e5ce,
-    type: 2}
 --- !u!114 &114270639733774274
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2121,6 +2085,39 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 4294967295
   m_MaxRayIntersections: 0
+--- !u!114 &114665999421744398
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1340531696190786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec49326c0f8531b40b00403686f62065, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Adapter: {fileID: 0}
+  InitializingPane: {fileID: 0}
+  Activated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  ActivateOnWake: 0
+  MarkerImageObject: {fileID: 114634943668783570, guid: 1a310be2079f05b4089d8ab59c91d6db,
+    type: 2}
+  MarkerVideoObject: {fileID: 114283420015760294, guid: a11bdb53f4c8648439347304e611f698,
+    type: 2}
+  MarkerAudioObject: {fileID: 114999962957227616, guid: ec94312fdb1dc274c83aefd95f9df32f,
+    type: 2}
+  MarkerAssetObject: {fileID: 114324808910917062, guid: 27f698c2eca0a684da70664ccfb7e5ce,
+    type: 2}
+  ItemScale: {x: 1, y: 1, z: 1}
 --- !u!114 &114718475270196004
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -2187,6 +2184,32 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: New Text
+--- !u!114 &114870721894641874
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1591811946127710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09565026482a5024f92f0a89d418e1f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  WorldAnchor: {fileID: 1567906830389428}
+  WorldCamera: {fileID: 20080003563163816}
+  ARCamera: {fileID: 114568174373726802}
+  Activated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
+      Culture=neutral, PublicKeyToken=null
+  CameraBehavior: 0
+  ItemScale: {x: 1, y: 1, z: 1}
 --- !u!114 &114888319951149064
 MonoBehaviour:
   m_ObjectHideFlags: 1

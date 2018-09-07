@@ -1,4 +1,5 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -16,6 +17,7 @@ namespace Motive.Core.Storage
 
         public override System.IO.Stream GetReadStream()
         {
+#if !UNITY_WSA_10_0
             var baseStream = base.GetReadStream();
 
             if (baseStream != null)
@@ -30,10 +32,14 @@ namespace Motive.Core.Storage
             }
 
             return null;
+#else
+            throw new NotSupportedException();
+#endif
         }
 
         public override System.IO.Stream GetWriteStream()
         {
+#if !UNITY_WSA_10_0
             var crypto = new DESCryptoServiceProvider()
             {
                 Key = Encoding.ASCII.GetBytes(Platform.Instance.EncryptionKey), 
@@ -43,6 +49,9 @@ namespace Motive.Core.Storage
             var baseStream = base.GetWriteStream();
 
             return new CryptoStream(baseStream, crypto.CreateEncryptor(), CryptoStreamMode.Write);
+#else
+            throw new NotSupportedException();
+#endif
         }
     }
 }

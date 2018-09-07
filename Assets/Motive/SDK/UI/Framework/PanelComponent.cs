@@ -13,7 +13,7 @@ namespace Motive.UI.Framework
     /// </summary>
     public class PanelComponent : MonoBehaviour
     {
-        public Panel Panel { get; set; }
+        public virtual Panel Panel { get; set; }
 
         /// <summary>
         /// Pops the component's panel off the stack.
@@ -34,6 +34,26 @@ namespace Motive.UI.Framework
         public virtual void Populate(object obj)
         {
             Populate();
+        }
+
+        /// <summary>
+        /// Populates all components of the given type with the
+        /// given data.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        public virtual void PopulateComponents<T>(object data)
+            where T : PanelComponent
+        {
+            var components = GetComponents<T>();
+
+            if (components != null)
+            {
+                foreach (var component in components)
+                {
+                    component.Populate(data);
+                }
+            }
         }
 
         /// <summary>
@@ -75,14 +95,14 @@ namespace Motive.UI.Framework
 
         }
 
-        public virtual void DidShow()
+        public virtual void DidPush()
         {
             Populate();
         }
 
-        public virtual void DidShow(object obj)
+        public virtual void DidPush(object obj)
         {
-            DidShow();
+            DidPush();
         }
 
         public virtual void DidHide()
@@ -92,7 +112,20 @@ namespace Motive.UI.Framework
 
         public void SetText(Text text, string value)
         {
-            if (text) text.text = value;
+            SetText(null, text, value);
+        }
+
+        public void SetText(GameObject layout, Text textField, string value)
+        {
+            if (textField)
+            {
+                textField.text = value;
+            }
+
+            if (layout)
+            {
+                layout.SetActive(!string.IsNullOrEmpty(value));
+            }
         }
     }
 
@@ -114,7 +147,7 @@ namespace Motive.UI.Framework
         {
         }
 
-        public virtual void DidShow(T obj)
+        public virtual void DidPush(T obj)
         {
             Data = obj;
             Populate(obj);
@@ -128,26 +161,39 @@ namespace Motive.UI.Framework
         {
             if (obj is T)
             {
-                ObjectHelper.SetObjectsActive(LinkedObjects, true);
+                ShowLinkedObjects();
 
                 Data = (T)obj;
                 Populate((T)obj);
             }
+            /*
+             * The linked objects get turned off on push, then get
+             * progressively activated.
             else
             {
-                ObjectHelper.SetObjectsActive(LinkedObjects, false);
+                HideLinkedObjects();
 
 				ClearData();
-            }
+            }*/
 
             base.Populate(obj);
         }
 
-        public override void DidShow(object obj)
+        protected virtual void HideLinkedObjects()
+        {
+            ObjectHelper.SetObjectsActive(LinkedObjects, false);
+        }
+
+        protected virtual void ShowLinkedObjects()
+        {
+            ObjectHelper.SetObjectsActive(LinkedObjects, true);
+        }
+
+        public override void DidPush(object obj)
         {
             if (obj is T)
             {
-                DidShow((T)obj);
+                DidPush((T)obj);
             }
 			else
 			{
@@ -156,7 +202,7 @@ namespace Motive.UI.Framework
 				ClearData();
 			}
 
-            base.DidShow(obj);
+            base.DidPush(obj);
         }
 
         public void SetImage(GameObject layout, RawImage rawImage, string url)
@@ -168,25 +214,7 @@ namespace Motive.UI.Framework
 
             ImageLoader.LoadImageOnThread(url, rawImage);
         }
-
-        public void SetText(Text textField, string value)
-        {
-            SetText(null, textField, value);
-        }
-
-        public void SetText(GameObject layout, Text textField, string value)
-        {
-            if (textField)
-            {
-                textField.text = value;
-            }
-
-            if (layout)
-            {
-                layout.SetActive(!string.IsNullOrEmpty(value));
-            }
-        }
-
+        
         public virtual void PushPanel(PanelLink link)
         {
             link.Push(Data);

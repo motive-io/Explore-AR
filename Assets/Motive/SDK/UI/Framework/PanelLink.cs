@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
 using System;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,21 @@ namespace Motive.UI.Framework
 
         public UnityEvent OnPush;
         public UnityEvent OnPop;
+
+        public bool IsShowing
+        {
+            get
+            {
+                var p = GetPanel();
+
+                if (p)
+                {
+                    return p.IsShowing;
+                }
+
+                return false;
+            }
+        }
 
         public Panel GetPanel()
         {

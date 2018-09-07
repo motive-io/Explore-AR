@@ -1,4 +1,5 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
+using Motive.Unity.Utilities;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -16,6 +17,11 @@ namespace Motive.UI.Framework
 
         public GameObject EnabledWhenSelected;
         public GameObject EnabledWhenNotSelected;
+
+        public GameObject[] EnableWhenHighlighed;
+        public GameObject[] EnabledWhenNotHighlighted;
+
+        public bool IsHighlighted { get; private set; }
 
         IEnumerable<PanelComponent> m_components;
 
@@ -51,9 +57,17 @@ namespace Motive.UI.Framework
             {
                 foreach (var c in m_components)
                 {
-                    c.DidShow(obj);
+                    c.DidPush(obj);
                 }
             }
+        }
+
+        public virtual void SetHighlighted(bool isHighlighted)
+        {
+            IsHighlighted = isHighlighted;
+
+            ObjectHelper.SetObjectsActive(EnableWhenHighlighed, isHighlighted);
+            ObjectHelper.SetObjectsActive(EnabledWhenNotHighlighted, !isHighlighted);
         }
     }
 }

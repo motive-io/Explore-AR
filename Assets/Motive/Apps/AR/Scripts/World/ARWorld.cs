@@ -18,10 +18,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using Logger = Motive.Core.Diagnostics.Logger;
 
-#if MOTIVE_VUFORIA
-using Motive.AR.Vuforia;
-#endif
-
 namespace Motive.Unity.AR
 {
     /// <summary>
@@ -167,8 +163,6 @@ namespace Motive.Unity.AR
         public LocationARWorldAdapterBase ARCoreAdapter;
         public LocationARWorldAdapterBase ARKitAdapter;
 
-        public ARWorldAdapterBase<VisualMarkerWorldObject> VisualMarkerAdapter;
-
         // radius to interact with nodes
         public float DistanceScale = 1f;
         public float DefaultFixedDistance = 5f;
@@ -203,10 +197,7 @@ namespace Motive.Unity.AR
                     ARAdapter.Activate();
                 }
 
-                if (VisualMarkerAdapter != null)
-                {
-                    VisualMarkerAdapter.Activate();
-                }
+                ARMarkerManager.Instance.Activate();
             }
 
             foreach (var wrapper in m_worldObjDict.Values.ToArray())
@@ -222,18 +213,6 @@ namespace Motive.Unity.AR
         {
             IsActive = false;
 
-            if (ARAdapter)
-            {
-                ARAdapter.Deactivate();
-            }
-
-            //m_doUpdate = false;
-
-            if (VisualMarkerAdapter != null)
-            {
-                VisualMarkerAdapter.Deactivate();
-            }
-
             foreach (var wrapper in m_worldObjDict.Values.ToArray())
             {
                 foreach (var call in wrapper.OnDeactivateCalls.ToArray())
@@ -241,6 +220,15 @@ namespace Motive.Unity.AR
                     call();
                 }
             }
+
+            if (ARAdapter)
+            {
+                ARAdapter.Deactivate();
+            }
+
+            //m_doUpdate = false;
+
+            ARMarkerManager.Instance.Deactivate();
         }
 
         void SetARAdapter(LocationARWorldAdapterBase adapter, bool activate)
@@ -250,14 +238,26 @@ namespace Motive.Unity.AR
 
             m_worldAdapters[typeof(LocationARWorldObject)] = ARAdapter;
             m_worldAdapters[typeof(SceneARWorldObject)] = ARAdapter;
+            m_worldAdapters[typeof(VisualMarkerWorldObject)] = ARMarkerManager.Instance;
+
+            if (IsInitialized)
+            {
+                ARAdapter.Initialize();
+
+                ARMarkerManager.Instance.Initialize();
+            }
 
             if (activate)
             {
                 ARAdapter.Activate();
+
+                ARMarkerManager.Instance.Activate();
             }
             else
             {
                 ARAdapter.Deactivate();
+
+                ARMarkerManager.Instance.Deactivate();
             }
         }
 
@@ -272,7 +272,7 @@ namespace Motive.Unity.AR
                 var result = GoogleARCore.Session.CheckApkAvailability()
                     .ThenAction((status) =>
                     {
-                        Debug.LogErrorFormat("Checking ARCore availability result={0}", status);
+                        m_logger.Debug("Checking ARCore availability result={0}", status);
 
                         if (status == GoogleARCore.ApkAvailabilityStatus.SupportedInstalled)
                         {
@@ -374,18 +374,12 @@ namespace Motive.Unity.AR
 
         protected override void Start ()
         {
-#if MOTIVE_VUFORIA
-            VisualMarkerAdapter = VuforiaWorld.Instance;
-
-            if (VisualMarkerAdapter)
+            if (ARAdapter)
             {
-                m_worldAdapters[typeof(VisualMarkerWorldObject)] = VisualMarkerAdapter;
+                ARAdapter.Initialize();
+
+                ARMarkerManager.Instance.Initialize();
             }
-
-            VisualMarkerAdapter.Initialize();
-#endif
-
-			ARAdapter.Initialize();
 
             // Caller may have activated ARWorld before we were initialized
             if (ActiveOnWake || IsActive)
@@ -395,25 +389,19 @@ namespace Motive.Unity.AR
                 if (ARAdapter)
                 {
                     ARAdapter.Activate();
-                }
 
-                if (VisualMarkerAdapter)
-                {
-                    VisualMarkerAdapter.Activate();
+                    ARMarkerManager.Instance.Activate();
                 }
             }
-			else
+            else
 			{
                 IsActive = false;
 
                 if (ARAdapter)
                 {
                     ARAdapter.Deactivate();
-                }
 
-                if (VisualMarkerAdapter)
-                {
-                    VisualMarkerAdapter.Deactivate();
+                    ARMarkerManager.Instance.Deactivate();
                 }
             }
 
@@ -588,7 +576,18 @@ namespace Motive.Unity.AR
         {
             CreateWorldObjectWrapper(worldObject, groupName).AddObject();
         }
-        
+
+        public void AddWorldObject<T>(T worldObject, ResourceActivationContext context, string groupName = "default")
+            where T : ARWorldObject
+        {
+            CreateWorldObjectWrapper(worldObject, groupName).AddObject();
+
+            if (context != null)
+            {
+                AttachResourceEvents(worldObject, context);
+            }
+        }
+
         private ARWorldObjectWrapper<T> CreateARMedia<T>(T worldObj, MediaElement mediaElement, IARMediaPlaybackProperties properties, Action onClose = null)
             where T : ARWorldObject
         {

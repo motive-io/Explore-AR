@@ -21,8 +21,10 @@ namespace Motive.Unity.Gaming
         {
         }
 
-        public void SetFocus(LocationTaskDriver driver, ARWorldObject worldObject, bool focus)
+        public void SetFocus(ARCatcherMinigameDriver minigameDriver, ARWorldObject worldObject, bool focus)
         {
+            var driver = minigameDriver.TaskDriver;
+
             if (worldObject != null)
             {
                 var task = driver.Task;
@@ -42,7 +44,7 @@ namespace Motive.Unity.Gaming
                         Localize.GetLocalizedString("ARAnnotation.TapToTake", "Tap to Collect") :
                         (driver.IsGiveTask ? Localize.GetLocalizedString("ARAnnotation.TapToPut", "Tap to Put") : null);
 
-                    ARAnnotationViewController.Instance.AddTapAnnotation(worldObject, text);
+                    ARAnnotationViewController.Instance.AddTapAnnotation(worldObject, text, minigameDriver.Complete);
                 }
                 else
                 {
@@ -56,7 +58,7 @@ namespace Motive.Unity.Gaming
             }
         }
 
-        public void HideTask(LocationTaskDriver driver, ARWorldObject worldObject)
+        public void HideTask(ARCatcherMinigameDriver minigameDriver, ARWorldObject worldObject)
         {
             if (m_guideData != null)
             {
@@ -66,7 +68,7 @@ namespace Motive.Unity.Gaming
             ARAnnotationViewController.Instance.RemoveTapAnnotation(worldObject);
         }
 
-        public void Action(LocationTaskDriver driver, ARWorldObject worldObject)
+        public void Action(ARCatcherMinigameDriver driver, ARWorldObject worldObject)
         {
             if (OnAction != null)
             {
@@ -74,9 +76,9 @@ namespace Motive.Unity.Gaming
             }
         }
 
-        public void Complete(LocationTaskDriver driver, ARWorldObject worldObject)
+        public void Complete(ARCatcherMinigameDriver driver, ARWorldObject worldObject)
         {
-            ARViewManager.Instance.SetTaskComplete(driver);
+            ARViewManager.Instance.SetTaskComplete(driver.TaskDriver);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿// Copyright (c) 2018 RocketChicken Interactive Inc.
 using Motive.Core.Utilities;
+using Motive.Unity.Utilities;
 using UnityEngine;
 
 namespace Motive.UI.Framework
@@ -34,11 +35,18 @@ namespace Motive.UI.Framework
 
         bool m_calibrateCompass;
 
+        Quaternion m_deviceBaseRotation;
+        Quaternion m_offset;
+
         void Awake()
         {
             m_deviceSwivel = transform.parent;
             m_compassSwivel = m_deviceSwivel.parent;
             m_world = m_compassSwivel.parent;
+
+            // On devices, 0,0,0 is the device screen-side-up. Rotate
+            // around the X axis by 90 to fix this.
+            m_deviceBaseRotation = Quaternion.Euler(90, 0, 0);
         }
 
         void Start()
@@ -108,37 +116,39 @@ namespace Motive.UI.Framework
                 /*+ transform.localEulerAngles.z*/, 0);
         }
 
-        public void StartGyro()
+        public void StartGyro(Quaternion? offset = null)
         {
             Input.gyro.enabled = true;
 
+            m_offset = offset.GetValueOrDefault(Quaternion.identity);
+
             initialYAngle = transform.eulerAngles.y;
 
-            //#if !UNITY_EDITOR
-#if UNITY_ANDROID
-            // On Android, 0,0,0 is the device screen-side-up. Rotate
-            // around the X axis by 90 to fix this.
-            m_deviceSwivel.localRotation = Quaternion.Euler(90, 0, 0);
-#endif
-#if UNITY_IPHONE
-		m_deviceSwivel.localRotation = Quaternion.Euler(90, 0, 0);
-#endif
 #if UNITY_EDITOR
             transform.rotation = Quaternion.Euler(Vector3.zero);
 #endif
-            //#endif
 
             enabled = true;
 
             ApplyGyroRotation();
         }
 
-        public void StopGyro()
+        public void StopGyro(bool reset = false)
         {
             m_compassSwivel.localRotation = Quaternion.identity;
             m_deviceSwivel.localRotation = Quaternion.identity;
 
+            if (reset)
+            {
+                ResetGyro();
+            }
+
             enabled = false;
+        }
+
+        public void ResetGyro()
+        {
+            transform.rotation = Quaternion.identity;
         }
 
         public void CalibrateCompass()
@@ -159,7 +169,6 @@ namespace Motive.UI.Framework
 
             var gyroEuler = Input.gyro.attitude.eulerAngles;
 
-#if UNITY_ANDROID
             //    DEVICE HELD UPRIGHT (RH)
             //
             //     y ^
@@ -172,12 +181,7 @@ namespace Motive.UI.Framework
             // 
             // Z is already flipped. Don't alter its rotation.
             // X, Y lie in same orientation. Reverse for RH -> LH.
-            transform.localRotation = Quaternion.Euler(-gyroEuler.x, -gyroEuler.y, gyroEuler.z);
-#else
-		transform.localRotation = Quaternion.Euler(-gyroEuler.x, -gyroEuler.y, gyroEuler.z);
-		//transform.Rotate(0f, 0f, 180f, Space.Self); //Swap "handedness" of quaternion from gyro.
-		//transform.Rotate(90f, 180f, 0f, Space.World); //Rotate to make sense as a camera pointing out the back of your device.
-#endif
+            transform.localRotation = m_offset * m_deviceBaseRotation * Quaternion.Euler(-gyroEuler.x, -gyroEuler.y, gyroEuler.z);
         }
 
         void ApplyDebugRotation()
@@ -230,7 +234,7 @@ namespace Motive.UI.Framework
 #if UNITY_EDITOR
             ApplyDebugRotation();
 #else
-		ApplyDeviceRotation();
+		    ApplyDeviceRotation();
 #endif
             appliedGyroYAngle = transform.eulerAngles.y; // Save the angle around y axis for use in calibration.
         }

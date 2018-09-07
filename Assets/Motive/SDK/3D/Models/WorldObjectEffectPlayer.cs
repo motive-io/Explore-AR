@@ -13,7 +13,9 @@ namespace Motive._3D.Models
     public class WorldObjectEffectPlayer : ScriptObject, IMediaItemProvider
     {
         public ObjectReference[] WorldObjectReferences { get; set; }
-        public ScriptObject[] Effects{ get; set; }
+        public IScriptObject[] Effects{ get; set; }
+
+        public double? Speed { get; set; }
 
         public void GetMediaItems(IList<MediaItem> items)
         {

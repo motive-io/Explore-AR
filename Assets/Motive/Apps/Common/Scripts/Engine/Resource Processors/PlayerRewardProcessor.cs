@@ -11,8 +11,8 @@ namespace Motive.Unity.Scripting
         {
             if (!context.IsClosed)
             {
-                RewardManager.Instance.ActivatePlayerReward(resource);
-                context.Close();
+                RewardManager.Instance.ActivatePlayerReward(resource, context.Close);
+                //context.Close();
             }
         }
     }

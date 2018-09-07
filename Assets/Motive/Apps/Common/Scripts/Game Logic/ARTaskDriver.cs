@@ -134,7 +134,10 @@ namespace Motive.Unity.Gaming
         {
             if (!Task.IsHidden)
             {
-                ARAnnotationViewController.Instance.AddTapAnnotation(worldObj);
+                ARAnnotationViewController.Instance.AddTapAnnotation(worldObj, null, () =>
+                {
+                    CollectItemFromObject(worldObj);
+                });
 
                 worldObj.Clicked += worldObj_Selected;
             }
@@ -157,7 +160,17 @@ namespace Motive.Unity.Gaming
                     Localize.GetLocalizedString("ARAnnotation.TapToTake", "Tap to Collect") :
                     (IsGiveTask ? Localize.GetLocalizedString("ARAnnotation.TapToPut", "Tap to Put") : null);
 
-                ARAnnotationViewController.Instance.AddTapAnnotation(worldObj, text);
+                ARAnnotationViewController.Instance.AddTapAnnotation(worldObj, text, () =>
+                {
+                    if (IsTakeTask)
+                    {
+                        CollectItemFromObject(worldObj);
+                    }
+                    else
+                    {
+
+                    }
+                });
 
                 if (collectible != null)
                 {
@@ -345,6 +358,15 @@ namespace Motive.Unity.Gaming
                         }
                     }
                 }
+            }
+
+            if (m_guideData != null &&
+                m_guideData.WorldObject == null &&
+                m_worldObjects.Count > 0)
+            {
+                m_guideData.WorldObject = GetNearestWorldObject();
+
+                ARViewManager.Instance.SetGuide(m_guideData);
             }
 
             OnUpdated();

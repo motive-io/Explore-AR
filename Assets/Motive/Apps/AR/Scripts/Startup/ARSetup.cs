@@ -11,6 +11,8 @@ using Motive.Unity.Scripting;
 using Motive.Unity.Gaming;
 using Motive.Unity.Utilities;
 using System;
+using System.Linq;
+using Motive._3D.Models;
 
 #if MOTIVE_MAPBOX
 using Mapbox.Unity;
@@ -90,12 +92,22 @@ namespace Motive.Unity.Apps
 
             AppManager.Instance.OnLoadComplete(() =>
             {
-                var objects = ScriptObjectDirectory.Instance.GetAllObjects<Script>();
-                ScriptManager.Instance.SetScripts(objects);
+                var scripts = ScriptObjectDirectory.Instance.GetAllObjects<Script>();
+                ScriptManager.Instance.SetScripts(scripts);
 
                 if (PreLoadAssetBundles)
                 {
                     UnityAssetLoader.PreloadBundles(ScriptObjectDirectory.Instance.GetAllObjects<Motive.Unity.Models.AssetBundle>());
+                }
+
+                //Unzipping all GLTF files
+                //BinaryAssetLoader.PreloadBundles(ScriptObjectDirectory.Instance.GetAllObjects<Motive._3D.Models.BinaryAsset>());
+
+                var locationCatalogs = ScriptObjectDirectory.Instance.GetAllCatalogs<Location>();
+
+                if (locationCatalogs != null)
+                {
+                    LocationCache.Instance.AddLocationsToCache(locationCatalogs.SelectMany(c => c));
                 }
             });
 
@@ -151,7 +163,7 @@ namespace Motive.Unity.Apps
                 {
                     DynamicConfig.Instance.SpaceSelected += (sender, args) =>
                     {
-                        if (!AppManager.Instance.IsInitialized)
+                        if (!AppManager.Instance.IsRunning)
                         {
                             AppManager.Instance.Start();
                         }

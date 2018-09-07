@@ -36,11 +36,23 @@ namespace Motive.Unity.UI
 
         public void AddTapAnnotation(string text, Action onClick = null)
         {
-            if (!m_tapItem)
+            if (m_tapItem)
+            {
+                m_tapItem.OnSelected.RemoveAllListeners();
+            }
+            else
             {
                 m_tapItem = InteractibleTable.AddItem(TapItem);
             }
 
+            m_tapItem.OnSelected.AddListener(() =>
+            {
+                if (onClick != null)
+                {
+                    onClick();
+                }
+            });
+            
             m_tapItem.SetText(text);
         }
 
@@ -93,5 +105,4 @@ namespace Motive.Unity.UI
             }
         }
     }
-
 }

@@ -9,5 +9,6 @@ namespace Motive.AR.Models
 {
     public interface IVisualMarker : IScriptObject
     {
+        string GetIdentifier();
     }
 }

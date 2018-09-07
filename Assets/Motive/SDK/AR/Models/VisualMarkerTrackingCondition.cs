@@ -10,7 +10,7 @@ namespace Motive.AR.Models
 {
     public class VisualMarkerTrackingCondition : AtomicCondition, IMediaItemProvider
     {
-        public IVisualMarker[] VisualMarkers { get; set; }
+        public IScriptObject[] VisualMarkers { get; set; }
 
         public void GetMediaItems(IList<Core.Media.MediaItem> items)
         {

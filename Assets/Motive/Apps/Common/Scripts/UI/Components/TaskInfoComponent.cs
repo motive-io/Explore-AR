@@ -157,9 +157,9 @@ namespace Motive.Unity.UI
             ShowObjectsIfCanComplete();
         }
 
-        public override void DidShow()
+        public override void DidPush()
         {
-            base.DidShow();
+            base.DidPush();
 
             Inventory.Instance.Updated += Inventory_Updated;
 

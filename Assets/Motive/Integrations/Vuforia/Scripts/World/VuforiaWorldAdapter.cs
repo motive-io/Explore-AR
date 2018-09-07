@@ -164,10 +164,10 @@ namespace Motive.AR.Vuforia
 
             Dbg(TrackingState, IsInSync ? "<color=green>IN SYNC</color>" : "<color=red>OUT OF SYNC</color>");
             
-            Dbg(VuforiaCameraPosition, "vuforia cam position={0}", VuforiaWorld.Instance.ARCamera.transform.localPosition);
-            Dbg(VuforiaCameraRotation, "vuforia cam rotation={0}",
-                GetWorldHeading(VuforiaWorld.Instance.WorldAnchor.transform,
-                                VuforiaWorld.Instance.ARCamera.transform));
+            //Dbg(VuforiaCameraPosition, "vuforia cam position={0}", VuforiaWorld.Instance.ARCamera.transform.localPosition);
+            //Dbg(VuforiaCameraRotation, "vuforia cam rotation={0}",
+            //    GetWorldHeading(VuforiaWorld.Instance.WorldAnchor.transform,
+            //                    VuforiaWorld.Instance.ARCamera.transform));
                 
             Dbg(LocationCameraPosition, "world cam position={0}", WorldCamera.transform.localPosition);
             Dbg(LocationCameraRotation, "world cam rotation={0}",
@@ -182,7 +182,7 @@ namespace Motive.AR.Vuforia
             }
 
             m_adjustSwivel = !IsInSync;
-            VuforiaWorld.Instance.WorldAnchor.SetActive(IsInSync);
+            WorldAnchor.SetActive(IsInSync);
 
             foreach (var trackable in trackables)
             {

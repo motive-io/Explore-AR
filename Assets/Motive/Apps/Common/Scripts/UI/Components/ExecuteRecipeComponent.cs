@@ -14,14 +14,14 @@ namespace Motive.Unity.UI
     {
         public PanelLink ExecuteRecipePanel;
 
-        public override void DidShow()
+        public override void DidPush()
         {
             if (ExecuteRecipePanel)
             {
                 ExecuteRecipePanel.Back();
             }
 
-            base.DidShow();
+            base.DidPush();
         }
 
         public override void Populate(Recipe recipe)
